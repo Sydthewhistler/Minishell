@@ -1,42 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Created: 2025/03/31 09:11:33 by cprot             #+#    #+#             */
+/*   Updated: 2025/03/31 09:11:35 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	main(void)
+void	*ft_memmove(void *dest, const void *src, size_t n)
 {
-	char	*line;
-	t_list	*tokens;
+	unsigned char		*new_dest;
+	const unsigned char	*new_src;
+	size_t				i;
 
-	rl_readline_name = "minishell";
-	while (1)
+	new_dest = (unsigned char *) dest;
+	new_src = (const unsigned char *) src;
+	if (dest < src)
 	{
-		line = readline("minishell>");
-		if (!line)
-			exit(1);
-		if (ft_strcmp(line, "exit") == 0 || ft_strcmp(line, "EXIT") == 0)
+		i = 0;
+		while (i < n)
 		{
-			free(line);
-			break ;
+			new_dest[i] = new_src[i];
+			i++;
 		}
-		if (*line != '\0')
-		{
-			add_history(line);
-			tokens = pars_line(line);
-			// exec(tokens);
-			free_list(tokens);
-		}
-		free(line);
 	}
-	rl_clear_history();
-	return (0);
+	else
+	{
+		i = n;
+		while (i > 0)
+		{
+			new_dest[i - 1] = new_src[i - 1];
+			i--;
+		}
+	}
+	return (dest);
 }

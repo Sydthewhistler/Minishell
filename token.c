@@ -1,42 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Created: 2025/05/22 14:00:47 by cprot             #+#    #+#             */
+/*   Updated: 2025/05/22 14:46:52 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+t_list	*ft_split_token(char *s)
 {
-	char	*line;
-	t_list	*tokens;
+	int		i;
+	int		j;
+	char	c;
+	char	*str;
+	t_list	*list;
 
-	rl_readline_name = "minishell";
-	while (1)
+	i = 0;
+	j = 0;
+	str = malloc(sizeof(*char));
+	if (!str)
 	{
-		line = readline("minishell>");
-		if (!line)
-			exit(1);
-		if (ft_strcmp(line, "exit") == 0 || ft_strcmp(line, "EXIT") == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (*line != '\0')
-		{
-			add_history(line);
-			tokens = pars_line(line);
-			// exec(tokens);
-			free_list(tokens);
-		}
-		free(line);
+		return ;
 	}
-	rl_clear_history();
-	return (0);
+	if (s[i] == '"' || s[i] == '\'')
+	{
+		c = s[i];
+		i++;
+		while (s[i] != c)
+		{
+			str[j++] = s[i++];
+		}
+		create_node(&list, str, 0); 
+	}
 }

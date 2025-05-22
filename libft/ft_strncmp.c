@@ -1,42 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Created: 2025/03/31 09:22:03 by cprot             #+#    #+#             */
+/*   Updated: 2025/03/31 09:22:06 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int	main(void)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
-	char	*line;
-	t_list	*tokens;
+	size_t	i;
 
-	rl_readline_name = "minishell";
-	while (1)
+	i = 0;
+	while (i < n && s1[i] && s2[i])
 	{
-		line = readline("minishell>");
-		if (!line)
-			exit(1);
-		if (ft_strcmp(line, "exit") == 0 || ft_strcmp(line, "EXIT") == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (*line != '\0')
-		{
-			add_history(line);
-			tokens = pars_line(line);
-			// exec(tokens);
-			free_list(tokens);
-		}
-		free(line);
+		if (s1[i] != s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
 	}
-	rl_clear_history();
+	if (i < n)
+	{
+		return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	}
 	return (0);
 }

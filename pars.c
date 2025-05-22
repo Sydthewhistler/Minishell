@@ -1,42 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
+/*   Updated: 2025/05/22 14:35:56 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+t_list	*pars_line(char *line)
 {
-	char	*line;
 	t_list	*tokens;
 
-	rl_readline_name = "minishell";
-	while (1)
+	tokens = ft_split_token(line);
+	while (!*tokens)
 	{
-		line = readline("minishell>");
-		if (!line)
-			exit(1);
-		if (ft_strcmp(line, "exit") == 0 || ft_strcmp(line, "EXIT") == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (*line != '\0')
-		{
-			add_history(line);
-			tokens = pars_line(line);
-			// exec(tokens);
-			free_list(tokens);
-		}
-		free(line);
+		tokens->type = find_type(*tokens);
 	}
-	rl_clear_history();
-	return (0);
 }
+
+/*recup *line
+token = ft_split line
+init_struct :
+	dans une boucle while token[i]
+	token[i] = struct.str;
+	find_type = struct.type;
+find_type ...
+*/

@@ -1,42 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Created: 2025/05/22 14:36:53 by cprot             #+#    #+#             */
+/*   Updated: 2025/05/22 14:43:27 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(void)
+static void	create_node(t_list **stack, char *token_str, int token_type)
 {
-	char	*line;
-	t_list	*tokens;
+	t_list	*new_node;
+	t_list	*last;
 
-	rl_readline_name = "minishell";
-	while (1)
+	if (!stack)
+		return ;
+	new_node = malloc(sizeof(t_list));
+	if (!new_node)
+		return ;
+	new_node->next = NULL;
+	new_node->str = token_str;
+	new_node->type = token_type;
+	if (!(*stack))
 	{
-		line = readline("minishell>");
-		if (!line)
-			exit(1);
-		if (ft_strcmp(line, "exit") == 0 || ft_strcmp(line, "EXIT") == 0)
-		{
-			free(line);
-			break ;
-		}
-		if (*line != '\0')
-		{
-			add_history(line);
-			tokens = pars_line(line);
-			// exec(tokens);
-			free_list(tokens);
-		}
-		free(line);
+		*stack = new_node;
+		new_node->prev = NULL;
 	}
-	rl_clear_history();
-	return (0);
+	else
+	{
+		last = found_last(*stack);
+		last->next = new_node;
+		new_node->prev = last;
+	}
 }
