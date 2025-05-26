@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 16:15:01 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:54:08 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ int	main(void)
 			tokens = pars_line(line);
 			exec_master(tokens);
 			free_list(tokens);
+			// tokens = parse_line(line);
+			// exec(tokens);
+			//free_list(tokens);
 		}
 		free(line);
 	}
