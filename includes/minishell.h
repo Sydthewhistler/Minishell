@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 14:36:47 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 17:05:49 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,21 @@
 
 typedef struct s_token
 {
-	char			*s;
-	int				content_type;
+	char			*str;
+	int				type;
 	int				role;
 	struct s_token	*next;
 	struct s_token	*prev;
 }					t_token;
 
-t_list				*pars_line(char *line);
+typedef struct s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
 
-static void			create_node(t_list **stack, char *token_str,
-						int token_type);
+static void			create_token(t_token **tokens, char *content,
+						int content_type);
 
 #endif

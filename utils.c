@@ -6,34 +6,44 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:36:53 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:43:27 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 17:08:13 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static void	create_node(t_list **stack, char *token_str, int token_type)
+t_token	*found_last(t_token *tokens)
 {
-	t_list	*new_node;
-	t_list	*last;
+	if (!tokens)
+		return (NULL);
+	while (tokens->next)
+		tokens = tokens->next;
+	return (tokens);
+}
 
-	if (!stack)
+static void	create_token(t_token **tokens, char *content, int content_type)
+{
+	t_token	*new_token;
+	t_token	*last;
+
+	if (!tokens)
 		return ;
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
 		return ;
-	new_node->next = NULL;
-	new_node->str = token_str;
-	new_node->type = token_type;
-	if (!(*stack))
+	new_token->next = NULL;
+	new_token->str = content;
+	new_token->type = content_type;
+	new_token->role = 0;
+	if (!(*tokens))
 	{
-		*stack = new_node;
-		new_node->prev = NULL;
+		*tokens = new_token;
+		new_token->prev = NULL;
 	}
 	else
 	{
-		last = found_last(*stack);
-		last->next = new_node;
-		new_node->prev = last;
+		last = found_last(*tokens);
+		last->next = new_token;
+		new_token->prev = last;
 	}
 }

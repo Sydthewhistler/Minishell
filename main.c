@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:13:04 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 16:42:08 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	main(void)
 {
 	char	*line;
-	t_list	*tokens;
+	//t_list	*tokens;
 
 	rl_readline_name = "minishell";
 	while (1)
@@ -31,9 +31,9 @@ int	main(void)
 		if (*line != '\0')
 		{
 			add_history(line);
-			tokens = pars_line(line);
+			// tokens = parse_line(line);
 			// exec(tokens);
-			free_list(tokens);
+			//free_list(tokens);
 		}
 		free(line);
 	}
