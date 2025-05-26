@@ -6,28 +6,35 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/22 14:35:56 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 14:39:43 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*pars_line(char *line)
+t_token	*parse_line(char *line)
 {
-	t_list	*tokens;
+	t_token	*tokens;
+	int		i;
 
-	tokens = ft_split_token(line);
-	while (!*tokens)
+	tokens = NULL;
+	i = 0;
+	while (line[i])
 	{
-		tokens->type = find_type(*tokens);
+		while (line[i] == ' ' || line[i] == '\t')
+			i++;
+		if (line[i] == '\0')
+			break ;
+		if (line[i] == '"' || line[i] == '\'')
+			i = parse_quoted(line, &i, &tokens);
+		else if (line[i] == '\\')
+			i = parse_escaped(line, &i, &tokens);
+		else if (is_operator(line[i]))
+			i = parse_operator(line, &i, &tokens);
+		else
+			i = parse_word(line, &i, &tokens);
 	}
+	assign_roles(tokens);
+	return (tokens);
 }
 
-/*recup *line
-token = ft_split line
-init_struct :
-	dans une boucle while token[i]
-	token[i] = struct.str;
-	find_type = struct.type;
-find_type ...
-*/

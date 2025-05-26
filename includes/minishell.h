@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 14:17:04 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 14:36:47 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,26 @@
 # include <stdio.h>
 # include <unistd.h>
 
-# define COMMAND 1
-# define ARGUMENT 2
-# define PIPE 3
-# define REDIRECT_IN 4     //
-# define REDIRECT_OUT 5    // >
-# define REDIRECT_APPEND 6 // >>
-# define FILENAME 8
-# define STRING 9 // Contenu entre guillemets
-# define TOKEN_UNKNOWN 0
+# define CONTENT_WORD 1     // mot normal
+# define CONTENT_QUOTED 2   // "string" ou 'string'
+# define CONTENT_OPERATOR 3 // |, >, <, >>
+# define CONTENT_ESCAPED 4  // \caractère
 
-typedef struct s_list
+# define ROLE_COMMAND 1
+# define ROLE_ARGUMENT 2
+# define ROLE_FILENAME 3
+# define ROLE_PIPE 4
+# define ROLE_REDIRECT_IN 5
+# define ROLE_REDIRECT_OUT 6
+
+typedef struct s_token
 {
-	char			*str;
-	int				type;
-	struct s_list	*prev;
-	struct s_list	*next;
-}					t_list;
+	char			*s;
+	int				content_type;
+	int				role;
+	struct s_token	*next;
+	struct s_token	*prev;
+}					t_token;
 
 t_list				*pars_line(char *line);
 
