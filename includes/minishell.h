@@ -6,14 +6,14 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 17:53:03 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 18:29:48 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "exec.h"
+//# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
