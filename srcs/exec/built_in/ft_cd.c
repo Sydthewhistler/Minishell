@@ -1,35 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_substr.c                                        :+:      :+:    :+:   */
+/*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 09:22:31 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 17:33:47 by scavalli         ###   ########.fr       */
+/*   Created: 2025/05/26 17:36:56 by scavalli          #+#    #+#             */
+/*   Updated: 2025/05/26 17:37:12 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-char	*ft_substr(char const *s, unsigned int start)
+void	ft_cd(char *line)
 {
-	char			*str;
-	size_t			i;
-	unsigned int	len;
+	unsigned int	i;
+	unsigned int	j;
+	unsigned int	start;
+	char			*path;
 
-	len = 0;
-	while (s[start + len])
-		len++;
-	str = malloc(len + 1);
-	if (!str)
-		return (NULL);
 	i = 0;
-	while (s[start + i])
+	j = 0;
+	while (line[i] && line[i] != ' ')
+		i++;
+	start = i + 1;
+	while (line[i])
 	{
-		str[i] = s[start + i];
+		j++;
 		i++;
 	}
-	str[i] = '\0';
-	return (str);
+	path = ft_substr(line, start);
+	chdir(path);
+	free(path);
 }

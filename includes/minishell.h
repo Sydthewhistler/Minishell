@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 17:07:17 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:27:45 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <fcntl.h>
+#include <dirent.h>
 # include "exec.h"
 
 # define CONTENT_WORD 1     // mot normal
