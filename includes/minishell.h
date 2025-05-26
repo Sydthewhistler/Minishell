@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 14:36:47 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/26 17:07:17 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include <readline/readline.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <stdlib.h>
+# include <fcntl.h>
+# include "exec.h"
 
 # define CONTENT_WORD 1     // mot normal
 # define CONTENT_QUOTED 2   // "string" ou 'string'

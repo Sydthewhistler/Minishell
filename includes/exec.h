@@ -1,18 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_master.c                                      :+:      :+:    :+:   */
+/*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 12:32:05 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/26 13:36:54 by scavalli         ###   ########.fr       */
+/*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
+/*   Updated: 2025/05/26 17:19:04 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#ifndef EXEC_H
+#define EXEC_H
 
-int	exec_master(t_list *lst)
-{
-	
-}
+void	error(char *str);
+void	ft_echo(char *cmd, t_token *lst);
+
+
+
+
+
+
+
+
+
+
+
+
+#endif
