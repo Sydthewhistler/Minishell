@@ -3,25 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 17:27:45 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:53:03 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include "exec.h"
 # include "libft.h"
+# include <dirent.h>
+# include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <stdio.h>
-# include <unistd.h>
 # include <stdlib.h>
-# include <fcntl.h>
-#include <dirent.h>
-# include "exec.h"
+# include <unistd.h>
 
 # define CONTENT_WORD 1     // mot normal
 # define CONTENT_QUOTED 2   // "string" ou 'string'
@@ -37,16 +37,21 @@
 
 typedef struct s_token
 {
-	char			*s;
-	int				content_type;
+	char			*str;
+	int				type;
 	int				role;
 	struct s_token	*next;
 	struct s_token	*prev;
 }					t_token;
 
-t_list				*pars_line(char *line);
+typedef struct s_env
+{
+	char			*name;
+	char			*value;
+	struct s_env	*next;
+}					t_env;
 
-static void			create_node(t_list **stack, char *token_str,
-						int token_type);
+static void			create_token(t_token **tokens, char *content,
+						int content_type);
 
 #endif
