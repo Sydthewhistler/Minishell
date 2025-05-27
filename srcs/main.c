@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 18:28:26 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/27 11:57:08 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(void)
 		if (*line != '\0')
 		{
 			add_history(line);
-			// tokens = parse_line(line);
+			parse_line(line);
 			// exec(tokens);
 			//free_list(tokens);
 		}
