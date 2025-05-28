@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/27 11:58:27 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/28 12:40:21 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,17 +23,21 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+// CONTENT types (ce que contient le token)
 # define CONTENT_WORD 1
 # define CONTENT_QUOTED 2
 # define CONTENT_OPERATOR 3
-# define CONTENT_ESCAPED 4 // \caractère
+# define CONTENT_HEREDOC 4 // ← Ajout pour le contenu des heredocs
 
+// ROLE types (fonction du token dans la commande)
 # define ROLE_COMMAND 1
 # define ROLE_ARGUMENT 2
 # define ROLE_FILENAME 3
 # define ROLE_PIPE 4
-# define ROLE_REDIRECT_IN 5
-# define ROLE_REDIRECT_OUT 6
+# define ROLE_REDIRECT_IN 5     //
+# define ROLE_REDIRECT_OUT 6    // >
+# define ROLE_REDIRECT_APPEND 7 // ← Ajout pour >>
+# define ROLE_REDIRECT_HEREDOC 8
 
 typedef struct s_token
 {
@@ -41,6 +45,7 @@ typedef struct s_token
 	int				type;
 	int				role;
 	char			*envp;
+	bool			need_expansion;
 	struct s_token	*next;
 	struct s_token	*prev;
 }					t_token;
@@ -52,8 +57,13 @@ typedef struct s_env
 	struct s_env	*next;
 }					t_env;
 
-// static void			create_token(t_token **tokens, char *content,
-// 						int content_type);
-t_token				*parse_line(char *line);
+void				create_token(t_token **tokens, char *content,
+						int content_type, bool need_expansion);
+void				skip_whitespace(char *line, int *i);
+void				parse_line(char *line, t_token **tokens);
+char				*extract_delimiter(char *s);
+char				*handle_heredoc(char *delimiter);
+void				update_history_entry(char *line, char *content,
+						char *delimiter);
 
 #endif

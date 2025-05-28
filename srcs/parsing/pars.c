@@ -6,87 +6,119 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/27 14:17:38 by cprot            ###   ########.fr       */
+/*   Updated: 2025/05/28 12:54:16 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static char	*join_strings(char *s1, char *s2)
+void	parse_quoted(char *s, int *i, t_token **tokens, char c)
 {
-	char	*result;
-	char	*temp;
+	char	temp[1024];
+	char	*str;
+	int		j;
 
-	temp = ft_strjoin(s1, s2);
-	result = ft_strjoin(temp, "\\n");
-	free(s1);
-	free(temp);
-	return (result);
-}
-
-char	*handle_quotes(char *s, char *prompt)
-{
-	int		i;
-	char	*result;
-	char	*temp;
-	
-	i = 1;
-	while (s[i] && s[i] != s[0])
-		i++;
-	if (s[i] == s[0])
-		return (ft_strdup(s));
-	result = ft_strdup(s);
-	while (1)
+	j = 0;
+	(*i)++;
+	while (s[*i] != c)
 	{
-		temp = readline(prompt);
-		if (!temp)
-			break ;
-		result = join_strings(result, temp);
-		if (ft_strrchr(temp, s[0]))
+		if (s[*i] == '\0')
 		{
-			free(temp);
-			break ;
+			write(2, "Error : unclosed quotes\n", 25);
+			return ;
 		}
-		free(temp);
+		temp[j] = s[*i];
+		j++;
+		(*i)++;
 	}
-	return (result);
+	temp[j] = '\0';
+	str = malloc(j + 1);
+	if (!str)
+		return ;
+	ft_strlcpy(str, temp, j + 1);
+	create_token(tokens, str, CONTENT_QUOTED, (c == '"'));
+	free(str);
 }
 
-// char	*handle_heredoc(char *s)
-// {
+void	parse_heredoc(char *s, int *i, t_token **tokens)
+{
+	char	*delimiter;
+	char	*heredoc_content;
 
+	*i += 2;
+	delimiter = extract_delimiter(s + *i);
+	if (!delimiter || !delimiter[0])
+	{
+		if (delimiter)
+			free(delimiter);
+		return ;
+	}
+	heredoc_content = handle_heredoc(delimiter);
+	create_token(tokens, "<<", CONTENT_OPERATOR, false);
+	create_token(tokens, heredoc_content, CONTENT_HEREDOC, false);
+	free(heredoc_content);
+	while (s[*i] == ' ' || s[*i] == '\t')
+		(*i)++;
+	while (s[*i] && s[*i] != ' ' && s[*i] != '\t' && s[*i] != '\n'
+		&& s[*i] != '|' && s[*i] != '<' && s[*i] != '>')
+		(*i)++;
+	free(delimiter);
+	skip_whitespace(s, i);
+}
+
+void	parse_operator(char *line, int *i, t_token **tokens)
+{
+	char	s[2];
+
+	s[0] = line[*i];
+	s[1] = '\0';
+	if (line[*i] == '>' && line[*i + 1] == '>')
+	{
+		create_token(tokens, ">>", CONTENT_OPERATOR, false);
+		(*i) += 2;
+	}
+	else
+	{
+		create_token(tokens, s , CONTENT_OPERATOR, false);
+		(*i)++;
+	}
+	skip_whitespace(line, i);
+}
+
+// void	parse_var(char *line, int *i, t_token **tokens)
+// {
+	
 // }
 
-char	*complete_input(char *line)
+void	parse_line(char *line, t_token **tokens)
 {
-	char	*result;
+	int	i;
 
-	// char	*final_result;
-	if (!line)
-		return (NULL);
-	if (line[0] == '"')
-		result = handle_quotes(line, "dquote> ");
-	else if (line[0] == '\'')
-		result = handle_quotes(line, "quote> ");
-	else
-		result = ft_strdup(line);
-	if (!result)
-		return (NULL);
-	// final_result = handle_heredoc(result);
-	// if (final_result && final_result != result)
-	// 	free(result);
-	printf("string = %s\n", result);
-	return (result);
+	i = 0;
+	skip_whitespace(line, &i);
+	while (line[i])
+	{
+		if (line[i] == '"' || line[i] == '\'') // Quotes (priorité haute)
+		{
+			parse_quoted(line, &i, tokens, line[i]);
+			i++;
+			skip_whitespace(line, &i);
+		}
+		else if (line[i] == '<' && line[i + 1] == '<') // heredoc
+			parse_heredoc(line, &i, tokens);
+		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
+			parse_operator(line, &i, tokens);
+		else if (line[i] == '$') // Variables GERER LE ' " attention"
+			parse_var(line, &i, tokens);
+		// else // Mots normaux (priorité basse)
+		// {
+		// 	// Gérer les mots normaux
+		// 	i++;
+		// }
+		else
+			return ;
+	}
 }
-
-t_token	*parse_line(char *line)
-{
-	char	*complete_line;
-
-	// t_token	*tokens;
-	complete_line = complete_input(line);
-	// tokens = tokenize(complete_line);
-	// assign_roles(tokens);
-	// free(complete_line);
-	return (NULL);
-}
+// complete_line = complete_input(line);
+// if (!complete_line)
+// 	return (NULL);
