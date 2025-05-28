@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:53:13 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/27 18:17:25 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/05/28 15:24:40 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,48 @@ char	*ft_strndup(char *str, int n)
 
 void	free_localvar(t_localvar *localvar)
 {
+	if(local->next)
+	{
+		if(local->prev)
+		{
+			local->prev->next = local->next;
+			local->next->prev = local->prev;
+		}
+		else
+			local->next->prev = NULL;
+	}
+	else
+	{
+		if(local->prev)
+			local->prev->next = NULL;
+		else
+			*localvar = NULL;
+	}
 	free(localvar->name);
 	free(localvar->value);
 	free(localvar);
+}
+
+void	free_env(t_env *env)
+{
+	if(env->next)
+	{
+		if(env->prev)
+		{
+			env->prev->next = env->next;
+			env->next->prev = env->prev;
+		}
+		else
+			env->next->prev = NULL;
+	}
+	else
+	{
+		if(env->prev)
+			env->prev->next = NULL;
+		else
+			*env = NULL;
+	}
+	free(env->name);
+	free(env->value);
+	free(env);
 }

@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/27 18:18:59 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/05/28 15:17:16 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,23 +69,6 @@ void	print_export(t_env *env)
 void	export_local(t_localvar *local,t_env **env, t_localvar **localvar) //ajouter local a env puis supp local
 {
 	add_exportvar(env, local->name, local->value);
-	if(local->next)
-	{
-		if(local->prev)
-		{
-			local->prev->next = local->next;
-			local->next->prev = local->prev;
-		}
-		else
-			local->next->prev = NULL;
-	}
-	else
-	{
-		if(local->prev)
-			local->prev->next = NULL;
-		else
-			*localvar = NULL;
-	}
 	free_localvar(local);
 }
 
