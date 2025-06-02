@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/02 13:53:00 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:20:26 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe[2]);
 void	error(char *str);
 char	*ft_strndup(char *str, int n);
 bool	which_built_in(t_token *token, t_env **env, t_localvar **localvar);
+bool	is_builtin(t_token *token, t_env **env, t_localvar **localvar);
 
 /*                BUILT_IN FUNCTIONS                */
 
@@ -41,6 +42,9 @@ t_localvar	*is_local(t_localvar *local, char *name);
 t_localvar	*is_env(t_env *env, char *name);
 void	free_localvar(t_localvar *localvar);
 
+/*                   EXEC FUNCTIONS                  */
+
+void	exec(t_token *token, int p_read, int p_write);
 
 
 

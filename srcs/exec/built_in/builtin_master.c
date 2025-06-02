@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-bool	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
+bool	is_builtin(t_token *token)
 {
 	if (ft_strchr(token->str, "echo")) // strchr car peut etre suivi de -n
 		return (true);
