@@ -6,13 +6,13 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 14:51:30 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/28 15:19:00 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:06:12 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_localvar	*is_env(t_env *env, char *name) // regarde si une variable "name" est une variable local
+t_env	*is_env(t_env *env, char *name) // regarde si une variable "name" est une variable local
 {
 	if(!env)
 		return (NULL);
