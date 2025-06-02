@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_utils.c                                         :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 15:53:13 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/02 11:53:18 by cprot            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -32,50 +21,56 @@ char	*ft_strndup(char *str, int n)
 	return (str2);
 }
 
-void	free_localvar(t_localvar *localvar)
+void	free_localvar(t_localvar *local, t_localvar **localvar)
 {
-	if(local->next)
+	if (local->next)
 	{
-		if(local->prev)
+		if (local->prev)
 		{
 			local->prev->next = local->next;
 			local->next->prev = local->prev;
 		}
 		else
+		{
 			local->next->prev = NULL;
+			*localvar = local->next;
+		}
 	}
 	else
 	{
-		if(local->prev)
+		if (local->prev)
 			local->prev->next = NULL;
 		else
 			*localvar = NULL;
 	}
-	free(localvar->name);
-	free(localvar->value);
+	free(local->name);
+	free(local->value);
 	free(localvar);
 }
 
-void	free_env(t_env *env)
+void	free_env(t_env *del_env, t_env **env)
 {
-	if(env->next)
+	if (del_env->next)
 	{
-		if(env->prev)
+		if (del_env->prev)
 		{
-			env->prev->next = env->next;
-			env->next->prev = env->prev;
+			del_env->prev->next = del_env->next;
+			del_env->next->prev = del_env->prev;
 		}
 		else
-			env->next->prev = NULL;
+		{
+			del_env->next->prev = NULL;
+			*env = del_env->next;
+		}
 	}
 	else
 	{
-		if(env->prev)
-			env->prev->next = NULL;
+		if (del_env->prev)
+			del_env->prev->next = NULL;
 		else
 			*env = NULL;
 	}
-	free(env->name);
-	free(env->value);
-	free(env);
+	free(del_env->name);
+	free(del_env->value);
+	free(del_env);
 }
