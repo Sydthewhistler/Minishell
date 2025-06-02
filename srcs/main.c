@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/28 12:53:53 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 11:39:36 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,10 @@ void	free_token(t_token **tokens)
 
 int	main(void)
 {
-	char *line;
-	t_token *tokens = NULL;
+	char		*line;
+	t_list		*tokens = NULL;
+	t_env		*env;
+	t_localvar	*localvar;
 
 	rl_readline_name = "minishell";
 	while (1)

@@ -6,14 +6,14 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 10:22:46 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 11:39:16 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-//# include "exec.h"
+# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -22,6 +22,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <stdbool.h>
 
 // CONTENT types (ce que contient le token)
 # define CONTENT_WORD 1
@@ -55,6 +56,14 @@ typedef struct s_env
 	struct s_env	*next;
 	struct s_env	*prev;
 }					t_env;
+
+typedef struct s_localvar
+{
+	char			*name;
+	char			*value;
+	struct s_localvar	*next;
+	struct s_localvar	*prev;
+}					t_localvar;
 
 void				create_token(t_token **tokens, char *content,
 						int content_type);
