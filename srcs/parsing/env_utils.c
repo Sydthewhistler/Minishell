@@ -6,11 +6,20 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/02 09:51:45 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 11:29:44 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 12:01:47 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+t_env	*found_envplast(t_env *tokens)
+{
+	if (!tokens)
+		return (NULL);
+	while (tokens->next)
+		tokens = tokens->next;
+	return (tokens);
+}
 
 static void	free_node_on_error(t_env *new)
 {
@@ -42,7 +51,7 @@ t_env	*create_node(t_env **envp, char *name, char *value)
 		*envp = new;
 	else
 	{
-		last = found_last(*envp);
+		last = found_envplast(*envp);
 		last->next = new;
 		new->prev = last;
 	}
@@ -97,3 +106,4 @@ t_env	*init_env_from_envp(char **envp)
 	}
 	return (env);
 }
+

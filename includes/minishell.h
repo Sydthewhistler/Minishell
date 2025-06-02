@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 11:39:16 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 12:00:22 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 # include <fcntl.h>
 # include <readline/history.h>
 # include <readline/readline.h>
+# include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdbool.h>
 
 // CONTENT types (ce que contient le token)
 # define CONTENT_WORD 1
@@ -42,36 +42,37 @@
 
 typedef struct s_token
 {
-	char			*str;
-	int				type;
-	int				role;
-	struct s_token	*next;
-	struct s_token	*prev;
-}					t_token;
+	char				*str;
+	int					type;
+	int					role;
+	struct s_token		*next;
+	struct s_token		*prev;
+}						t_token;
 
 typedef struct s_env
 {
-	char			*name;
-	char			*value;
-	struct s_env	*next;
-	struct s_env	*prev;
-}					t_env;
+	char				*name;
+	char				*value;
+	struct s_env		*next;
+	struct s_env		*prev;
+}						t_env;
 
 typedef struct s_localvar
 {
-	char			*name;
-	char			*value;
+	char				*name;
+	char				*value;
 	struct s_localvar	*next;
 	struct s_localvar	*prev;
-}					t_localvar;
+}						t_localvar;
 
-void				create_token(t_token **tokens, char *content,
-						int content_type);
-void				skip_whitespace(char *line, int *i);
-void				parse_line(char *line, t_token **tokens);
-char				*extract_delimiter(char *s);
-char				*handle_heredoc(char *delimiter);
-void				update_history_entry(char *line, char *content,
-						char *delimiter);
+void					create_token(t_token **tokens, char *content,
+							int content_type);
+void					skip_whitespace(char *line, int *i);
+void					parse_line(char *line, t_token **tokens);
+char					*extract_delimiter(char *s);
+char					*handle_heredoc(char *delimiter);
+void					update_history_entry(char *line, char *content,
+							char *delimiter);
+t_env					*init_env_from_envp(char **envp);
 
 #endif

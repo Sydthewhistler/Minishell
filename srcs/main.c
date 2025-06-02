@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 11:39:36 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 12:00:40 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,19 @@ void	print_list(t_token *tokens)
 	{
 		printf("token->str : %s \n", cur->str);
 		printf("token->type : %d \n", cur->type);
+		cur = cur->next;
+	}
+}
+
+void	print_env(t_env *env)
+{
+	t_env	*cur;
+
+	cur = env;
+	while (cur)
+	{
+		printf("token->name : %s \n", cur->name);
+		printf("token->value : %s \n", cur->value);
 		cur = cur->next;
 	}
 }
@@ -44,13 +57,16 @@ void	free_token(t_token **tokens)
 	*tokens = NULL;
 }
 
-int	main(void)
+int	main(int ac, char **av, char **envp)
 {
 	char		*line;
 	t_list		*tokens = NULL;
 	t_env		*env;
 	t_localvar	*localvar;
 
+	(void)ac;
+	(void)av;
+	env = init_env_from_envp(envp);
 	rl_readline_name = "minishell";
 	while (1)
 	{
@@ -80,5 +96,6 @@ int	main(void)
 		free(line);
 	}
 	rl_clear_history();
+	print_env(env);
 	return (0);
 }
