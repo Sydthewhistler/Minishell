@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 14:36:53 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/28 12:47:15 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 11:32:01 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ t_token	*found_last(t_token *tokens)
 void	create_operator_token(t_token **tokens, char *operator,
 		int content_type)
 {
-	create_token(tokens, operator, content_type, false);
+	create_token(tokens, operator, content_type);
 }
 
-void	create_token(t_token **tokens, char *content, int content_type,
-		bool need_expansion)
+void	create_token(t_token **tokens, char *content, int content_type)
 {
 	t_token	*new_token;
 	t_token	*last;
@@ -52,7 +51,6 @@ void	create_token(t_token **tokens, char *content, int content_type,
 	new_token->role = 0;
 	new_token->next = NULL;
 	new_token->prev = NULL;
-	new_token->need_expansion = need_expansion;
 	if (!(*tokens))
 		*tokens = new_token;
 	else

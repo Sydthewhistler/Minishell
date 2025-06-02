@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/28 12:54:16 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 11:32:03 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	parse_quoted(char *s, int *i, t_token **tokens, char c)
 	if (!str)
 		return ;
 	ft_strlcpy(str, temp, j + 1);
-	create_token(tokens, str, CONTENT_QUOTED, (c == '"'));
+	create_token(tokens, str, CONTENT_QUOTED);
 	free(str);
 }
 
@@ -54,8 +54,8 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 		return ;
 	}
 	heredoc_content = handle_heredoc(delimiter);
-	create_token(tokens, "<<", CONTENT_OPERATOR, false);
-	create_token(tokens, heredoc_content, CONTENT_HEREDOC, false);
+	create_token(tokens, "<<", CONTENT_OPERATOR);
+	create_token(tokens, heredoc_content, CONTENT_HEREDOC);
 	free(heredoc_content);
 	while (s[*i] == ' ' || s[*i] == '\t')
 		(*i)++;
@@ -74,12 +74,12 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 	s[1] = '\0';
 	if (line[*i] == '>' && line[*i + 1] == '>')
 	{
-		create_token(tokens, ">>", CONTENT_OPERATOR, false);
+		create_token(tokens, ">>", CONTENT_OPERATOR);
 		(*i) += 2;
 	}
 	else
 	{
-		create_token(tokens, s , CONTENT_OPERATOR, false);
+		create_token(tokens, s , CONTENT_OPERATOR);
 		(*i)++;
 	}
 	skip_whitespace(line, i);
@@ -100,6 +100,7 @@ void	parse_line(char *line, t_token **tokens)
 	{
 		if (line[i] == '"' || line[i] == '\'') // Quotes (priorité haute)
 		{
+			check_expand(&line, i);
 			parse_quoted(line, &i, tokens, line[i]);
 			i++;
 			skip_whitespace(line, &i);

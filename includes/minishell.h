@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/28 12:40:21 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/02 10:22:46 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ typedef struct s_token
 	char			*str;
 	int				type;
 	int				role;
-	char			*envp;
-	bool			need_expansion;
 	struct s_token	*next;
 	struct s_token	*prev;
 }					t_token;
@@ -55,10 +53,11 @@ typedef struct s_env
 	char			*name;
 	char			*value;
 	struct s_env	*next;
+	struct s_env	*prev;
 }					t_env;
 
 void				create_token(t_token **tokens, char *content,
-						int content_type, bool need_expansion);
+						int content_type);
 void				skip_whitespace(char *line, int *i);
 void				parse_line(char *line, t_token **tokens);
 char				*extract_delimiter(char *s);
