@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/02 10:06:57 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:27:02 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,14 @@ void	add_exportvar(t_env **env, char *name, char *value)
 	if (!env)
 	{
 		new_exportvar->next = NULL;
+		new_exportvar->prev = NULL;
 		*env = new_exportvar;
 	}
 	else
 	{
 		last = find_last_exportvar(*env);
 		last->next = new_exportvar;
+		new_exportvar->prev = last;
 	}
 }
 
@@ -69,7 +71,7 @@ void	print_export(t_env *env)
 void	export_local(t_localvar *local,t_env **env, t_localvar **localvar) //ajouter local a env puis supp local
 {
 	add_exportvar(env, local->name, local->value);
-	free_localvar(local);
+	free_localvar(local, localvar);
 }
 
 void	ft_export(t_env **env, t_token *token, t_localvar **localvar)

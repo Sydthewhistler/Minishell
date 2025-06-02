@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/28 15:02:45 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:21:59 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_env
 	char			*name;
 	char			*value;
 	struct s_env	*next;
+	struct s_env	*prev;
 }					t_env;
 
 typedef struct s_localvar
