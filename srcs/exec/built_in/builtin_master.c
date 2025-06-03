@@ -3,7 +3,7 @@
 
 bool	is_builtin(t_token *token)
 {
-	if (ft_strchr(token->str, "echo")) // strchr car peut etre suivi de -n
+	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // gere aussi option -n
 		return (true);
 	else if (!ft_strcmp(token->str, "cd"))
 		return (true);
@@ -20,7 +20,7 @@ bool	is_builtin(t_token *token)
 
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
-	if (ft_strchr(token->str, "echo")) // strchr car peut etre suivi de -n
+	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // strchr car peut etre suivi de -n
 		ft_echo(token->str, token);
 	else if (!ft_strcmp(token->str, "cd"))
 		ft_cd(token->str);
