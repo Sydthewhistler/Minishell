@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 12:01:45 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:20:38 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,18 +79,26 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 	}
 	else
 	{
-		create_token(tokens, s , CONTENT_OPERATOR);
+		create_token(tokens, s, CONTENT_OPERATOR);
 		(*i)++;
 	}
 	skip_whitespace(line, i);
 }
 
-// void	parse_var(char *line, int *i, t_token **tokens)
-// {
-	
-// }
+void	parse_var(char *line, int *i, t_token **tokens, t_env *env)
+{
+	(*i)++;
+	if (line[*i] == '?')
+	{
+		handle_exit_status(line, i, tokens);
+		return ;
+	}
+	if (ft_isdigit(line[*i]))
+		return ;
+	handle_variable(line, i, tokens, env);
+}
 
-void	parse_line(char *line, t_token **tokens)
+void	parse_line(char *line, t_token **tokens, t_env *env)
 {
 	int	i;
 
@@ -109,14 +117,12 @@ void	parse_line(char *line, t_token **tokens)
 		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
 			parse_operator(line, &i, tokens);
 		else if (line[i] == '$') // Variables GERER LE ' " attention"
-			parse_var(line, &i, tokens);
-		else if// Mots normaux (priorité basse)
+			parse_var(line, &i, tokens, env);
+		else// Mots normaux (priorité basse)
 		{
 			// Gérer les mots normaux
 			i++;
 		}
-		else
-			return ;
 	}
 }
 // complete_line = complete_input(line);
