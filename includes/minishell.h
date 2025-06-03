@@ -35,6 +35,7 @@ typedef struct s_token
 	char				*str;
 	int					type;
 	int					role;
+	char				*envp;// ex /bin/sh/ls
 	struct s_token		*next;
 	struct s_token		*prev;
 }						t_token;

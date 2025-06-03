@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:37:04 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 12:50:15 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 	{
 		if (line[i] == '"' || line[i] == '\'') // Quotes (priorité haute)
 		{
+			if ()
 			parse_quoted(line, &i, tokens, line[i]);
 			i++;
 			skip_whitespace(line, &i);
@@ -119,10 +120,7 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 		else if (line[i] == '$') // Variables GERER LE ' " attention"
 			parse_var(line, &i, tokens, env);
 		else// Mots normaux (priorité basse)
-		{
-			// Gérer les mots normaux
 			i++;
-		}
 	}
 }
 // complete_line = complete_input(line);

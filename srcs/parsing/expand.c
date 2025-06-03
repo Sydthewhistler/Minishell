@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:35:02 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 12:47:18 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ void	handle_exit_status(int *i, t_token **tokens)
 	(*i)++;
 	create_token(tokens, value, CONTENT_WORD);
 	free(value);
+}
+
+char	*handle_variable_in_quotes(t_env *env)
+{
+	
 }
 
 void	handle_variable(char *line, int *i, t_token **tokens, t_env *env)
