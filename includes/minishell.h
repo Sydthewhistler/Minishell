@@ -6,14 +6,14 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:26:43 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:16:19 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:36:25 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "exec.h"
+//# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -83,8 +83,7 @@ void					update_history_entry(char *line, char *content,
 t_env					*init_env_from_envp(char **envp);
 
 // EXPAND
-void					handle_exit_status(char *line, int *i,
-							t_token **tokens);
+void					handle_exit_status(int *i, t_token **tokens);
 void					handle_variable(char *line, int *i, t_token **tokens,
 							t_env *env);
 
