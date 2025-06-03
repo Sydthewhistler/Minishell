@@ -11,6 +11,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/wait.h>
 # include <unistd.h>
 
 // CONTENT types (ce que contient le token)
@@ -54,14 +55,26 @@ typedef struct s_localvar
 	struct s_localvar	*prev;
 }						t_localvar;
 
+// UTILS
 void					create_token(t_token **tokens, char *content,
 							int content_type);
 void					skip_whitespace(char *line, int *i);
-void					parse_line(char *line, t_token **tokens);
+
+void					parse_line(char *line, t_token **tokens, t_env *env);
+
+// HEREDOC
 char					*extract_delimiter(char *s);
 char					*handle_heredoc(char *delimiter);
 void					update_history_entry(char *line, char *content,
 							char *delimiter);
+
+// ENV
 t_env					*init_env_from_envp(char **envp);
+
+// EXPAND
+void					handle_exit_status(char *line, int *i,
+							t_token **tokens);
+void					handle_variable(char *line, int *i, t_token **tokens,
+							t_env *env);
 
 #endif

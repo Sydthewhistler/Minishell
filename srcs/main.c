@@ -6,11 +6,13 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 12:00:40 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:22:10 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int g_exit_status = 0;
 
 void	print_list(t_token *tokens)
 {
@@ -84,7 +86,7 @@ int	main(int ac, char **av, char **envp)
 		if (*line != '\0')
 		{
 			add_history(line);
-			parse_line(line, &tokens);
+			parse_line(line, &tokens, env);
 			if (tokens)
 			{
 				print_list(tokens);

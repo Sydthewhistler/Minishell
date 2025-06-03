@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/31 09:22:57 by cprot             #+#    #+#             */
-/*   Updated: 2025/05/26 18:16:55 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 10:43:43 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ char				*ft_strrchr(const char *s, int c);
 int					ft_tolower(int c);
 int					ft_toupper(int c);
 int					ft_strcmp(char *s1, char *s2);
+char				*ft_substr_len(char const *s, unsigned int start,
+						unsigned int len);
 
 char				*ft_substr(char const *s, unsigned int start);
 char				*ft_strjoin(char const *s1, char const *s2);
