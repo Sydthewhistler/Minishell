@@ -15,7 +15,7 @@ UTILS_DIR = utils/
 SRC_FILES = main.c
 EXEC_FILES = exec_master.c
 BUILTIN_FILES = ft_cd.c ft_echo.c ft_env.c ft_export.c ft_pwd.c ft_unset.c
-PARSING_FILES = token.c pars.c utils.c heredoc.c env_utils.c
+PARSING_FILES = pars.c utils.c heredoc.c env_utils.c expand.c
 
 SRCS = $(addprefix $(SRCS_DIR), $(SRC_FILES)) \
        $(addprefix $(SRCS_DIR)$(EXEC_DIR), $(EXEC_FILES)) \

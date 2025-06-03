@@ -6,11 +6,13 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/02 12:00:40 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:42:53 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int g_exit_status = 0;
 
 void	print_list(t_token *tokens)
 {
@@ -21,19 +23,6 @@ void	print_list(t_token *tokens)
 	{
 		printf("token->str : %s \n", cur->str);
 		printf("token->type : %d \n", cur->type);
-		cur = cur->next;
-	}
-}
-
-void	print_env(t_env *env)
-{
-	t_env	*cur;
-
-	cur = env;
-	while (cur)
-	{
-		printf("token->name : %s \n", cur->name);
-		printf("token->value : %s \n", cur->value);
 		cur = cur->next;
 	}
 }
@@ -60,9 +49,9 @@ void	free_token(t_token **tokens)
 int	main(int ac, char **av, char **envp)
 {
 	char		*line;
-	t_list		*tokens = NULL;
+	t_token		*tokens = NULL;
 	t_env		*env;
-	t_localvar	*localvar;
+	//t_localvar	*localvar;
 
 	(void)ac;
 	(void)av;
@@ -84,7 +73,7 @@ int	main(int ac, char **av, char **envp)
 		if (*line != '\0')
 		{
 			add_history(line);
-			parse_line(line, &tokens);
+			parse_line(line, &tokens, env);
 			if (tokens)
 			{
 				print_list(tokens);
@@ -96,6 +85,5 @@ int	main(int ac, char **av, char **envp)
 		free(line);
 	}
 	rl_clear_history();
-	print_env(env);
 	return (0);
 }
