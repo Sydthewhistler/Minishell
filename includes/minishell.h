@@ -2,7 +2,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "exec.h"
+//# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -72,8 +72,7 @@ void					update_history_entry(char *line, char *content,
 t_env					*init_env_from_envp(char **envp);
 
 // EXPAND
-void					handle_exit_status(char *line, int *i,
-							t_token **tokens);
+void					handle_exit_status(int *i, t_token **tokens);
 void					handle_variable(char *line, int *i, t_token **tokens,
 							t_env *env);
 

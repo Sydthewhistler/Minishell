@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:20:38 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:37:04 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ void	parse_var(char *line, int *i, t_token **tokens, t_env *env)
 	(*i)++;
 	if (line[*i] == '?')
 	{
-		handle_exit_status(line, i, tokens);
+		handle_exit_status(i, tokens);
 		return ;
 	}
 	if (ft_isdigit(line[*i]))

@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:17:52 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/03 11:35:02 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*get_exit_status_string(void)
 	return (ft_itoa(g_exit_status));
 }
 
-void	handle_exit_status(char *line, int *i, t_token **tokens)
+void	handle_exit_status(int *i, t_token **tokens)
 {
 	char	*value;
 
