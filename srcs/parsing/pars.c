@@ -6,13 +6,13 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 12:50:15 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/04 10:50:08 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	parse_quoted(char *s, int *i, t_token **tokens, char c)
+static char	*build_quoted_string(char *s, int *i, char c)
 {
 	char	temp[1024];
 	char	*str;
@@ -25,7 +25,7 @@ void	parse_quoted(char *s, int *i, t_token **tokens, char c)
 		if (s[*i] == '\0')
 		{
 			write(2, "Error : unclosed quotes\n", 25);
-			return ;
+			return (NULL);
 		}
 		temp[j] = s[*i];
 		j++;
@@ -34,8 +34,25 @@ void	parse_quoted(char *s, int *i, t_token **tokens, char c)
 	temp[j] = '\0';
 	str = malloc(j + 1);
 	if (!str)
-		return ;
+		return (NULL);
 	ft_strlcpy(str, temp, j + 1);
+	return (str);
+}
+
+void	parse_quoted(char *s, int *i, t_token **tokens, char c, t_env *env)
+{
+	char	*str;
+	char	*expanded;
+
+	str = build_quoted_string(s, i, c);
+	if (!str)
+		return ;
+	if (c == '"')
+	{
+		expanded = handle_expand_in_quotes(str, env);
+		free(str);
+		str = expanded;
+	}
 	create_token(tokens, str, CONTENT_QUOTED);
 	free(str);
 }
@@ -85,19 +102,6 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 	skip_whitespace(line, i);
 }
 
-void	parse_var(char *line, int *i, t_token **tokens, t_env *env)
-{
-	(*i)++;
-	if (line[*i] == '?')
-	{
-		handle_exit_status(i, tokens);
-		return ;
-	}
-	if (ft_isdigit(line[*i]))
-		return ;
-	handle_variable(line, i, tokens, env);
-}
-
 void	parse_line(char *line, t_token **tokens, t_env *env)
 {
 	int	i;
@@ -108,8 +112,7 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 	{
 		if (line[i] == '"' || line[i] == '\'') // Quotes (priorité haute)
 		{
-			if ()
-			parse_quoted(line, &i, tokens, line[i]);
+			parse_quoted(line, &i, tokens, line[i], env);
 			i++;
 			skip_whitespace(line, &i);
 		}
@@ -117,12 +120,9 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 			parse_heredoc(line, &i, tokens);
 		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
 			parse_operator(line, &i, tokens);
-		else if (line[i] == '$') // Variables GERER LE ' " attention"
+		else if (line[i] == '$')
 			parse_var(line, &i, tokens, env);
-		else// Mots normaux (priorité basse)
+		else // Mots normaux (priorité basse)
 			i++;
 	}
 }
-// complete_line = complete_input(line);
-// if (!complete_line)
-// 	return (NULL);

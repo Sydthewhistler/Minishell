@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 12:47:18 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/04 10:11:38 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,6 @@ void	handle_exit_status(int *i, t_token **tokens)
 	free(value);
 }
 
-char	*handle_variable_in_quotes(t_env *env)
-{
-	
-}
-
 void	handle_variable(char *line, int *i, t_token **tokens, t_env *env)
 {
 	char	*name;
@@ -67,4 +62,17 @@ void	handle_variable(char *line, int *i, t_token **tokens, t_env *env)
 	free(name);
 	if (value)
 		free(value);
+}
+
+void	parse_var(char *line, int *i, t_token **tokens, t_env *env)
+{
+	(*i)++;
+	if (line[*i] == '?')
+	{
+		handle_exit_status(i, tokens);
+		return ;
+	}
+	if (ft_isdigit(line[*i]))
+		return ;
+	handle_variable(line, i, tokens, env);
 }

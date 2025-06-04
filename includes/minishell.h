@@ -35,7 +35,7 @@ typedef struct s_token
 	char				*str;
 	int					type;
 	int					role;
-	char				*envp;// ex /bin/sh/ls
+	char *envp; // ex /bin/sh/ls
 	struct s_token		*next;
 	struct s_token		*prev;
 }						t_token;
@@ -71,10 +71,15 @@ void					update_history_entry(char *line, char *content,
 
 // ENV
 t_env					*init_env_from_envp(char **envp);
+char					*get_env_value(t_env *env, char *name);
 
 // EXPAND
 void					handle_exit_status(int *i, t_token **tokens);
 void					handle_variable(char *line, int *i, t_token **tokens,
 							t_env *env);
+void					parse_var(char *line, int *i, t_token **tokens,
+							t_env *env);
+char					*handle_expand_in_quotes(char *str, t_env *env);
+char					*get_exit_status_string(void);
 
 #endif
