@@ -1,2 +1,3 @@
 
-ft_cd : mettre nouveau PATH dans env
+ft_cd : fonction renvoie value de name dans env (avec \0 a la fin pour printf) && mettre nouveau PWD dans env
+ft_pwd : utiliser fonction value de name de cd

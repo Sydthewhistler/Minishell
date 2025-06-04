@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:30:43 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/26 17:31:19 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/04 18:47:09 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void	ft_pwd(void)
 {
-	char	buffer[200];
+	char *pwd;
 
-	getcwd(buffer, 200);
-	printf("%s\n", buffer);
+	pwd = //value de PWD dans path
+	printf(pwd, buffer);
 	return ;
 }
