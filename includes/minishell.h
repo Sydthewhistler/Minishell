@@ -13,6 +13,7 @@
 # include <stdlib.h>
 # include <sys/wait.h>
 # include <unistd.h>
+# include "exec.h"
 
 // CONTENT types (ce que contient le token)
 # define CONTENT_WORD 1

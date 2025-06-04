@@ -1,0 +1,2 @@
+
+ft_cd : mettre nouveau PATH dans env

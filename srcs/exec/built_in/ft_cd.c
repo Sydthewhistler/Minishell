@@ -1,35 +1,22 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_cd.c                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 17:36:56 by scavalli          #+#    #+#             */
-/*   Updated: 2025/05/26 17:37:12 by scavalli         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_cd(char *line)
+void	ft_cd(t_token *token)
 {
-	unsigned int	i;
-	unsigned int	j;
-	unsigned int	start;
-	char			*path;
+	char *path;
 
-	i = 0;
-	j = 0;
-	while (line[i] && line[i] != ' ')
-		i++;
-	start = i + 1;
-	while (line[i])
+	if (token->next && token->next->str)
+		path = token->next->str;
+	else
+		path = getenv("HOME");
+	if (!path)
 	{
-		j++;
-		i++;
+		write(2, "cd: HOME not set\n", 18);
+		return;
 	}
-	path = ft_substr(line, start);
-	chdir(path);
-	free(path);
+	if (chdir(path) != 0)
+	{
+		putstr_error("cd: no such file or directory: \0");
+		putstr_error(path);
+	}
 }
