@@ -23,9 +23,9 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // gere aussi option -n
 		ft_echo(token->str, token);
 	else if (!ft_strcmp(token->str, "cd"))
-		ft_cd(token);
+		ft_cd(token, *env);
 	else if (!ft_strcmp(token->str, "pwd"))
-		ft_pwd();
+		ft_pwd(*env);
 	else if (!ft_strcmp(token->str, "export"))
 		ft_export(env, token, localvar);
 	else if (!ft_strcmp(token->str, "unset"))

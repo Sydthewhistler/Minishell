@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   expand_in_quotes.c                                 :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/04 10:51:28 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/05 12:24:11 by cprot            ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include "minishell.h"
 
@@ -91,7 +80,7 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
 	return (new_result);
 }
 
-// * Expanse une variable simple ($VAR ou $?)
+// * Expanse une variable simple (VAR ou $?)
 // * @param str: chaîne source
 // * @param i: pointeur vers l'index (modifié)
 // * @param env: environnement

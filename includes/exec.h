@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/04 17:49:24 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/05 21:41:33 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,22 +18,20 @@
 /*                MASTER FUNCTIONS              */
 
 int			exec_master(t_token *token, t_env **env, t_localvar **localvar);
-int			ft_builtin(t_token *token, t_env **env, t_localvar **localvar,
-				int pipe[2]);
 
 /*             GENERAL UTILS FUNCTIONS                */
 
 void		error(char *str);
 void	putstr_error(char *str);
 char		*ft_strndup(char *str, int n);
-bool		which_built_in(t_token *token, t_env **env, t_localvar **localvar);
+void	which_built_in(t_token *token, t_env **env, t_localvar **localvar);
 bool	is_builtin(t_token *token);
 
 /*                BUILT_IN FUNCTIONS                */
 
 void		ft_echo(char *cmd, t_token *lst);
-void		ft_pwd(void);
-void		ft_cd(char *line);
+void	ft_pwd(t_env *env);
+void	ft_cd(t_token *token, t_env *env);
 void		ft_env(t_env *env);
 void		unset(t_localvar **localvar, t_env **env, t_token *token);
 void		ft_export(t_env **env, t_token *token, t_localvar **localvar);
@@ -45,6 +43,9 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe);
 t_localvar	*is_local(t_localvar *local, char *name);
 t_localvar	*is_env(t_env *env, char *name);
 void		free_localvar(t_localvar *localvar);
+t_env	*find_last_exportvar(t_env *node);
+char *return_env_value(char *name, t_env *env);
+t_env	*find_env_var(t_env *env, const char *name);
 
 /*                   EXEC FUNCTIONS                  */
 

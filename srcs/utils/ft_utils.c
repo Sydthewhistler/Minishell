@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-char	*ft_strndup(char *str, int n)
+char	*ft_strndup(const char *str, int n)
 {
 	char	*str2;
 	int		i;

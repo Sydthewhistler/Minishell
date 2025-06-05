@@ -1,3 +1,7 @@
 
 ft_cd : fonction renvoie value de name dans env (avec \0 a la fin pour printf) && mettre nouveau PWD dans env
 ft_pwd : utiliser fonction value de name de cd
+
+rajouter ft free_localvar() dans main
+
+gerer commande ajout localvar dans builtin master 

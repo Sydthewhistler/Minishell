@@ -6,20 +6,11 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/02 10:27:02 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/05 19:29:23 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-t_env	*find_last_exportvar(t_env *node)
-{
-	if (!node)
-		return ;
-	while (node->next)
-		node = node->next;
-	return (node);
-}
 
 void	add_exportvar(t_env **env, char *name, char *value)
 {
