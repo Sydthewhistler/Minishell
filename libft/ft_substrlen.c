@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:42:53 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 10:43:19 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/05 11:49:00 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,16 @@
 
 char	*ft_substr_len(char const *s, unsigned int start, unsigned int len)
 {
-	char *str;
-	size_t i;
+	char	*str;
+	size_t	i;
 
 	if (!s || start >= ft_strlen(s))
 		return (ft_strdup(""));
-
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
-
 	str = malloc(len + 1);
 	if (!str)
 		return (NULL);
-
 	i = 0;
 	while (i < len && s[start + i])
 	{

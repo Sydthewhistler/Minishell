@@ -6,13 +6,13 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/03 11:42:53 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/05 12:08:45 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int g_exit_status = 0;
+int	g_exit_status = 0;
 
 void	print_list(t_token *tokens)
 {
@@ -46,6 +46,27 @@ void	free_token(t_token **tokens)
 	*tokens = NULL;
 }
 
+void	free_env(t_env **env)
+{
+	t_env	*cur;
+	t_env	*tmp;
+
+	if (!env)
+		return ;
+	cur = *env;
+	while (cur)
+	{
+		tmp = cur->next;
+		if (cur->name)
+			free(cur->name);
+		if (cur->value)
+			free(cur->value);
+		free(cur);
+		cur = tmp;
+	}
+	*env = NULL;
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	char		*line;
@@ -55,26 +76,26 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
-	env = init_env_from_envp(envp);
-	rl_readline_name = "minishell";
+	env = init_env_from_envp(envp); // creer la liste chainee d env
+	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)
 	{
-		line = readline("minishell>");
+		line = readline("minishell>"); //affiche minishell> et recup la line
 		if (!line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (ft_strcmp(line, "exit") == 0)
+		if (ft_strcmp(line, "exit") == 0) // pour sortir taper exit
 		{
 			free(line);
 			break ;
 		}
 		if (*line != '\0')
 		{
-			add_history(line);
+			add_history(line); // pour se deplacer dans l historique
 			parse_line(line, &tokens, env);
-			if (tokens)
+			if (tokens) // pour test pour le moment
 			{
 				print_list(tokens);
 				// exec(tokens);
@@ -85,5 +106,6 @@ int	main(int ac, char **av, char **envp)
 		free(line);
 	}
 	rl_clear_history();
+	free_env(&env);
 	return (0);
 }

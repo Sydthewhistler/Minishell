@@ -1,4 +1,3 @@
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -36,7 +35,7 @@ typedef struct s_token
 	char				*str;
 	int					type;
 	int					role;
-	char *envp; // ex /bin/sh/ls
+	char				*envp; // ex /bin/sh/ls
 	struct s_token		*next;
 	struct s_token		*prev;
 }						t_token;
@@ -61,7 +60,7 @@ typedef struct s_localvar
 void					create_token(t_token **tokens, char *content,
 							int content_type);
 void					skip_whitespace(char *line, int *i);
-
+void					parse_word(char *line, int *i, t_token **tokens);
 void					parse_line(char *line, t_token **tokens, t_env *env);
 
 // HEREDOC

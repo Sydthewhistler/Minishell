@@ -6,48 +6,62 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:51:28 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/04 13:01:46 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/05 12:24:11 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+// * Ajoute un caractère à la fin d'une chaîne et libère l'ancienne
+// * @param str: chaîne source (sera libérée)
+// * @param c: caractère à ajouter
+// * @return: nouvelle chaîne avec le caractère ajouté
 char	*add_char_and_free(char *str, char c)
 {
 	char	*new;
 	int		i;
 
 	i = 0;
-	new = malloc(ft_strlen(str) + 2);
-	if (!new)
+	new = malloc(ft_strlen(str) + 2); // +1 pour le char, +1 pour '\0'
+	if (!new)                         // Si échec allocation
 	{
-		free(str);
+		free(str); // Libérer l'ancienne chaîne
 		return (NULL);
 	}
-	while (str[i])
+	while (str[i]) // Copier la chaîne existante
 	{
 		new[i] = str[i];
 		i++;
 	}
-	new[i] = c;
-	new[i + 1] = '\0';
-	free(str);
+	new[i] = c;        // Ajouter le nouveau caractère
+	new[i + 1] = '\0'; // Terminer la chaîne
+	free(str);         // Libérer l'ancienne chaîne
 	return (new);
 }
 
+// * Gère l'expansion de $? dans les guillemets doubles
+// * @param result: chaîne résultat actuelle
+// * @param i: pointeur vers l'index (modifié)
+// * @return: nouvelle chaîne avec le code de sortie ajouté
 char	*handle_exit_status_in_quotes(char *result, int *i)
 {
-	char *value;
-	char *new_result;
+	char	*value;
+	char	*new_result;
 
-	(*i)++; // Skip le '?'
-	value = get_exit_status_string();
-	new_result = ft_strjoin(result, value);
-	free(result);
-	free(value);
+	(*i)++;                                 // Passer le '?'
+	value = get_exit_status_string();       // Obtenir le code de sortie
+	new_result = ft_strjoin(result, value); // Concaténer au résultat
+	free(result);                           // Libérer l'ancien résultat
+	free(value);                            // Libérer la valeur
 	return (new_result);
 }
 
+// * Gère l'expansion d'une variable dans les guillemets doubles
+// * @param result: chaîne résultat actuelle
+// * @param str: chaîne source
+// * @param i: pointeur vers l'index (modifié)
+// * @param env: environnement pour chercher la variable
+// * @return: nouvelle chaîne avec la variable expandée
 char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
 {
 	int		start;
@@ -55,63 +69,77 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
 	char	*value;
 	char	*new_result;
 
-	start = *i;
+	start = *i; // Marquer début du nom de variable
+	// Lire nom variable (alphanumériques + underscore)
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
 		(*i)++;
-	if (*i == start)
+	if (*i == start) // Si aucun nom valide trouvé
 		return (result);
-	name = ft_substr_len(str, start, *i - start);
-	if (!name)
+	name = ft_substr_len(str, start, *i - start); // Extraire le nom
+	if (!name)                                    // Si échec allocation
 	{
 		free(result);
 		return (NULL);
 	}
-	value = get_env_value(env, name);
-	if (!value)
-		value = ft_strdup("");
-	new_result = ft_strjoin(result, value);
-	free(result);
-	free(name);
-	free(value);
+	value = get_env_value(env, name); // Chercher dans l'environnement
+	if (!value)                       // Si variable non définie
+		value = ft_strdup("");        // Utiliser chaîne vide
+	new_result = ft_strjoin(result, value); // Concaténer au résultat
+	free(result);                           // Libérer ancien résultat
+	free(name);                             // Libérer le nom
+	free(value);                            // Libérer la valeur
 	return (new_result);
 }
 
+// * Expanse une variable simple ($VAR ou $?)
+// * @param str: chaîne source
+// * @param i: pointeur vers l'index (modifié)
+// * @param env: environnement
+// * @param result: chaîne résultat actuelle
+// * @return: nouvelle chaîne avec variable expandée
 char	*expand_variable_simple(char *str, int *i, t_env *env, char *result)
 {
-	(*i)++; // Skip $
-	if (str[*i] == '?')
+	(*i)++; // Passer le '$'
+	if (str[*i] == '?') // Si c'est $?
 		result = handle_exit_status_in_quotes(result, i);
-	else
+	else // Sinon variable normale
 		result = handle_variable_in_quotes(result, str, i, env);
 	return (result);
 }
 
+// * Gère l'expansion de variables dans les guillemets doubles
+// * @param str: chaîne entre guillemets doubles
+// * @param env: environnement pour l'expansion
+// * @return: chaîne avec toutes les variables expandées
 char	*handle_expand_in_quotes(char *str, t_env *env)
 {
-	char	*result;
-	int		i;
+	char *result;
+	int i;
 
-	result = ft_strdup("");
+	result = ft_strdup(""); // Commencer avec chaîne vide
 	i = 0;
-	while (str[i])
+
+	while (str[i]) // Parcourir toute la chaîne
 	{
+		// Si $ suivi de ?, lettre ou underscore = variable à expander
 		if (str[i] == '$' && str[i + 1] && (str[i + 1] == '?'
 				|| ft_isalpha(str[i + 1]) || str[i + 1] == '_'))
 			result = expand_variable_simple(str, &i, env, result);
+
+		// Si $ suivi de chiffres = paramètres positionnels (ignorés)
 		else if (str[i] == '$' && str[i + 1] && ft_isdigit(str[i + 1]))
 		{
-			i++; // Skip $
-			while (str[i] && ft_isdigit(str[i]))
-				i++; // Skip digits  et apres rentre dans la boucle else
+			i++;                                 // Passer le '$'
+			while (str[i] && ft_isdigit(str[i])) // Ignorer tous les chiffres
+				i++;
 		}
+
+		// Caractère normal : l'ajouter tel quel
 		else
 		{
-			result = add_char_and_free(result, str[i]);
+			result = add_char_and_free(result, str[i]); // Ajouter le caractère
 			i++;
 		}
 	}
 	return (result);
 }
-
-
-// A GERER : $$ et ${}
