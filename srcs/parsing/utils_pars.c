@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/05 12:28:43 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/06 17:08:14 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ void	create_token(t_token **tokens, char *content, int content_type)
 	}
 	new_token->type = content_type; // Définir le type
 	new_token->role = 0;            // Initialiser le rôle à 0
+	new_token->envp = NULL;
 	new_token->next = NULL;         // Pas de suivant pour l'instant
 	new_token->prev = NULL;         // Pas de précédent pour l'instant
 	if (!(*tokens)) // Si c'est le premier token de la liste

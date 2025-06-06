@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/05 12:08:45 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/06 18:57:38 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ void	print_list(t_token *tokens)
 	{
 		printf("token->str : %s \n", cur->str);
 		printf("token->type : %d \n", cur->type);
+		printf("token->role : %d \n", cur->role);
+		printf("token->path : %s \n", cur->envp);
 		cur = cur->next;
 	}
 }
@@ -76,6 +78,11 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	(void)av;
+	if (!envp)
+	{
+		printf ("Error : no env");
+		return (-1);
+	}
 	env = init_env_from_envp(envp); // creer la liste chainee d env
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)

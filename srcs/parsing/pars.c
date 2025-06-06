@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/05 12:19:30 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/06 17:02:27 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,14 +143,12 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 //  * @param line: ligne de commande à parser
 //  * @param tokens: liste des tokens à construire
 //  * @param env: environnement pour l'expansion de variables
-
 void	parse_line(char *line, t_token **tokens, t_env *env)
 {
 	int	i;
 
 	i = 0;
 	skip_whitespace(line, &i); // Ignorer les espaces en début de ligne
-	// Parcourir toute la ligne caractère par caractère
 	while (line[i])
 	{
 		if (line[i] == '"' || line[i] == '\'')
@@ -172,4 +170,5 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 		else // PRIORITÉ 5: Mots normaux (arguments, commandes, etc.)
 			parse_word(line, &i, tokens);
 	}
+	apply_role(tokens, env); // associe les roles a chaque token
 }
