@@ -31,3 +31,17 @@ t_env	*find_env_var(t_env *env, const char *name)
 	}
 	return (NULL);
 }
+
+void	set_env_value(t_env *env, char *name, char *new_value) //modifie valeur de name dans env
+{
+	while (env)
+	{
+		if (!ft_strcmp(env->name, name))
+		{
+			free(env->value);
+			env->value = ft_strdup(new_value);
+			return ;
+		}
+		env = env->next;
+	}
+}

@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/05 19:29:23 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/12 16:42:38 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,12 +59,6 @@ void	print_export(t_env *env)
 	return ;
 }
 
-void	export_local(t_localvar *local,t_env **env, t_localvar **localvar) //ajouter local a env puis supp local
-{
-	add_exportvar(env, local->name, local->value);
-	free_localvar(local, localvar);
-}
-
 void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 {
 	char *name;
@@ -77,16 +71,23 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 		print_export(*env);
 		return ;
 	}
-	while (token->str[i] != '=') //pour separer name/value
+	i = 0;
+	while (token->next->str[i] && token->str[i] != '=') //pour separer name/value
 		i++;
 	name = ft_strndup(token->str, i); // decoupe name
 	local = is_local(*localvar, name);
-	if(local) // si c est une variable local on doit la supp de t_env et envoyer vers t_env;
+	if (!ft_contains(token->next->str , "=")) //si juste nom VAR "export VAR" aller chercher nom dans localvar
 	{
-		export_local(local, env, localvar);//ajouter local a env puis supp local
+		if(local) // si VAR existe dans localvar
+		{
+			add_exportvar(env, local->name, local->value);
+			free_localvar(local, localvar);
+		}
 		free(name);
-		return ;
+		return ; //sinon aucune info on return
 	}
 	value = ft_substr(token->str, i + 1);
-	add_exportvar(env, name, value); // sinon on la cree directement dans la liste export
+	add_exportvar(env, name, value);
+	if(local) // si c est une variable local on doit la supp de t_localvar
+		free_localvar(local, localvar);
 }

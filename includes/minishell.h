@@ -1,7 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-//# include "exec.h"
+# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>
@@ -55,13 +55,13 @@ typedef struct s_env
 	struct s_env	*prev;
 }					t_env;
 
-// typedef struct s_localvar
-// {
-// 	char				*name;
-// 	char				*value;
-// 	struct s_localvar	*next;
-// 	struct s_localvar	*prev;
-// }						t_localvar;
+typedef struct s_localvar
+{
+	char				*name;
+	char				*value;
+	struct s_localvar	*next;
+	struct s_localvar	*prev;
+}						t_localvar;
 
 // UTILS
 void				create_token(t_token **tokens, char *content,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:04:18 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/05 12:29:36 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/12 15:03:58 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	putstr_error(char *str)
 {
 	int i;
 
+	i = 0;
 	while (str[i])
 	{
 		write(2, &str[i], 1);

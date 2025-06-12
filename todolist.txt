@@ -1,13 +1,8 @@
 
-ft_cd : fonction renvoie value de name dans env (avec \0 a la fin pour printf) && mettre nouveau PWD dans env
-ft_pwd : utiliser fonction value de name de cd
-ft_export : gérer utilisateur peut modifier une variable avec export, donc voir si elle existe deja pour si oui juste la changer.
-
 rajouter ft free_localvar() dans main
 
 gerer commande ajout localvar dans builtin master 
 
-est ce que je dois exclure les built in ?? 
 resoudre les leaks du parsing
 
 https://docs.google.com/spreadsheets/d/1UcKCtNE6Oa1_5VeO3PBR0FYwj2mM9jInu9bqfge13eo/edit?gid=0#gid=0
