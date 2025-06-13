@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   role.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/06 19:09:12 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/13 17:20:51 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 }
 
 // Fonction principale qui applique les rôles à tous les tokens selon le contexte
-void	apply_role(t_token **tokens, t_env *env)
+int	apply_role(t_token **tokens, t_env *env)
 {
 	t_parser_state	state;
 	t_token			*current;
@@ -102,22 +102,23 @@ void	apply_role(t_token **tokens, t_env *env)
 		{
 			// On attend une commande
 			if (!handle_command_state(current, &state, env))
-				return ; // Erreur lors du traitement de la commande
+				return (-1); // Erreur lors du traitement de la commande
 		}
 		else if (state == EXP_ARG)
 		{
 			// On attend un argument
 			if (!handle_argument_state(current, &state))
-				return ; // Erreur lors du traitement de l'argument
+				return (-2); // Erreur lors du traitement de l'argument
 		}
 		else if (state == EXP_FILE)
 		{
 			// On attend un nom de fichier
 			if (!handle_filename_state(current, &state))
-				return ; // Erreur lors du traitement du fichier
+				return (-3); // Erreur lors du traitement du fichier
 		}
 		current = current->next;
 	}
+	return (0);
 }
 
 /*

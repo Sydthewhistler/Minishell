@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:53:50 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/06 19:11:00 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/13 17:29:57 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,10 @@ int	handle_command_state(t_token *current, t_parser_state *state, t_env *env)
 		current->envp = search_path(current->str, env);
 		// Si la commande n'est pas trouvée, affiche une erreur
 		if (!current->envp)
+		{
 			printf("%s: command not found\n", current->str);
+			return (0);
+		}
 		// Passe à l'état suivant (on attend maintenant des arguments)
 		*state = EXP_ARG;
 		return (1); // Succès

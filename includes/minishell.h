@@ -67,7 +67,8 @@ void				create_token(t_token **tokens, char *content,
 						int content_type);
 void				skip_whitespace(char *line, int *i);
 void				parse_word(char *line, int *i, t_token **tokens);
-void				parse_line(char *line, t_token **tokens, t_env *env);
+int					parse_line(char *line, t_token **tokens, t_env *env);
+
 
 // HEREDOC
 char				*extract_delimiter(char *s);
@@ -88,7 +89,7 @@ char				*handle_expand_in_quotes(char *str, t_env *env);
 char				*get_exit_status_string(void);
 
 // ROLE
-void				apply_role(t_token **tokens, t_env *env);
+int					apply_role(t_token **tokens, t_env *env);
 int					handle_command_state(t_token *current,
 						t_parser_state *state, t_env *env);
 

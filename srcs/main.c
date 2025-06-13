@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 16:16:03 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 17:26:05 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,20 @@
 
 int	g_exit_status = 0;
 
-void	print_list(t_token *tokens)
-{
-	t_token	*cur;
+// void	print_list(t_token *tokens)
+// {
+// 	t_token	*cur;
 
-	cur = tokens;
-	while (cur)
-	{
-		printf("token->str : %s \n", cur->str);
-		printf("token->type : %d \n", cur->type);
-		printf("token->role : %d \n", cur->role);
-		printf("token->path : %s \n", cur->envp);
-		cur = cur->next;
-	}
-}
+// 	cur = tokens;
+// 	while (cur)
+// 	{
+// 		printf("token->str : %s \n", cur->str);
+// 		printf("token->type : %d \n", cur->type);
+// 		printf("token->role : %d \n", cur->role);
+// 		printf("token->path : %s \n", cur->envp);
+// 		cur = cur->next;
+// 	}
+// }
 
 void	free_token(t_token **tokens)
 {
@@ -97,6 +97,7 @@ int	main(int ac, char **av, char **envp)
 	t_token		*tokens = NULL;
 	t_env		*env;
 	t_localvar	*localvar;
+	int parsing_status;
 
 	(void)ac;
 	(void)av;
@@ -123,14 +124,11 @@ int	main(int ac, char **av, char **envp)
 		if (*line != '\0')
 		{
 			add_history(line); // pour se deplacer dans l historique
-			parse_line(line, &tokens, env);
-			if (tokens) // pour test pour le moment
-			{
-				print_list(tokens);
+			parsing_status = parse_line(line, &tokens, env);
+			if (tokens && parsing_status) // si au moins un token et pas erreur parsing, exec
 				exec_master(tokens, &env, &localvar);
-				free_token(&tokens);
+			free_token(&tokens);
 				tokens = NULL;
-			}
 		}
 		free(line);
 	}

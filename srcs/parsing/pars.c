@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/06 17:02:27 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/13 17:27:44 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,7 +143,7 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 //  * @param line: ligne de commande à parser
 //  * @param tokens: liste des tokens à construire
 //  * @param env: environnement pour l'expansion de variables
-void	parse_line(char *line, t_token **tokens, t_env *env)
+int	parse_line(char *line, t_token **tokens, t_env *env)
 {
 	int	i;
 
@@ -170,5 +170,7 @@ void	parse_line(char *line, t_token **tokens, t_env *env)
 		else // PRIORITÉ 5: Mots normaux (arguments, commandes, etc.)
 			parse_word(line, &i, tokens);
 	}
-	apply_role(tokens, env); // associe les roles a chaque token
+	if(apply_role(tokens, env) != 0) // associe les roles a chaque token
+		return (0); // erreur cmd
+	return (1); // pas erreur
 }
