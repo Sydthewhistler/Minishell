@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 void	exec_cmd(t_token *token, char **cmd_arg)
 {
@@ -67,6 +68,7 @@ char **create_cmd(t_token *token)
 	int	arg_nb;
 	int	i;
 
+	arg_nb = 0;
 	start= token;
 	token = token->next;
 	while(token->role == ROLE_ARGUMENT)

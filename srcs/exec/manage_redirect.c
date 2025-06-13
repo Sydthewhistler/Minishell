@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 bool	is_redirectin(t_token *token)
 {

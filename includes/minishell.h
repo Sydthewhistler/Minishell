@@ -1,7 +1,6 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "exec.h"
 # include "libft.h"
 # include <dirent.h>
 # include <fcntl.h>

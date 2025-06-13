@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 char	**parse_path_parts(char *path) // découpe le chemin et traite les . et .., termine le tableau par NULL
 {

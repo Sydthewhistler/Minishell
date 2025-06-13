@@ -6,11 +6,12 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:04:18 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/12 15:03:58 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:55:43 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <minishell.h>
+#include "exec.h"
 
 void	putstr_error(char *str)
 {

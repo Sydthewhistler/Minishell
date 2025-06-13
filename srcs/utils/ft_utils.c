@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 char	*ft_strndup(const char *str, int n)
 {

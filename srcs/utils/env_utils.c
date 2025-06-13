@@ -1,10 +1,11 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 t_env	*find_last_exportvar(t_env *node)
 {
 	if (!node)
-		return ;
+		return (NULL);
 	while (node->next)
 		node = node->next;
 	return (node);

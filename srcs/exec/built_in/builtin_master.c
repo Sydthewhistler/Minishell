@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 bool	is_builtin(t_token *token)
 {
@@ -23,7 +24,7 @@ bool	is_builtin(t_token *token)
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
 	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // gere aussi option -n
-		ft_echo(token->str, token);
+		ft_echo(token);
 	else if (!ft_strcmp(token->str, "cd"))
 		ft_cd(token, *env);
 	else if (!ft_strcmp(token->str, "pwd"))
@@ -31,7 +32,7 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 	else if (!ft_strcmp(token->str, "export"))
 		ft_export(env, token, localvar);
 	else if (!ft_strcmp(token->str, "unset"))
-		ft_unset();
+		ft_unset(localvar, env, token);
 	else if (!ft_strcmp(token->str, "env"))
 		ft_env(*env);
 	else if (ft_contains(token->str, "="))
@@ -44,12 +45,12 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe)
 	int stdout_backup;
 
 	stdout_backup = dup(STDOUT_FILENO);
-	if(token->next->role == ROLE_REDIRECT_OUT) // si redirection dans un fichier
+	if(is_redirectout(token)) // si redirection dans un fichier
 	{
 		fd = open(token->next->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
-	if(token->next->role == ROLE_PIPE) // si suivit d un pipe
+	if(is_followedpipe(token)) // si suivit d un pipe
 		dup2(pipe, STDOUT_FILENO);
 	which_built_in(token, env, localvar);
 	if(dup(STDOUT_FILENO) != stdout_backup)

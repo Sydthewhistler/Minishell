@@ -6,11 +6,12 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 12:27:21 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 16:50:47 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 void	add_exportvar(t_env **env, char *name, char *value)
 {
@@ -89,7 +90,7 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	}
 	is_inenv = is_env(*env, name);
 	if(is_inenv)
-		free_env(is_env,env);
+		free_env(is_inenv,env);
 	value = ft_substr(token->str, i + 1);
 	add_exportvar(env, name, value);
 	if(local) // si c est une variable local on doit la supp de t_localvar

@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 void	create_newlocalvar(t_localvar **localvar, char *name, char *value)
 {
@@ -32,6 +33,7 @@ void	ft_localvar(t_localvar **localvar, t_token *token)
 	int i;
 	t_localvar *is_in;
 
+	i = 0;
 	while (token->str[i] != '=') // decouper name/ value
 		i++;
 	name = ft_strndup(token->str, i);

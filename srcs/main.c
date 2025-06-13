@@ -6,11 +6,12 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 12:34:13 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 16:16:03 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 int	g_exit_status = 0;
 

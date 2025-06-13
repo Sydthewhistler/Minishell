@@ -6,11 +6,12 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 14:51:30 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 11:13:24 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:54:31 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "exec.h"
 
 t_env	*is_env(t_env *env, char *name) // regarde si une variable "name" est une variable exporte
 {

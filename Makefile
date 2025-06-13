@@ -4,6 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 LDFLAGS = -lreadline
 RM = rm -f
 
+# Directories
 SRCS_DIR = srcs/
 LIBFT_DIR = libft/
 INCLUDES_DIR = includes/
@@ -12,24 +13,56 @@ BUILTIN_DIR = $(EXEC_DIR)built_in/
 PARSING_DIR = parsing/
 UTILS_DIR = utils/
 
-SRC_FILES = main.c
-EXEC_FILES = exec_master.c
-BUILTIN_FILES = ft_cd.c ft_echo.c ft_env.c ft_export.c ft_pwd.c ft_unset.c
-PARSING_FILES = pars.c utils_pars.c heredoc.c env_utils.c expand.c expand_in_quotes.c \
-handle_command.c role.c
+# Source files
+MAIN_FILES = main.c
 
-SRCS = $(addprefix $(SRCS_DIR), $(SRC_FILES)) \
+EXEC_FILES = exec_master.c \
+             exec.c \
+             manage_redirect.c
+
+BUILTIN_FILES = add_localvar.c \
+                builtin_master.c \
+                ft_cd.c \
+                ft_echo.c \
+                ft_env.c \
+                ft_export.c \
+                ft_pwd.c \
+                ft_unset.c \
+                update_pwd.c
+
+PARSING_FILES = env_utils.c \
+                expand.c \
+                expand_in_quotes.c \
+                handle_command.c \
+                heredoc.c \
+                pars.c \
+                role.c \
+                utils_pars.c
+
+UTILS_FILES = env_utils.c \
+              error.c \
+              ft_utils.c
+
+# Full paths to source files
+SRCS = $(addprefix $(SRCS_DIR), $(MAIN_FILES)) \
        $(addprefix $(SRCS_DIR)$(EXEC_DIR), $(EXEC_FILES)) \
        $(addprefix $(SRCS_DIR)$(BUILTIN_DIR), $(BUILTIN_FILES)) \
        $(addprefix $(SRCS_DIR)$(PARSING_DIR), $(PARSING_FILES)) \
        $(addprefix $(SRCS_DIR)$(UTILS_DIR), $(UTILS_FILES))
 
+# Object files
 OBJS = $(SRCS:.c=.o)
 
+# Include directories
 INCLUDES = -I$(INCLUDES_DIR) -I$(LIBFT_DIR)
+
+# Library
 LIBFT = $(LIBFT_DIR)libft.a
+
+# Headers
 HEADERS = $(INCLUDES_DIR)minishell.h $(INCLUDES_DIR)exec.h
 
+# Rules
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
@@ -41,18 +74,26 @@ $(LIBFT):
 
 %.o: %.c $(HEADERS)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-parsing: $(LIBFT)
-	cc -Wall -Wextra -Werror -Iincludes -Ilibft srcs/main.c srcs/parsing/*.c -o minishell -Llibft -lft -lreadline
+	@echo "Compiled: $<"
 
 clean:
 	@$(MAKE) -C $(LIBFT_DIR) clean
 	@$(RM) $(OBJS)
+	@echo "Object files cleaned"
 
 fclean: clean
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@$(RM) $(NAME)
+	@echo "Executable cleaned"
 
 re: fclean all
 
-.PHONY: all clean fclean re parsing
+# Debug rule to show which files will be compiled
+show:
+	@echo "Source files:"
+	@echo $(SRCS)
+	@echo
+	@echo "Object files:"
+	@echo $(OBJS)
+
+.PHONY: all clean fclean re show

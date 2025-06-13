@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+#include "exec.h"
 
 
 void	ft_cd(t_token *token, t_env *env)
