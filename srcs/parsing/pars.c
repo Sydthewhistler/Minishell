@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 17:27:44 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 18:28:18 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,6 @@ int	parse_line(char *line, t_token **tokens, t_env *env)
 			parse_word(line, &i, tokens);
 	}
 	if(apply_role(tokens, env) != 0) // associe les roles a chaque token
-		return (0); // erreur cmd
+		return (1); // erreur cmd PAUSE
 	return (1); // pas erreur
 }

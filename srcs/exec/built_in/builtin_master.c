@@ -4,7 +4,7 @@
 
 bool	is_builtin(t_token *token)
 {
-	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // gere aussi option -n
+	if (!ft_strcmp(token->str, "echo")) // gere aussi option -n
 		return (true);
 	else if (!ft_strcmp(token->str, "cd"))
 		return (true);

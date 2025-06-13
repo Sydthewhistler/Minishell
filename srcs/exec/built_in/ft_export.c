@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 16:50:47 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 18:17:21 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	add_exportvar(t_env **env, char *name, char *value)
 		error("Error at malloc in add_exportvar");
 	new_exportvar->name = name;
 	new_exportvar->value = value;
-	if (!env)
+	if (!*env)
 	{
 		new_exportvar->next = NULL;
 		new_exportvar->prev = NULL;
@@ -34,6 +34,7 @@ void	add_exportvar(t_env **env, char *name, char *value)
 		last = find_last_exportvar(*env);
 		last->next = new_exportvar;
 		new_exportvar->prev = last;
+		new_exportvar->next = NULL;
 	}
 }
 
@@ -74,9 +75,9 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 		return ;
 	}
 	i = 0;
-	while (token->next->str[i] && token->str[i] != '=') //pour separer name/value
+	while (token->next->str[i] && token->next->str[i] != '=') //pour separer name/value
 		i++;
-	name = ft_strndup(token->str, i); // decoupe name
+	name = ft_strndup(token->next->str, i); // decoupe name
 	local = is_local(*localvar, name);
 	if (!ft_contains(token->next->str , "=")) //si juste nom VAR "export VAR" aller chercher nom dans localvar
 	{
@@ -91,7 +92,8 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	is_inenv = is_env(*env, name);
 	if(is_inenv)
 		free_env(is_inenv,env);
-	value = ft_substr(token->str, i + 1);
+	value = ft_substr(token->next->str, i + 1);
+	printf("NAME : %s\nVALUE : %s\n\n", name, value);
 	add_exportvar(env, name, value);
 	if(local) // si c est une variable local on doit la supp de t_localvar
 		free_localvar(local, localvar);

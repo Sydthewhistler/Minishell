@@ -90,7 +90,7 @@ void	free_localvar(t_localvar *local, t_localvar **localvar)
 	}
 	free(local->name);
 	free(local->value);
-	free(localvar);
+	free(local);
 }
 
 void free_tab(char **tab)

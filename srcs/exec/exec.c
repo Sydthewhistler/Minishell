@@ -68,19 +68,26 @@ char **create_cmd(t_token *token)
 	int	arg_nb;
 	int	i;
 
-	arg_nb = 0;
-	start= token;
+	arg_nb = 1;
+	start = token;
 	token = token->next;
-	while(token->role == ROLE_ARGUMENT)
+	while(token && token->role == ROLE_ARGUMENT)
+	{
 		arg_nb++;
+		token = token->next;
+	}
 	cmd_arg = malloc(sizeof(char *) * (arg_nb + 1));
-	cmd_arg[1] = ft_strdup(start->str);
-	start= start->next;
+	if (!cmd_arg)
+		return (NULL);
+		
+	cmd_arg[0] = ft_strdup(start->str);
+	start = start->next;
 	i = 1;
-	while(start->role == ROLE_ARGUMENT)
+	while(start && start->role == ROLE_ARGUMENT)
 	{
 		cmd_arg[i] = ft_strdup(start->str);
 		i++;
+		start = start->next;
 	}
 	cmd_arg[i] = NULL;
 	return (cmd_arg);
