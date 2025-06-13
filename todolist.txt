@@ -1,7 +1,5 @@
 
-rajouter ft free_localvar() dans main
-
-gerer commande ajout localvar dans builtin master 
+rajouter ft free_all_localvar() dans main
 
 resoudre les leaks du parsing
 

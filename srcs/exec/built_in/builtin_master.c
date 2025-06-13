@@ -15,6 +15,8 @@ bool	is_builtin(t_token *token)
 		return (true);
 	else if (!ft_strcmp(token->str, "env"))
 		return (true);
+	else if(ft_contains(token->str, "=")) // si declaration nouvelle localvar
+		return (true);
 	return (false);
 }
 
@@ -32,6 +34,8 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 		ft_unset();
 	else if (!ft_strcmp(token->str, "env"))
 		ft_env(*env);
+	else if (ft_contains(token->str, "="))
+		ft_localvar(localvar, token);
 }
 
 int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe)

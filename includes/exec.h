@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/12 16:31:13 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 12:26:46 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ t_env		*find_env_var(t_env *env, const char *name);
 char		*return_env_value(const char *name, const t_env *env);
 void		set_env_value(t_env *env, char *name, char *new_value);
 void	create_newlocalvar(t_localvar **localvar, char *name, char *value);
+void	free_env(t_env *del_env, t_env **env);
 
 /*                   EXEC FUNCTIONS                  */
 

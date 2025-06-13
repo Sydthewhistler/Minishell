@@ -24,3 +24,20 @@ void	create_newlocalvar(t_localvar **localvar, char *name, char *value)
 	current->next = new_node;
 	new_node->prev = current;
 }
+
+void	ft_localvar(t_localvar **localvar, t_token *token)
+{
+	char *name;
+	char *value;
+	int i;
+	t_localvar *is_in;
+
+	while (token->str[i] != '=') // decouper name/ value
+		i++;
+	name = ft_strndup(token->str, i);
+	value = ft_substr(token->str, i + 1);
+	is_in = is_local(*localvar, name);
+	if(is_in)
+		free_localvar(is_in, localvar);
+	create_newlocalvar(localvar, name, value); // creer nvl node contenant la var local de l utilisateur
+}
