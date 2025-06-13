@@ -45,3 +45,30 @@ void	set_env_value(t_env *env, char *name, char *new_value) //modifie valeur de 
 		env = env->next;
 	}
 }
+
+void	free_env(t_env *del_env, t_env **env)
+{
+	if (del_env->next)
+	{
+		if (del_env->prev)
+		{
+			del_env->prev->next = del_env->next;
+			del_env->next->prev = del_env->prev;
+		}
+		else
+		{
+			del_env->next->prev = NULL;
+			*env = del_env->next;
+		}
+	}
+	else
+	{
+		if (del_env->prev)
+			del_env->prev->next = NULL;
+		else
+			*env = NULL;
+	}
+	free(del_env->name);
+	free(del_env->value);
+	free(del_env);
+}

@@ -1,36 +1,7 @@
 
 #include "minishell.h"
 
-char	*joincmd(char const *s1, char const *s2)
-{
-	unsigned int	i;
-	unsigned int	j;
-	char			*new_s;
-
-	if (!s1 || !s2)
-		return (NULL);
-	new_s = malloc(ft_strlen(s1) + ft_strlen(s2) + 2);
-	if (!new_s)
-		return (NULL);
-	i = 0;
-	while (s1[i])
-	{
-		new_s[i] = s1[i];
-		i++;
-	}
-	new_s[i] = ' '; // rajout espace separant cmd et argument
-	i++;
-	j = 0;
-	while (s2[j])
-	{
-		new_s[i + j] = s2[j];
-		j++;
-	}
-	new_s[i + j] = '\0';
-	return (new_s);
-}
-
-void	exec_cmd(t_token *token)
+void	exec_cmd(t_token *token, char **cmd_arg)
 {
 	pid_t	id;
 
@@ -40,7 +11,7 @@ void	exec_cmd(t_token *token)
 	if (id == 0)
 	{
 		// à potentiellement corriger plus tard : donner un vrai tableau argv et envp
-		if (execve(token->envp, token->str, NULL) == -1)
+		if (execve(token->envp, cmd_arg, NULL) == -1)
 			error("execve failed");
 	}
 	else
@@ -89,23 +60,44 @@ void	print_result(int output)
 	}
 }
 
+char **create_cmd(t_token *token)
+{
+	char **cmd_arg;
+	t_token *start;
+	int	arg_nb;
+	int	i;
+
+	start= token;
+	token = token->next;
+	while(token->role == ROLE_ARGUMENT)
+		arg_nb++;
+	cmd_arg = malloc(sizeof(char *) * (arg_nb + 1));
+	cmd_arg[1] = ft_strdup(start->str);
+	start= start->next;
+	i = 1;
+	while(start->role == ROLE_ARGUMENT)
+	{
+		cmd_arg[i] = ft_strdup(start->str);
+		i++;
+	}
+	cmd_arg[i] = NULL;
+	return (cmd_arg);
+}
+
 void	exec(t_token *token, int p_read, int p_write)
 {
 	int stdout_backup;
 	int stdin_backup;
 	int print_pipe[2]; // pipe contenant la sortie du execve pour imprimer le resultat
-	//char *cmd; pas utile si coco donne direct la commande colle ex : "ls -la"
+	char **cmd_arg;
 
 	stdout_backup = dup(STDOUT_FILENO);
 	stdin_backup = dup(STDIN_FILENO);
 	pipe(print_pipe);
 	redirect(token,p_read, p_write, print_pipe[1]);
-	/*if(token->next->role == ROLE_ARGUMENT) // si commande besion argument, les rentrer
-		cmd = joincmd(token->str, token->next->str);
-	else
-		cmd = ft_strdup(token->str); // sinon envoie juste la commande */
-	exec_cmd(token);
-	//free(cmd);
+	cmd_arg = create_cmd(token);
+	exec_cmd(token, cmd_arg);
+	free_tab(cmd_arg);
 	print_result(print_pipe[0]);
 	close(print_pipe[0]);
 	close(print_pipe[1]);

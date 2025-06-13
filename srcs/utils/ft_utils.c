@@ -92,29 +92,17 @@ void	free_localvar(t_localvar *local, t_localvar **localvar)
 	free(localvar);
 }
 
-void	free_env(t_env *del_env, t_env **env)
+void free_tab(char **tab)
 {
-	if (del_env->next)
+	int i;
+
+	if (!tab)
+		return;
+	i = 0;
+	while (tab[i])
 	{
-		if (del_env->prev)
-		{
-			del_env->prev->next = del_env->next;
-			del_env->next->prev = del_env->prev;
-		}
-		else
-		{
-			del_env->next->prev = NULL;
-			*env = del_env->next;
-		}
+		free(tab[i]);
+		i++;
 	}
-	else
-	{
-		if (del_env->prev)
-			del_env->prev->next = NULL;
-		else
-			*env = NULL;
-	}
-	free(del_env->name);
-	free(del_env->value);
-	free(del_env);
+	free(tab);
 }

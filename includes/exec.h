@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 12:26:46 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/13 15:45:40 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ char		*ft_strtok(char *str, const char sep);
 bool	ft_contains(char *haystack, char *needle);
 void		which_built_in(t_token *token, t_env **env, t_localvar **localvar);
 bool		is_builtin(t_token *token);
+void free_tab(char **tab);
 
 /*                BUILT_IN FUNCTIONS                */
 
