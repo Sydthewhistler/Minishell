@@ -9,15 +9,9 @@ pars.c l174 : return erreur mis a 1 a la place de 0 le temps de fix le probleme 
 
 PROBLEME A FIXE : 
 
-minishell>cd srcs
-cd: command not found  // parsing pense que cd existe pas
-minishell>export
-export: command not found // meme chose
-
-
 VAR=3
-VAR=3: command not found // parsing pense que c est une commande alors que declaration variable
+VAR=3: command not found // parsing pense que c est une commande alors que declaration variable --> a revoir ensemble
 
-export une VAR deja existante local petit bug
+export une VAR deja existante local petit bug --> a revoir ensemble
 
-boucle infini commande
+boucle infini commande ??

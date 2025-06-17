@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 18:28:18 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/17 11:29:19 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@
 
 static char	*build_quoted_string(char *s, int *i, char c)
 {
-	char	temp[1024]; // Buffer temporaire pour stocker la chaîne
-	char	*str;       // Chaîne finale à retourner
-	int		j;           // Index pour le buffer temporaire
+	char temp[1024]; // Buffer temporaire pour stocker la chaîne
+	char *str;       // Chaîne finale à retourner
+	int j;           // Index pour le buffer temporaire
 	j = 0;
 	(*i)++; // Passer le guillemet d'ouverture
 	// Parcourir jusqu'au guillemet de fermeture
@@ -76,40 +76,31 @@ void	parse_quoted(char *s, int *i, t_token **tokens, t_env *env)
 	free(str);
 }
 
-//  * Parse un heredoc (<<) et crée les tokens correspondants
-//  * @param s: chaîne source
-//  * @param i: pointeur vers l'index actuel
-//  * @param tokens: liste des tokens à enrichir
-
 void	parse_heredoc(char *s, int *i, t_token **tokens)
 {
 	char	*delimiter;
 	char	*heredoc_content;
 
-	*i += 2; // Passer les deux caractères "<<"
-	// Extraire le délimiteur (mot après <<)
+	*i += 2;
+	while (s[*i] == ' ' || s[*i] == '\t')
+		(*i)++;
+	if (!s[*i] || s[*i] == '\n' || s[*i] == '|' || s[*i] == '<'
+		|| s[*i] == '>')
+		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	delimiter = extract_delimiter(s + *i);
 	if (!delimiter || !delimiter[0])
 	{
 		if (delimiter)
 			free(delimiter);
-		return ;
+		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	}
-	// Lire le contenu du heredoc jusqu'au délimiteur
 	heredoc_content = handle_heredoc(delimiter);
-	// Créer deux tokens : l'opérateur << et le contenu
 	create_token(tokens, "<<", CONTENT_OPERATOR);
 	create_token(tokens, heredoc_content, CONTENT_HEREDOC);
 	free(heredoc_content);
-	// Avancer l'index pour passer le délimiteur
-	while (s[*i] == ' ' || s[*i] == '\t') // Ignorer les espaces
-		(*i)++;
-	// Passer le délimiteur complet
-	while (s[*i] && s[*i] != ' ' && s[*i] != '\t' && s[*i] != '\n'
-		&& s[*i] != '|' && s[*i] != '<' && s[*i] != '>')
+	while (s[*i] && s[*i] != ' ' && s[*i] != '\t' && s[*i] != '\n')
 		(*i)++;
 	free(delimiter);
-	skip_whitespace(s, i); // Ignorer les espaces suivants
 }
 
 //  * Parse les opérateurs de redirection et pipes
@@ -152,7 +143,7 @@ int	parse_line(char *line, t_token **tokens, t_env *env)
 	while (line[i])
 	{
 		if (line[i] == '"' || line[i] == '\'')
-			// PRIORITÉ 1: Guillemets (traitement prioritaire)
+		// PRIORITÉ 1: Guillemets (traitement prioritaire)
 		{
 			parse_quoted(line, &i, tokens, env);
 			i++; // Passer le guillemet de fermeture
@@ -170,7 +161,7 @@ int	parse_line(char *line, t_token **tokens, t_env *env)
 		else // PRIORITÉ 5: Mots normaux (arguments, commandes, etc.)
 			parse_word(line, &i, tokens);
 	}
-	if(apply_role(tokens, env) != 0) // associe les roles a chaque token
-		return (1); // erreur cmd PAUSE
-	return (1); // pas erreur
+	if (apply_role(tokens, env) != 0) // associe les roles a chaque token
+		return (1);                   // erreur cmd PAUSE
+	return (1);                       // pas erreur
 }

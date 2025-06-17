@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:53:50 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 17:29:57 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/17 11:42:18 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,13 @@ void	free_args(char **args)
 	int	i;
 
 	if (!args)
-		return ; // Protection contre NULL
+		return ;
 	i = 0;
-	// Libère chaque chaîne du tableau
 	while (args[i])
 	{
 		free(args[i]);
 		i++;
 	}
-	// Libère le tableau lui-même
 	free(args);
 }
 
@@ -37,14 +35,12 @@ char	*create_path(char *dir, char *cmd)
 	char	*path;
 	char	*temp;
 
-	// Joint le répertoire avec "/"
 	temp = ft_strjoin(dir, "/");
 	if (!temp)
-		return (NULL); // Échec d'allocation
-	// Joint le résultat avec le nom de la commande
+		return (NULL);
 	path = ft_strjoin(temp, cmd);
-	free(temp); // Libère la chaîne temporaire
-	return (path); // Retourne le chemin complet
+	free(temp);
+	return (path);
 }
 
 // Cherche une commande dans tous les répertoires du PATH
@@ -60,13 +56,12 @@ char	*find_in_path(char *cmd, char *path_dirs)
 	if (!dirs)
 		return (NULL);
 	i = 0;
-	// Teste chaque répertoire
-	while (dirs[i])
+	while (dirs[i]) // Teste chaque répertoire
 	{
 		// Crée le chemin complet : répertoire + "/" + commande
 		full_path = create_path(dirs[i], cmd);
 		if (!full_path)
-			return (free_args(dirs), NULL); // Échec d'allocation
+			return (free_args(dirs), NULL);
 		// Teste si le fichier existe et est exécutable
 		if (access(full_path, X_OK) == 0)
 			return (free_args(dirs), full_path); // Trouvé ! Retourne le chemin
@@ -106,32 +101,43 @@ char	*search_path(char *cmd, t_env *env)
 // Gère l'état EXP_CMD (on attend une commande)
 int	handle_command_state(t_token *current, t_parser_state *state, t_env *env)
 {
+	// Input validation
+	if (!current || !state || !env)
+		return (0);
 	// Si c'est un mot ou une chaîne quotée
 	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
 		// Assigne le rôle de commande
 		current->role = ROLE_COMMAND;
-		// Résout le chemin de la commande (cherche dans PATH ou utilise le chemin donné)
-		current->envp = search_path(current->str, env);
-		// Si la commande n'est pas trouvée, affiche une erreur
-		if (!current->envp)
+		// Check if it's a builtin first (more efficient)
+		if (is_builtin(current))
+			current->envp = NULL; // Builtins don't need path resolution
+		else
 		{
-			printf("%s: command not found\n", current->str);
-			return (0);
+			// Résout le chemin de la commande pour les commandes externes
+			current->envp = search_path(current->str, env);
+			if (!current->envp)
+			{
+				// More specific error message
+				if (ft_strrchr(current->str, '/'))
+					printf("%s: No such file or directory\n", current->str);
+				else
+					printf("%s: command not found\n", current->str);
+				return (0);
+			}
 		}
-		// Passe à l'état suivant (on attend maintenant des arguments)
+		// Passe à l'état suivant
 		*state = EXP_ARG;
-		return (1); // Succès
+		return (1);
 	}
 	// Si on trouve un opérateur là où on attend une commande
 	else if (current->type == CONTENT_OPERATOR)
 	{
-		// Erreur de syntaxe : on ne peut pas commencer par un opérateur
 		printf("minishell: syntax error near unexpected token '%s'\n",
-			current->str);
-		return (0); // Échec
+			current->next->str);
+		return (0);
 	}
-	return (1); // Succès (autres types de tokens)
+	return (1); // Succès pour autres types de tokens
 }
 
 /*
@@ -144,7 +150,7 @@ RÉSUMÉ DU FONCTIONNEMENT :
 2. RECHERCHE DANS PATH :
    - Récupère la variable PATH de l'environnement
    - Divise PATH en répertoires (séparés par ':')
-  
+
 	- Pour chaque répertoire : teste si répertoire/commande existe et est exécutable
    - Retourne le premier chemin valide trouvé
 
