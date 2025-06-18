@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/17 11:16:05 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/18 10:57:00 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 	else if (current->type == CONTENT_OPERATOR)
 	{
 		// Erreur de syntaxe : on attendait un fichier, pas un opérateur
-		printf("minishell: syntax error near unexpected token '%s'\n",
+		printf("minishell: BIP syntax error near unexpected token '%s'\n",
 			current->str);
 		return (0); // Échec - erreur de syntaxe
 	}

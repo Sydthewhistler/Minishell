@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:53:50 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/17 11:42:18 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/18 11:56:23 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,8 +133,12 @@ int	handle_command_state(t_token *current, t_parser_state *state, t_env *env)
 	// Si on trouve un opérateur là où on attend une commande
 	else if (current->type == CONTENT_OPERATOR)
 	{
-		printf("minishell: syntax error near unexpected token '%s'\n",
-			current->next->str);
+		if (current->next && current->next->str
+			&& current->next->str[0] != '\0')
+			printf("minishell: syntax error near unexpected token '%s'\n",
+				current->next->str);
+		else
+			printf("minishell: syntax error near unexpected token 'newline'\n");
 		return (0);
 	}
 	return (1); // Succès pour autres types de tokens

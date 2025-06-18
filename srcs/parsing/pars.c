@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/17 11:29:19 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/18 11:38:01 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,7 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	*i += 2;
 	while (s[*i] == ' ' || s[*i] == '\t')
 		(*i)++;
-	if (!s[*i] || s[*i] == '\n' || s[*i] == '|' || s[*i] == '<'
-		|| s[*i] == '>')
+	if (!s[*i] || s[*i] == '\n' || s[*i] == '|' || s[*i] == '<' || s[*i] == '>')
 		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	delimiter = extract_delimiter(s + *i);
 	if (!delimiter || !delimiter[0])
@@ -103,30 +102,35 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	free(delimiter);
 }
 
-//  * Parse les opérateurs de redirection et pipes
-//  * @param line: ligne de commande
-//  * @param i: pointeur vers l'index actuel
-//  * @param tokens: liste des tokens à enrichir
-
 void	parse_operator(char *line, int *i, t_token **tokens)
 {
-	char	s[2];
-
-	s[0] = line[*i];
-	s[1] = '\0';
-	// Vérifier si c'est l'opérateur de redirection en ajout ">>"
+	char s[3]; // Augmenté pour gérer les opérateurs de 2 caractères
+	// Vérifier d'abord les opérateurs de 2 caractères
 	if (line[*i] == '>' && line[*i + 1] == '>')
 	{
 		create_token(tokens, ">>", CONTENT_OPERATOR);
-		(*i) += 2; // Avancer de 2 caractères
+		(*i) += 2;
+	}
+	else if (line[*i] == '<' && line[*i + 1] == '>')
+	{
+		create_token(tokens, "<>", CONTENT_OPERATOR);
+		(*i) += 2;
+	}
+	else if (line[*i] == '<' && line[*i + 1] == '<')
+	{
+		// Laisser parse_heredoc gérer
+		parse_heredoc(line, i, tokens);
+		return ; // Important : ne pas appeler skip_whitespace
 	}
 	else
 	{
 		// Opérateur simple : |, <, >
+		s[0] = line[*i];
+		s[1] = '\0';
 		create_token(tokens, s, CONTENT_OPERATOR);
-		(*i)++; // Avancer d'1 caractère
+		(*i)++;
 	}
-	skip_whitespace(line, i); // Ignorer les espaces suivants
+	skip_whitespace(line, i);
 }
 
 //  * Fonction principale de parsing d'une ligne de commande

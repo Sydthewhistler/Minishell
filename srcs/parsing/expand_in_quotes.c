@@ -122,8 +122,6 @@ char	*handle_expand_in_quotes(char *str, t_env *env)
 			while (str[i] && ft_isdigit(str[i])) // Ignorer tous les chiffres
 				i++;
 		}
-
-		// Caractère normal : l'ajouter tel quel
 		else
 		{
 			result = add_char_and_free(result, str[i]); // Ajouter le caractère

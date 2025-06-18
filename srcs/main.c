@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/13 17:26:05 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/18 11:39:39 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ int	main(int ac, char **av, char **envp)
 	char		*line;
 	t_token		*tokens = NULL;
 	t_env		*env;
-	t_localvar	*localvar;
+	t_localvar	*localvar = NULL;
 	int parsing_status;
 
 	(void)ac;
