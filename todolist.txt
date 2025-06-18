@@ -3,6 +3,8 @@ faire en sorte dans is_built que si le prochain token est un flag ce n est pas u
 
 resoudre les leaks du parsing
 
+faire signaux
+
 https://docs.google.com/spreadsheets/d/1UcKCtNE6Oa1_5VeO3PBR0FYwj2mM9jInu9bqfge13eo/edit?gid=0#gid=0
 
 pars.c l174 : return erreur mis a 1 a la place de 0 le temps de fix le probleme de commande declare inexistante alors que valables
@@ -11,6 +13,7 @@ PROBLEME A FIXE :
 
 VAR=3
 VAR=3: command not found // parsing pense que c est une commande alors que declaration variable --> a revoir ensemble
+-> faire en sorte que VAR=3 soit dans un token avec ROLE_CMD, mais pas verifier si c est une commande dans les paths
 
 export une VAR deja existante local petit bug --> a revoir ensemble
 
