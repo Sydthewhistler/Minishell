@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 18:17:21 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/23 09:35:27 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ void	add_exportvar(t_env **env, char *name, char *value)
 	new_exportvar = malloc(sizeof(t_env));
 	if (!new_exportvar)
 		error("Error at malloc in add_exportvar");
-	new_exportvar->name = name;
-	new_exportvar->value = value;
+	new_exportvar->name = ft_strdup(name);
+	new_exportvar->value = ft_strdup(value);
 	if (!*env)
 	{
 		new_exportvar->next = NULL;
@@ -81,8 +81,12 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	local = is_local(*localvar, name);
 	if (!ft_contains(token->next->str , "=")) //si juste nom VAR "export VAR" aller chercher nom dans localvar
 	{
+		is_inenv = is_env(*env, token->next->str); // si est dans env, on la modifie donc supp tout pour reconstruire
+		if(is_inenv)
+			free_env(is_inenv, env);
 		if(local) // si VAR existe dans localvar
 		{
+			printf("name : %s et value : %s\n",local->name, local->value);
 			add_exportvar(env, local->name, local->value);
 			free_localvar(local, localvar);
 		}

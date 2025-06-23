@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/18 11:39:39 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/23 09:35:54 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ int	main(int ac, char **av, char **envp)
 {
 	char		*line;
 	t_token		*tokens = NULL;
-	t_env		*env;
-	t_localvar	*localvar = NULL;
+	t_env		*env = NULL;
+	t_localvar	**localvar = NULL;
 	int parsing_status;
 
 	(void)ac;
@@ -106,6 +106,10 @@ int	main(int ac, char **av, char **envp)
 		printf ("Error : no env");
 		return (-1);
 	}
+	localvar = malloc(sizeof(t_localvar *));
+	if (!localvar)
+		error("malloc issue in init_localvar");
+	*localvar = NULL;
 	env = init_env_from_envp(envp); // creer la liste chainee d env
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)
@@ -125,8 +129,9 @@ int	main(int ac, char **av, char **envp)
 		{
 			add_history(line); // pour se deplacer dans l historique
 			parsing_status = parse_line(line, &tokens, env);
+			//print_list(tokens);
 			if (tokens && parsing_status) // si au moins un token et pas erreur parsing, exec
-				exec_master(tokens, &env, &localvar);
+				exec_master(tokens, &env, localvar);
 			free_token(&tokens);
 				tokens = NULL;
 		}
@@ -134,6 +139,6 @@ int	main(int ac, char **av, char **envp)
 	}
 	rl_clear_history();
 	free_all_env(&env);
-	free_all_localvar(&localvar);
+	free_all_localvar(localvar);
 	return (0);
 }

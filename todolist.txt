@@ -18,3 +18,19 @@ VAR=3: command not found // parsing pense que c est une commande alors que decla
 export une VAR deja existante local petit bug --> a revoir ensemble
 
 boucle infini commande ??
+
+probleme remplacment variables local :
+"minishell>VAR=3
+token->str : VAR=3 
+token->type : 1 
+token->role : 1 
+token->path : (null) 
+minishell>echo $VAR
+token->str : echo 
+token->type : 1 
+token->role : 1 
+token->path : (null) 
+token->str :  
+token->type : 1 
+token->role : 2 
+token->path : (null)"
