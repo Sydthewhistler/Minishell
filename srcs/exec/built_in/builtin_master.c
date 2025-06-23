@@ -2,19 +2,26 @@
 #include "minishell.h"
 #include "exec.h"
 
+bool is_follow_flag(t_token *token)
+{
+	if(token->next && token->next->str[0] == '-')
+		return (true);
+	return (false);
+}
+
 bool	is_builtin(t_token *token)
 {
-	if (!ft_strcmp(token->str, "echo")) // gere aussi option -n
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) || (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n"))) // gere aussi option -n
 		return (true);
-	else if (!ft_strcmp(token->str, "cd"))
+	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		return (true);
-	else if (!ft_strcmp(token->str, "pwd"))
+	else if (!ft_strcmp(token->str, "pwd") && !is_follow_flag(token))
 		return (true);
-	else if (!ft_strcmp(token->str, "export"))
+	else if (!ft_strcmp(token->str, "export") && !is_follow_flag(token))
 		return (true);
-	else if (!ft_strcmp(token->str, "unset"))
+	else if (!ft_strcmp(token->str, "unset") && !is_follow_flag(token))
 		return (true);
-	else if (!ft_strcmp(token->str, "env"))
+	else if (!ft_strcmp(token->str, "env") && !is_follow_flag(token))
 		return (true);
 	else if(ft_contains(token->str, "=")) // si declaration nouvelle localvar
 		return (true);
@@ -23,17 +30,17 @@ bool	is_builtin(t_token *token)
 
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
-	if (!ft_strcmp(token->str, "echo") || !ft_strcmp(token->str, "echo -n")) // gere aussi option -n
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) || (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n"))) // gere aussi option -n
 		ft_echo(token);
-	else if (!ft_strcmp(token->str, "cd"))
+	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		ft_cd(token, *env);
-	else if (!ft_strcmp(token->str, "pwd"))
+	else if (!ft_strcmp(token->str, "pwd") && !is_follow_flag(token))
 		ft_pwd(*env);
-	else if (!ft_strcmp(token->str, "export"))
+	else if (!ft_strcmp(token->str, "export") && !is_follow_flag(token))
 		ft_export(env, token, localvar);
-	else if (!ft_strcmp(token->str, "unset"))
+	else if (!ft_strcmp(token->str, "unset") && !is_follow_flag(token))
 		ft_unset(localvar, env, token);
-	else if (!ft_strcmp(token->str, "env"))
+	else if (!ft_strcmp(token->str, "env") && !is_follow_flag(token))
 		ft_env(*env);
 	else if (ft_contains(token->str, "="))
 		ft_localvar(localvar, token);
