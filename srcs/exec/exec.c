@@ -2,7 +2,7 @@
 #include "minishell.h"
 #include "exec.h"
 
-void	exec_cmd(t_token *token, char **cmd_arg)
+void	exec_cmd(t_token *token, char **cmd_arg, char **env_arg)
 {
 	pid_t	id;
 
@@ -12,14 +12,14 @@ void	exec_cmd(t_token *token, char **cmd_arg)
 	if (id == 0)
 	{
 		// à potentiellement corriger plus tard : donner un vrai tableau argv et envp
-		if (execve(token->envp, cmd_arg, NULL) == -1)
+		if (execve(token->envp, cmd_arg, env_arg) == -1)
 			error("execve failed");
 	}
 	else
 		waitpid(id, NULL, 0);
 }
 
-void	redirect(t_token *token, int p_read, int p_write, int print_pipe)
+void	redirect(t_token *token, int p_read, int p_write)
 {
 	int fd;
 
@@ -33,7 +33,6 @@ void	redirect(t_token *token, int p_read, int p_write, int print_pipe)
 	}
 	if(is_precededpipe(token)) // si précédé d un pipe
 		dup2(p_read, STDIN_FILENO);
-	dup2(print_pipe, STDOUT_FILENO); // par defaut rediriger sortie vers pipe pour print apres
 	if(is_redirectout(token)) // si va redirection fichier
 	{
 		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -45,20 +44,6 @@ void	redirect(t_token *token, int p_read, int p_write, int print_pipe)
 		dup2(p_write, STDOUT_FILENO);
 	if(fd != -1)
 		close(fd);
-}
-
-void	print_result(int output)
-{
-	int bytes;
-	char buffer[1024];
-
-	while (1)
-	{
-		bytes = read(output, buffer, sizeof(buffer));
-		if(bytes < 1)
-			break;
-		write(1, buffer, bytes);
-	}
 }
 
 char **create_cmd(t_token *token)
@@ -92,24 +77,48 @@ char **create_cmd(t_token *token)
 	cmd_arg[i] = NULL;
 	return (cmd_arg);
 }
+char	**create_envarg(t_env *env)
+{
+	char	**envp;
+	char	*line;
+	int		count = 0;
+	t_env	*tmp = env;
 
-void	exec(t_token *token, int p_read, int p_write)
+	while (tmp)
+	{
+		count++;
+		tmp = tmp->next;
+	}
+	envp = malloc(sizeof(char *) * (count + 1));
+	if (!envp)
+		return (NULL);
+	count = 0;
+	while (env)
+	{
+		line = ft_strjoin(env->name, "=");
+		envp[count++] = ft_strjoin(line, env->value);
+		free(line);
+		env = env->next;
+	}
+	envp[count] = NULL;
+	return (envp);
+}
+
+void	exec(t_token *token, t_env *env, int p_read, int p_write)
 {
 	int stdout_backup;
 	int stdin_backup;
-	int print_pipe[2]; // pipe contenant la sortie du execve pour imprimer le resultat
 	char **cmd_arg;
+	char **env_arg;
 
 	stdout_backup = dup(STDOUT_FILENO);
 	stdin_backup = dup(STDIN_FILENO);
-	pipe(print_pipe);
-	redirect(token,p_read, p_write, print_pipe[1]);
+	redirect(token,p_read, p_write);
 	cmd_arg = create_cmd(token);
-	exec_cmd(token, cmd_arg);
+	env_arg = create_envarg(env);
+	exec_cmd(token, cmd_arg, env_arg);
 	free_tab(cmd_arg);
-	print_result(print_pipe[0]);
-	close(print_pipe[0]);
-	close(print_pipe[1]);
+	free_tab(env_arg);
 	if(dup(STDOUT_FILENO) != stdout_backup) // si output n est pas standard, le remettre std
 		dup2(stdout_backup, STDOUT_FILENO);
 	if(dup(STDIN_FILENO) != stdin_backup) // si input n est pas standard, le remettre std

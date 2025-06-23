@@ -54,7 +54,7 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe)
 	stdout_backup = dup(STDOUT_FILENO);
 	if(is_redirectout(token)) // si redirection dans un fichier
 	{
-		fd = open(token->next->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		fd = open(token->next->next->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
 	if(is_followedpipe(token)) // si suivit d un pipe

@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/23 09:35:27 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:51:17 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,6 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 			free_env(is_inenv, env);
 		if(local) // si VAR existe dans localvar
 		{
-			printf("name : %s et value : %s\n",local->name, local->value);
 			add_exportvar(env, local->name, local->value);
 			free_localvar(local, localvar);
 		}
@@ -97,7 +96,6 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	if(is_inenv)
 		free_env(is_inenv,env);
 	value = ft_substr(token->next->str, i + 1);
-	printf("NAME : %s\nVALUE : %s\n\n", name, value);
 	add_exportvar(env, name, value);
 	if(local) // si c est une variable local on doit la supp de t_localvar
 		free_localvar(local, localvar);

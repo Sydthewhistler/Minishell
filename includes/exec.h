@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/17 10:40:50 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/23 11:42:06 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool		is_builtin(t_token *token);
 
 /*                   EXEC FUNCTIONS                  */
 
-void		exec(t_token *token, int p_read, int p_write);
+void	exec(t_token *token, t_env *env, int p_read, int p_write);
 
 /*                   EXEC UTILS FUNCTIONS             */
 
