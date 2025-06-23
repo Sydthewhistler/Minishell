@@ -2,50 +2,6 @@
 #include "minishell.h"
 #include "exec.h"
 
-void	exec_cmd(t_token *token, char **cmd_arg, char **env_arg)
-{
-	pid_t	id;
-
-	id = fork();
-	if (id < 0)
-		error("fork failed");
-	if (id == 0)
-	{
-		// à potentiellement corriger plus tard : donner un vrai tableau argv et envp
-		if (execve(token->envp, cmd_arg, env_arg) == -1)
-			error("execve failed");
-	}
-	else
-		waitpid(id, NULL, 0);
-}
-
-void	redirect(t_token *token, int p_read, int p_write)
-{
-	int fd;
-
-	fd = -1;
-	if(is_redirectin(token)) // si provient redirection fichier
-	{
-		fd = open(find_rdin_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if(fd == -1)
-			error("Error while opening redirectin file");
-		dup2(fd, STDIN_FILENO);
-	}
-	if(is_precededpipe(token)) // si précédé d un pipe
-		dup2(p_read, STDIN_FILENO);
-	if(is_redirectout(token)) // si va redirection fichier
-	{
-		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if(fd == -1)
-			error("Error while opening redirectin file");
-		dup2(fd, STDOUT_FILENO);
-	}
-	if(is_followedpipe(token)) // si suivit d un pipe
-		dup2(p_write, STDOUT_FILENO);
-	if(fd != -1)
-		close(fd);
-}
-
 char **create_cmd(t_token *token)
 {
 	char **cmd_arg;
@@ -77,6 +33,59 @@ char **create_cmd(t_token *token)
 	cmd_arg[i] = NULL;
 	return (cmd_arg);
 }
+void	redirect(t_token *token, int p_read, int p_write)
+{
+	int fd;
+
+	fd = -1;
+	if(is_redirectin(token)) // si provient redirection fichier
+	{
+		fd = open(find_rdin_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if(fd == -1)
+			error("Error while opening redirectin file");
+		dup2(fd, STDIN_FILENO);
+	}
+	if(is_precededpipe(token))// si précédé d un pipe
+	{
+		dup2(p_read, STDIN_FILENO);
+		close(p_read);
+	}
+	if(is_redirectout(token)) // si va redirection fichier
+	{
+		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if(fd == -1)
+			error("Error while opening redirectin file");
+		dup2(fd, STDOUT_FILENO);
+	}
+	if(is_followedpipe(token))// si suivit d un pipe
+	{
+		dup2(p_write, STDOUT_FILENO);
+		close(p_write);
+	}
+	if(fd != -1)
+		close(fd);
+}
+
+void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
+{
+	pid_t	id;
+	char **cmd_arg;
+
+	cmd_arg = create_cmd(token);
+	id = fork();
+	if (id < 0)
+		error("fork failed");
+	if (id == 0)
+	{
+		redirect(token,p_read, p_write);
+		if (execve(token->envp, cmd_arg, env_arg) == -1)
+			error("execve failed");
+	}
+	else
+		waitpid(id, NULL, 0);
+	free_tab(cmd_arg);
+}
+
 char	**create_envarg(t_env *env)
 {
 	char	**envp;
@@ -106,21 +115,9 @@ char	**create_envarg(t_env *env)
 
 void	exec(t_token *token, t_env *env, int p_read, int p_write)
 {
-	int stdout_backup;
-	int stdin_backup;
-	char **cmd_arg;
 	char **env_arg;
 
-	stdout_backup = dup(STDOUT_FILENO);
-	stdin_backup = dup(STDIN_FILENO);
-	redirect(token,p_read, p_write);
-	cmd_arg = create_cmd(token);
 	env_arg = create_envarg(env);
-	exec_cmd(token, cmd_arg, env_arg);
-	free_tab(cmd_arg);
+	exec_cmd(token, env_arg, p_read, p_write);
 	free_tab(env_arg);
-	if(dup(STDOUT_FILENO) != stdout_backup) // si output n est pas standard, le remettre std
-		dup2(stdout_backup, STDOUT_FILENO);
-	if(dup(STDIN_FILENO) != stdin_backup) // si input n est pas standard, le remettre std
-		dup2(stdin_backup, STDIN_FILENO);
 }
