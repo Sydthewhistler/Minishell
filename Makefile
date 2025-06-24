@@ -37,7 +37,8 @@ PARSING_FILES = env_utils.c \
                 heredoc.c \
                 pars.c \
                 role.c \
-                utils_pars.c
+                utils_pars.c \
+                search_path.c
 
 UTILS_FILES = env_utils.c \
               error.c \

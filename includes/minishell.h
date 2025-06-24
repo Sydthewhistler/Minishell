@@ -9,6 +9,7 @@
 # include <stdbool.h>
 # include <stdio.h>
 # include <stdlib.h>
+# include <sys/stat.h>
 # include <sys/wait.h>
 # include <unistd.h>
 
@@ -62,12 +63,21 @@ typedef struct s_localvar
 	struct s_localvar	*prev;
 }						t_localvar;
 
+typedef struct s_parse_ctx
+{
+	t_env				*env;
+	t_localvar			*localvar;
+}						t_parse_ctx;
+
 // UTILS
 void					create_token(t_token **tokens, char *content,
 							int content_type);
 void					skip_whitespace(char *line, int *i);
 void					parse_word(char *line, int *i, t_token **tokens);
-int						parse_line(char *line, t_token **tokens, t_env *env);
+int						parse_line(char *line, t_token **tokens, t_env *env,
+							t_localvar *localvar);
+void					parse_quoted(char *s, int *i, t_token **tokens,
+							t_parse_ctx *ctx);
 
 // HEREDOC
 char					*extract_delimiter(char *s);
@@ -78,21 +88,30 @@ void					update_history_entry(char *line, char *content,
 // ENV
 t_env					*init_env_from_envp(char **envp);
 char					*get_env_value(t_env *env, char *name);
+char					*get_var_value(t_env *env, t_localvar *localvar,
+							char *name);
 
 // EXPAND
 void					handle_exit_status(int *i, t_token **tokens);
 void					handle_variable(char *line, int *i, t_token **tokens,
-							t_env *env);
+							t_parse_ctx *ctx);
 void					parse_var(char *line, int *i, t_token **tokens,
-							t_env *env);
-char					*handle_expand_in_quotes(char *str, t_env *env);
+							t_parse_ctx *ctx);
+char					*get_var_value(t_env *env, t_localvar *localvar,
+							char *name);
+char					*handle_expand_in_quotes(char *str, t_parse_ctx *ctx);
 char					*get_exit_status_string(void);
 
 // ROLE
 int						apply_role(t_token **tokens, t_env *env);
 int						handle_command_state(t_token *current,
 							t_parser_state *state, t_env *env);
-
 bool					is_builtin(t_token *token);
+
+// SEARCH PATH
+char					*search_path(char *cmd, t_env *env);
+void					free_args(char **args);
+char					*create_path(char *dir, char *cmd);
+char					*find_in_path(char *cmd, char *path_dirs);
 
 #endif

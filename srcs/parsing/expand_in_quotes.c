@@ -11,20 +11,20 @@ char	*add_char_and_free(char *str, char c)
 	int		i;
 
 	i = 0;
-	new = malloc(ft_strlen(str) + 2); // +1 pour le char, +1 pour '\0'
-	if (!new)                         // Si échec allocation
+	new = malloc(ft_strlen(str) + 2);
+	if (!new)
 	{
-		free(str); // Libérer l'ancienne chaîne
+		free(str);
 		return (NULL);
 	}
-	while (str[i]) // Copier la chaîne existante
+	while (str[i])
 	{
 		new[i] = str[i];
 		i++;
 	}
-	new[i] = c;        // Ajouter le nouveau caractère
-	new[i + 1] = '\0'; // Terminer la chaîne
-	free(str);         // Libérer l'ancienne chaîne
+	new[i] = c;
+	new[i + 1] = '\0';
+	free(str);
 	return (new);
 }
 
@@ -51,7 +51,8 @@ char	*handle_exit_status_in_quotes(char *result, int *i)
 // * @param i: pointeur vers l'index (modifié)
 // * @param env: environnement pour chercher la variable
 // * @return: nouvelle chaîne avec la variable expandée
-char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
+char	*handle_variable_in_quotes(char *result, char *str, int *i,
+		t_parse_ctx *ctx)
 {
 	int		start;
 	char	*name;
@@ -70,13 +71,18 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
 		free(result);
 		return (NULL);
 	}
-	value = get_env_value(env, name); // Chercher dans l'environnement
-	if (!value)                       // Si variable non définie
-		value = ft_strdup("");        // Utiliser chaîne vide
-	new_result = ft_strjoin(result, value); // Concaténer au résultat
-	free(result);                           // Libérer ancien résultat
-	free(name);                             // Libérer le nom
-	free(value);                            // Libérer la valeur
+	value = get_var_value(ctx->env, ctx->localvar, name);
+		// Chercher dans l'environnement
+	if (!value)                                          
+		// Si variable non définie
+		value = ft_strdup("");                           
+			// Utiliser chaîne vide
+	new_result = ft_strjoin(result, value);              
+		// Concaténer au résultat
+	free(result);                                        
+		// Libérer ancien résultat
+	free(name);                                           // Libérer le nom
+	free(value);                                          // Libérer la valeur
 	return (new_result);
 }
 
@@ -86,13 +92,13 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i, t_env *env)
 // * @param env: environnement
 // * @param result: chaîne résultat actuelle
 // * @return: nouvelle chaîne avec variable expandée
-char	*expand_variable_simple(char *str, int *i, t_env *env, char *result)
+char *expand_variable_simple(char *str, int *i, t_parse_ctx *ctx, char *result)
 {
-	(*i)++; // Passer le '$'
-	if (str[*i] == '?') // Si c'est $?
+	(*i)++;
+	if (str[*i] == '?')
 		result = handle_exit_status_in_quotes(result, i);
-	else // Sinon variable normale
-		result = handle_variable_in_quotes(result, str, i, env);
+	else
+		result = handle_variable_in_quotes(result, str, i, ctx); // ← CORRIGÉ !
 	return (result);
 }
 
@@ -100,31 +106,27 @@ char	*expand_variable_simple(char *str, int *i, t_env *env, char *result)
 // * @param str: chaîne entre guillemets doubles
 // * @param env: environnement pour l'expansion
 // * @return: chaîne avec toutes les variables expandées
-char	*handle_expand_in_quotes(char *str, t_env *env)
+char *handle_expand_in_quotes(char *str, t_parse_ctx *ctx)
 {
 	char *result;
 	int i;
 
-	result = ft_strdup(""); // Commencer avec chaîne vide
+	result = ft_strdup("");
 	i = 0;
-
-	while (str[i]) // Parcourir toute la chaîne
+	while (str[i])
 	{
-		// Si $ suivi de ?, lettre ou underscore = variable à expander
 		if (str[i] == '$' && str[i + 1] && (str[i + 1] == '?'
 				|| ft_isalpha(str[i + 1]) || str[i + 1] == '_'))
-			result = expand_variable_simple(str, &i, env, result);
-
-		// Si $ suivi de chiffres = paramètres positionnels (ignorés)
+			result = expand_variable_simple(str, &i, ctx, result); // ← CORRIGÉ !
 		else if (str[i] == '$' && str[i + 1] && ft_isdigit(str[i + 1]))
 		{
-			i++;                                 // Passer le '$'
-			while (str[i] && ft_isdigit(str[i])) // Ignorer tous les chiffres
+			i++;
+			while (str[i] && ft_isdigit(str[i]))
 				i++;
 		}
 		else
 		{
-			result = add_char_and_free(result, str[i]); // Ajouter le caractère
+			result = add_char_and_free(result, str[i]);
 			i++;
 		}
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/23 10:19:44 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:12:51 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int	main(int ac, char **av, char **envp)
 		if (*line != '\0')
 		{
 			add_history(line); // pour se deplacer dans l historique
-			parsing_status = parse_line(line, &tokens, env);
+			parsing_status = parse_line(line, &tokens, env, *localvar);
 			//print_list(tokens);
 			if (tokens && parsing_status) // si au moins un token et pas erreur parsing, exec
 				exec_master(tokens, &env, localvar);

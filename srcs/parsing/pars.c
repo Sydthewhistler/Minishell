@@ -6,7 +6,7 @@
 /*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/18 11:38:01 by cprot            ###   ########.fr       */
+/*   Updated: 2025/06/24 11:10:16 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,29 +52,26 @@ static char	*build_quoted_string(char *s, int *i, char c)
 //  * @param i: pointeur vers l'index actuel
 //  * @param tokens: liste des tokens à enrichir
 //  * @param env: environnement pour l'expansion de variables
-
-void	parse_quoted(char *s, int *i, t_token **tokens, t_env *env)
+void	parse_quoted(char *s, int *i, t_token **tokens, t_parse_ctx *ctx)
 {
 	char	*str;
 	char	*expanded;
 	char	c;
 
-	c = s[*i]; // Sauvegarder le type de guillemet (' ou ")
-	// Extraire le contenu entre guillemets
+	c = s[*i];
 	str = build_quoted_string(s, i, c);
 	if (!str)
 		return ;
-	// Si c'est des guillemets doubles, on peut faire l'expansion de variables
 	if (c == '"')
 	{
-		expanded = handle_expand_in_quotes(str, env);
+		expanded = handle_expand_in_quotes(str, ctx); // ← CORRIGÉ !
 		free(str);
 		str = expanded;
 	}
-	// Créer un token avec le contenu quoté
 	create_token(tokens, str, CONTENT_QUOTED);
 	free(str);
 }
+
 
 void	parse_heredoc(char *s, int *i, t_token **tokens)
 {
@@ -138,34 +135,34 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 //  * @param line: ligne de commande à parser
 //  * @param tokens: liste des tokens à construire
 //  * @param env: environnement pour l'expansion de variables
-int	parse_line(char *line, t_token **tokens, t_env *env)
+int	parse_line(char *line, t_token **tokens, t_env *env, t_localvar *localvar)
 {
-	int	i;
+	int			i;
+	t_parse_ctx	ctx;
 
+	// Créer le contexte de parsing
+	ctx.env = env;
+	ctx.localvar = localvar;
 	i = 0;
-	skip_whitespace(line, &i); // Ignorer les espaces en début de ligne
+	skip_whitespace(line, &i);
 	while (line[i])
 	{
 		if (line[i] == '"' || line[i] == '\'')
-		// PRIORITÉ 1: Guillemets (traitement prioritaire)
 		{
-			parse_quoted(line, &i, tokens, env);
-			i++; // Passer le guillemet de fermeture
+			parse_quoted(line, &i, tokens, &ctx); // ← CORRIGÉ !
+			i++;
 			skip_whitespace(line, &i);
 		}
 		else if (line[i] == '<' && line[i + 1] == '<')
-			// PRIORITÉ 2: Heredoc (doit être testé avant < simple)
 			parse_heredoc(line, &i, tokens);
 		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
-			// PRIORITÉ 3: Opérateurs de redirection et pipes
 			parse_operator(line, &i, tokens);
 		else if (line[i] == '$')
-			// PRIORITÉ 4: Variables d'environnement (commençant par $)
-			parse_var(line, &i, tokens, env);
-		else // PRIORITÉ 5: Mots normaux (arguments, commandes, etc.)
+			parse_var(line, &i, tokens, &ctx); // ← CORRIGÉ !
+		else
 			parse_word(line, &i, tokens);
 	}
-	if (apply_role(tokens, env) != 0) // associe les roles a chaque token
-		return (1);                   // erreur cmd PAUSE
-	return (1);                       // pas erreur
+	if (apply_role(tokens, env) != 0)
+		return (0);
+	return (1);
 }
