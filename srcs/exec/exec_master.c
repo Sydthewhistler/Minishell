@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:32:05 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/23 13:30:30 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/24 10:43:37 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,12 @@ int	exec_master(t_token *token, t_env **env, t_localvar **localvar)
 			break;
 		while(token && token->role != ROLE_COMMAND) // aller prochaine commande
 			token = token->next;
-		//printf("\nLA\n");
 		if(!token)
 			break;
-		if(token && is_builtin(token)) //si c est un builtin
+		if(token && is_builtin(token))//si c est un builtin
+		{
 			ft_builtin(token, env, localvar, pipe_fd[1]);
+		}
 		else if(token)
 			exec(token, *env, prev_pipe, pipe_fd[1]); // si c est une commande autre
 		if (prev_pipe != -1)

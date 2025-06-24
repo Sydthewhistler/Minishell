@@ -41,29 +41,23 @@ void	redirect(t_token *token, int p_read, int p_write)
 	if(is_redirectin(token)) // si provient redirection fichier
 	{
 		fd = open(find_rdin_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if(fd == -1)
-			error("Error while opening redirectin file");
 		dup2(fd, STDIN_FILENO);
 	}
 	if(is_precededpipe(token))// si précédé d un pipe
-	{
 		dup2(p_read, STDIN_FILENO);
-		close(p_read);
-	}
 	if(is_redirectout(token)) // si va redirection fichier
 	{
 		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if(fd == -1)
-			error("Error while opening redirectin file");
 		dup2(fd, STDOUT_FILENO);
 	}
 	if(is_followedpipe(token))// si suivit d un pipe
-	{
 		dup2(p_write, STDOUT_FILENO);
-		close(p_write);
-	}
 	if(fd != -1)
 		close(fd);
+	if(p_read != -1)
+		close(p_read);
+	if(p_write != -1)
+		close(p_write);
 }
 
 void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)

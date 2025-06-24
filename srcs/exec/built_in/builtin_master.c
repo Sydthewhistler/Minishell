@@ -46,11 +46,12 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 		ft_localvar(localvar, token);
 }
 
-int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe)
+int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 {
 	int fd;
 	int stdout_backup;
 
+	fd = -1;
 	stdout_backup = dup(STDOUT_FILENO);
 	if(is_redirectout(token)) // si redirection dans un fichier
 	{
@@ -58,7 +59,11 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int pipe)
 		dup2(fd, STDOUT_FILENO);
 	}
 	if(is_followedpipe(token)) // si suivit d un pipe
-		dup2(pipe, STDOUT_FILENO);
+		dup2(p_write, STDOUT_FILENO);
+	if(fd != -1)
+		close(fd);
+	if(p_write != -1)
+		close(p_write);
 	which_built_in(token, env, localvar);
 	if(dup(STDOUT_FILENO) != stdout_backup)
 		dup2(stdout_backup, STDOUT_FILENO);

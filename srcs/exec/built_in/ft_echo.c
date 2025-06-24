@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:18:35 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/23 10:09:44 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/24 10:22:07 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	ft_echo(t_token *lst)
 	{
 		if(!strcmp(lst->next->str, "-n")) // si -n
 		{
-			printf("%s%%\n", lst->next->next->str);
+			printf("%s\x1b[7m%%\x1b[0m\n", lst->next->next->str); //code ANSI % surligné
 			return ;
 		}
 		printf("%s\n", lst->next->str);
