@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_substrlen.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:42:53 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/05 11:49:00 by cprot            ###   ########.fr       */
+/*   Updated: 2025/07/01 17:58:04 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,13 @@ char	*ft_substr_len(char const *s, unsigned int start, unsigned int len)
 	size_t	i;
 
 	if (!s || start >= ft_strlen(s))
-		return (ft_strdup(""));
+	{
+		str = malloc(1);
+		if (!str)
+			return (NULL);
+		str[0] = '\0';
+		return (str);
+	}
 	if (len > ft_strlen(s) - start)
 		len = ft_strlen(s) - start;
 	str = malloc(len + 1);

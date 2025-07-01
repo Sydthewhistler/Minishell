@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/24 11:12:51 by cprot            ###   ########.fr       */
+/*   Updated: 2025/07/01 18:08:39 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
-int	g_exit_status = 0;
+int		g_exit_status = 0;
 
 // void	print_list(t_token *tokens)
 // {
@@ -43,6 +43,8 @@ void	free_token(t_token **tokens)
 		tmp = cur->next;
 		if (cur->str)
 			free(cur->str);
+		if (cur->envp)
+			free(cur->envp);
 		free(cur);
 		cur = tmp;
 	}
@@ -94,16 +96,19 @@ void	free_all_localvar(t_localvar **localvar)
 int	main(int ac, char **av, char **envp)
 {
 	char		*line;
-	t_token		*tokens = NULL;
-	t_env		*env = NULL;
-	t_localvar	**localvar = NULL;
-	int parsing_status;
+	t_token		*tokens;
+	t_env		*env;
+	t_localvar	**localvar;
+	int			parsing_status;
 
+	tokens = NULL;
+	env = NULL;
+	localvar = NULL;
 	(void)ac;
 	(void)av;
 	if (!envp)
 	{
-		printf ("Error : no env");
+		printf("Error : no env");
 		return (-1);
 	}
 	localvar = malloc(sizeof(t_localvar *));
@@ -114,7 +119,7 @@ int	main(int ac, char **av, char **envp)
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)
 	{
-		line = readline("minishell>"); //affiche minishell> et recup la line
+		line = readline("minishell>"); // affiche minishell> et recup la line
 		if (!line)
 		{
 			printf("exit\n");
@@ -129,16 +134,18 @@ int	main(int ac, char **av, char **envp)
 		{
 			add_history(line); // pour se deplacer dans l historique
 			parsing_status = parse_line(line, &tokens, env, *localvar);
-			//print_list(tokens);
-			if (tokens && parsing_status) // si au moins un token et pas erreur parsing, exec
+			// print_list(tokens);
+			if (tokens && parsing_status)
+				// si au moins un token et pas erreur parsing, exec
 				exec_master(tokens, &env, localvar);
 			free_token(&tokens);
-				tokens = NULL;
+			tokens = NULL;
 		}
 		free(line);
 	}
 	rl_clear_history();
 	free_all_env(&env);
 	free_all_localvar(localvar);
+	free(localvar);
 	return (0);
 }

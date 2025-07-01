@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_pars.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/06 17:08:14 by cprot            ###   ########.fr       */
+/*   Updated: 2025/07/01 18:02:14 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ void	create_token(t_token **tokens, char *content, int content_type)
 	t_token	*last;
 
 	new_token = malloc(sizeof(t_token)); // Allouer un nouveau token
-	if (!new_token || !tokens) // Vérifier l'allocation et les paramètres
+	if (!new_token || !tokens)
+		// Vérifier l'allocation et les paramètres
 		return ;
 	new_token->str = ft_strdup(content); // Copier le contenu
 	if (!new_token->str)                 // Vérifier l'allocation de la chaîne
@@ -65,15 +66,16 @@ void	create_token(t_token **tokens, char *content, int content_type)
 	new_token->type = content_type; // Définir le type
 	new_token->role = 0;            // Initialiser le rôle à 0
 	new_token->envp = NULL;
-	new_token->next = NULL;         // Pas de suivant pour l'instant
-	new_token->prev = NULL;         // Pas de précédent pour l'instant
-	if (!(*tokens)) // Si c'est le premier token de la liste
+	new_token->next = NULL; // Pas de suivant pour l'instant
+	new_token->prev = NULL; // Pas de précédent pour l'instant
+	if (!(*tokens))         // Si c'est le premier token de la liste
 		*tokens = new_token;
 	else // Sinon, l'ajouter à la fin
 	{
 		last = found_last(*tokens); // Trouver le dernier token
 		last->next = new_token;     // Lier le dernier au nouveau
-		new_token->prev = last;    // Lier le nouveau au dernier (liste doublement chaînée)
+		new_token->prev = last;
+		// Lier le nouveau au dernier (liste doublement chaînée)
 	}
 }
 
@@ -95,8 +97,9 @@ void	parse_word(char *line, int *i, t_token **tokens)
 	if (*i > start) // Si on a trouvé au moins un caractère
 	{
 		str = ft_substr_len(line, start, *i - start); // Extraire la sous-chaîne
-		create_token(tokens, str, CONTENT_WORD);     
-			// Créer un token de type WORD
+		create_token(tokens, str, CONTENT_WORD);
+		// Créer un token de type WORD
+		free(str);
 	}
 	skip_whitespace(line, i); // Ignorer les espaces suivants
 }
