@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 11:42:51 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/23 10:19:44 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/06/24 12:14:28 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,29 @@
 #include "exec.h"
 
 int	g_exit_status = 0;
+
+volatile sig_atomic_t g_signal = 0;
+
+void handle_sigint(int sig)
+{
+	(void)sig;
+	g_signal = SIGINT;
+	write(STDOUT_FILENO, "\n", 1);
+	rl_replace_line("", 0);
+	rl_done = 1;
+}
+
+void setup_interactive_signals(void)
+{
+	struct sigaction sa;
+
+	sa.sa_handler = handle_sigint;
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sigaction(SIGINT, &sa, NULL);
+
+	signal(SIGQUIT, SIG_IGN);
+}
 
 // void	print_list(t_token *tokens)
 // {
@@ -111,6 +134,7 @@ int	main(int ac, char **av, char **envp)
 		error("malloc issue in init_localvar");
 	*localvar = NULL;
 	env = init_env_from_envp(envp); // creer la liste chainee d env
+	setup_interactive_signals();
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)
 	{
@@ -119,6 +143,12 @@ int	main(int ac, char **av, char **envp)
 		{
 			printf("exit\n");
 			break ;
+		}
+		if (g_signal == SIGINT)
+		{
+			g_signal = 0;// Reset signal
+			free(line);
+			continue;// Nouvelle ligne prompt
 		}
 		if (ft_strcmp(line, "exit") == 0) // pour sortir taper exit
 		{
