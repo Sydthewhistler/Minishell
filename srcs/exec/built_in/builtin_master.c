@@ -35,7 +35,7 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		ft_cd(token, *env);
 	else if (!ft_strcmp(token->str, "pwd") && !is_follow_flag(token))
-		ft_pwd(*env);
+		ft_pwd(*env, token);
 	else if (!ft_strcmp(token->str, "export") && !is_follow_flag(token))
 		ft_export(env, token, localvar);
 	else if (!ft_strcmp(token->str, "unset") && !is_follow_flag(token))

@@ -6,7 +6,7 @@
 /*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/23 11:42:06 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/07/05 15:02:55 by scavalli         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void		free_tab(char **tab);
 /*                BUILT_IN FUNCTIONS                */
 
 void		ft_echo(t_token *lst);
-void		ft_pwd(t_env *env);
+void	ft_pwd(t_env *env, t_token *token);
 void		ft_cd(t_token *token, t_env *env);
 void		ft_env(t_env *env);
 void		ft_unset(t_localvar **localvar, t_env **env, t_token *token);

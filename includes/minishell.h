@@ -32,6 +32,8 @@
 # define ROLE_REDIRECT_HEREDOC 8
 # define ROLE_HEREDOC_CONTENT 9
 
+extern volatile sig_atomic_t g_signal;
+
 typedef enum
 {
 	EXP_CMD,
@@ -115,5 +117,8 @@ char					*search_path(char *cmd, t_env *env);
 void					free_args(char **args);
 char					*create_path(char *dir, char *cmd);
 char					*find_in_path(char *cmd, char *path_dirs);
+
+// SIGNAL
+void					setup_interactive_signals(void);
 
 #endif

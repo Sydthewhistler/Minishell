@@ -42,7 +42,8 @@ PARSING_FILES = env_utils.c \
 
 UTILS_FILES = env_utils.c \
               error.c \
-              ft_utils.c
+              ft_utils.c \
+			  signal.c
 
 # Full paths to source files
 SRCS = $(addprefix $(SRCS_DIR), $(MAIN_FILES)) \

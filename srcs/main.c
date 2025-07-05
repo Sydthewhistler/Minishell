@@ -6,27 +6,6 @@ int		g_exit_status = 0;
 
 volatile sig_atomic_t g_signal = 0;
 
-void handle_sigint(int sig)
-{
-	(void)sig;
-	g_signal = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
-	rl_replace_line("", 0);
-	rl_done = 1;
-}
-
-void setup_interactive_signals(void)
-{
-	struct sigaction sa;
-
-	sa.sa_handler = handle_sigint;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	sigaction(SIGINT, &sa, NULL);
-
-	signal(SIGQUIT, SIG_IGN);
-}
-
 // void	print_list(t_token *tokens)
 // {
 // 	t_token	*cur;
@@ -133,6 +112,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		line = readline("minishell>"); // affiche minishell> et recup la line
+		g_signal = 0;// Reset signal
 		if (!line)
 		{
 			printf("exit\n");
@@ -140,7 +120,6 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (g_signal == SIGINT)
 		{
-			g_signal = 0;// Reset signal
 			free(line);
 			continue;// Nouvelle ligne prompt
 		}
