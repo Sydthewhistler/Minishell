@@ -11,7 +11,9 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <sys/types.h>
 # include <unistd.h>
+# include <signal.h>
 
 // CONTENT types (ce que contient le token)
 # define CONTENT_WORD 1
