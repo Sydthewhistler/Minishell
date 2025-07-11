@@ -24,6 +24,7 @@ void	ft_cd(t_token *token, t_env *env)
 	{
 		putstr_error("cd: no such file or directory: ");
 		putstr_error(path);
+		write(2,"\n",1);
 		return ;
 	}
 	update_pwd(env, path);

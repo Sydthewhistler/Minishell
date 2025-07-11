@@ -1,34 +1,38 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_echo.c                                          :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 17:18:35 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/24 10:22:07 by scavalli         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include <minishell.h>
 #include "exec.h"
 
-void	ft_echo(t_token *lst)
+void ft_echo(t_token *lst)
 {
-	if(!lst->next) // si rien apres juste \n
+	int first_word;
+	int is_newline;
+	t_token *current;
+
+	first_word = 1;
+	is_newline = 1;
+	current = lst->next;
+		
+	if (!current)
 	{
 		printf("\n");
-		return ;
+		return;
 	}
-	else if(lst->next->role != ROLE_ARGUMENT) // si qqlch apres mais pas argument "ex : echo | ls" rien faire
-		return ;
-	else
+		
+	if (current && current->str && !strcmp(current->str, "-n"))
 	{
-		if(!strcmp(lst->next->str, "-n")) // si -n
-		{
-			printf("%s\x1b[7m%%\x1b[0m\n", lst->next->next->str); //code ANSI % surligné
-			return ;
-		}
-		printf("%s\n", lst->next->str);
+		is_newline = 0;
+		current = current->next;
 	}
+		
+	while (current && current->role == ROLE_ARGUMENT)
+	{
+		if (!first_word)
+			printf(" ");
+		
+		printf("%s", current->str);
+		first_word = 0;
+		current = current->next;
+	}
+	if (is_newline)
+		printf("\n");
 }

@@ -83,7 +83,7 @@ void	update_pwd(t_env *env, char *new_path)
 		return ;
 	else // sinon si relatif adapter chemin
 	{
-		current_pwd = get_env_value(env, "PWD");
+		current_pwd = return_env_value("PWD", env);
 		if (!current_pwd)
 			return ;
 		new_pwd = resolve_relative_path(current_pwd, new_path);

@@ -55,17 +55,18 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 	stdout_backup = dup(STDOUT_FILENO);
 	if(is_redirectout(token)) // si redirection dans un fichier
 	{
-		fd = open(token->next->next->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
+		printf("test: dup2 effectue\n");
 	}
-	if(is_followedpipe(token)) // si suivit d un pipe
+	else if(is_followedpipe(token)) // si suivit d un pipe
 		dup2(p_write, STDOUT_FILENO);
+	which_built_in(token, env, localvar);
 	if(fd != -1)
 		close(fd);
 	if(p_write != -1)
 		close(p_write);
-	which_built_in(token, env, localvar);
-	if(dup(STDOUT_FILENO) != stdout_backup)
-		dup2(stdout_backup, STDOUT_FILENO);
+	dup2(stdout_backup, STDOUT_FILENO);
+	close(stdout_backup);
 	return (0);
 }
