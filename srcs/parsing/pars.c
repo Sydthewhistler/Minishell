@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/24 11:10:16 by cprot            ###   ########.fr       */
+/*   Updated: 2025/08/03 18:05:02 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ static char	*build_quoted_string(char *s, int *i, char c)
 		j++;
 		(*i)++;
 	}
-	temp[j] = '\0';      // Terminer la chaîne
+	temp[j] = '\0'; // Terminer la chaîne
+	(*i)++;
 	str = malloc(j + 1); // Allouer la mémoire pour la chaîne finale
 	if (!str)
 		return (NULL);
@@ -72,7 +73,6 @@ void	parse_quoted(char *s, int *i, t_token **tokens, t_parse_ctx *ctx)
 	free(str);
 }
 
-
 void	parse_heredoc(char *s, int *i, t_token **tokens)
 {
 	char	*delimiter;
@@ -81,7 +81,7 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	*i += 2;
 	while (s[*i] == ' ' || s[*i] == '\t')
 		(*i)++;
-	if (!s[*i] || s[*i] == '\n' || s[*i] == '|' || s[*i] == '<' || s[*i] == '>')
+	if (!s[*i] || s[*i] == '\n' || s[*i] == '!' || s[*i] == '<' || s[*i] == '>')
 		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	delimiter = extract_delimiter(s + *i);
 	if (!delimiter || !delimiter[0])
@@ -149,16 +149,17 @@ int	parse_line(char *line, t_token **tokens, t_env *env, t_localvar *localvar)
 	{
 		if (line[i] == '"' || line[i] == '\'')
 		{
-			parse_quoted(line, &i, tokens, &ctx); // ← CORRIGÉ !
-			i++;
+			parse_quoted(line, &i, tokens, &ctx);
+			// i++;
 			skip_whitespace(line, &i);
 		}
 		else if (line[i] == '<' && line[i + 1] == '<')
 			parse_heredoc(line, &i, tokens);
-		else if (line[i] == '|' || line[i] == '<' || line[i] == '>')
+		else if (line[i] == '|' || line[i] == '<' || line[i] == '>'
+			|| line[i] == '&')
 			parse_operator(line, &i, tokens);
 		else if (line[i] == '$')
-			parse_var(line, &i, tokens, &ctx); // ← CORRIGÉ !
+			parse_var(line, &i, tokens, &ctx);
 		else
 			parse_word(line, &i, tokens);
 	}

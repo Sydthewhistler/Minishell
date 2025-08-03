@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/24 11:04:28 by cprot            ###   ########.fr       */
+/*   Updated: 2025/08/03 18:47:43 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,10 @@ char	*get_var_value(t_env *env, t_localvar *localvar, char *name)
 }
 
 // * Obtient le code de sortie sous forme de chaîne
-// * @return: chaîne représentant g_exit_status
+// * @return: chaîne représentant gstatus
 char	*get_exit_status_string(void)
 {
-	extern int	g_exit_status;
-
-	return (ft_itoa(g_exit_status));
+	return (ft_itoa(g_signal));
 }
 
 // * Gère l'expansion de $? (code de sortie)
@@ -95,7 +93,8 @@ void	handle_variable(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 // * Parse une variable d'environnement ($VAR ou $?)
 void	parse_var(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 {
-	(*i)++;
+	(*i)++; // Passer le $
+
 	if (line[*i] == '?')
 	{
 		handle_exit_status(i, tokens);
@@ -103,6 +102,13 @@ void	parse_var(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 	}
 	if (ft_isdigit(line[*i]))
 		return ;
-	handle_variable(line, i, tokens, ctx); // ← CORRIGÉ !
+	if (!line[*i] || (!ft_isalpha(line[*i]) && line[*i] != '_'))
+	{
+		// $ isolé ou $ suivi d'un caractère invalide
+		create_token(tokens, "$", CONTENT_WORD);
+		return ;
+	}
+
+	handle_variable(line, i, tokens, ctx);
 	skip_whitespace(line, i);
 }

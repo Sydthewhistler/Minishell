@@ -2,9 +2,7 @@
 #include "exec.h"
 #include "minishell.h"
 
-int		g_exit_status = 0;
-
-volatile sig_atomic_t g_signal = 0;
+volatile sig_atomic_t	g_signal = 0;
 
 // void	print_list(t_token *tokens)
 // {
@@ -112,16 +110,17 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		line = readline("minishell>"); // affiche minishell> et recup la line
-		g_signal = 0;// Reset signal
+		// g_signal = 0;                  // Reset signal
 		if (!line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (g_signal == SIGINT)
+		if (g_signal == SIGNAL_INTERRUPTED)
 		{
+			g_signal = 0; // reset pour nouvelle commande
 			free(line);
-			continue;// Nouvelle ligne prompt
+			continue ; // Nouvelle ligne prompt
 		}
 		if (ft_strcmp(line, "exit") == 0) // pour sortir taper exit
 		{
@@ -130,15 +129,17 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (*line != '\0')
 		{
-			add_history(line); // pour se deplacer dans l historique
+			add_history(line);
 			parsing_status = parse_line(line, &tokens, env, *localvar);
-			// print_list(tokens);
-			if (tokens && parsing_status)
-				// si au moins un token et pas erreur parsing, exec
-				exec_master(tokens, &env, localvar);
+			if (tokens && parsing_status) // Gardez votre condition originale
+			{
+				g_signal = exec_master(tokens, &env, localvar);
+			}
 			free_token(&tokens);
 			tokens = NULL;
 		}
+		else
+			g_signal = 0;
 		free(line);
 	}
 	rl_clear_history();

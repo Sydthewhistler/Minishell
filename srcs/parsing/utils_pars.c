@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/07/01 18:02:14 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/03 18:57:49 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,15 @@
 void	skip_whitespace(char *line, int *i)
 {
 	while (line[*i] == ' ' || line[*i] == '\t' || line[*i] == ':'
-		|| line[*i] == '!') // Avancer tant qu'on trouve des espaces/tabs/: ou !
+		|| line[*i] == '\\')
 		(*i)++;
+	// Cas spécial pour !
+	if (line[*i] == '!')
+	{
+		g_signal = 1;             // ! donne exit code 1
+		(*i)++;                   // Avancer pour l'ignorer
+		skip_whitespace(line, i); // Continuer à ignorer les espaces après
+	}
 }
 
 // * Trouve le dernier token de la liste chaînée

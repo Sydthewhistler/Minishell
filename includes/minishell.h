@@ -32,6 +32,11 @@
 # define ROLE_REDIRECT_HEREDOC 8
 # define ROLE_HEREDOC_CONTENT 9
 
+#define SYNTAX_ERROR_CODE 2      // Code pour erreurs de syntaxe (comme bash)
+#define COMMAND_NOT_FOUND 127    // Code pour commandes introuvables (comme bash)
+#define PERMISSION_DENIED 126 
+#define SIGNAL_INTERRUPTED 130   // Code pour Ctrl+C (128 + SIGINT = 130, convention Unix)
+
 extern volatile sig_atomic_t g_signal;
 
 typedef enum

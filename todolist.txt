@@ -17,4 +17,5 @@ ls
 minishell>nano test.c
 minishell>< test.c cat
 minishell: syntax error near unexpected token 'test.c'
-minishell>exit"
+minishell>exit" 
+

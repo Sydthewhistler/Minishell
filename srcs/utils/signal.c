@@ -1,27 +1,27 @@
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
-void handle_sigint(int sig)
+void	handle_sigint(int sig)
 {
 	(void)sig;
-	g_signal = SIGINT;
-	write(STDOUT_FILENO, "\n", 1);
+	//g_signal = SIGINT;
+	g_signal = SIGNAL_INTERRUPTED;  // Met 130 pour Ctrl+C (différent de syntax error)
+    write(STDOUT_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
-	rl_redisplay();
+	// rl_redisplay();
 }
 
-void setup_interactive_signals(void)
+void	setup_interactive_signals(void)
 {
-	struct sigaction sa_int;
-	struct sigaction sa_quit;
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
 
 	// Configuration SIGINT
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sa_int, NULL);
-
 	// Configuration SIGQUIT (ignoré en mode interactif)
 	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
@@ -29,12 +29,12 @@ void setup_interactive_signals(void)
 	sigaction(SIGQUIT, &sa_quit, NULL);
 }
 
-void setup_execution_signals(void)
+void	setup_execution_signals(void)
 {
 	struct sigaction sa_int;
 	struct sigaction sa_quit;
 
-	//Pendant exécution, SIGINT/SIGQUIT agissent normalement
+	// Pendant exécution, SIGINT/SIGQUIT agissent normalement
 	sa_int.sa_handler = SIG_DFL;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = 0;

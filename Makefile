@@ -17,41 +17,41 @@ UTILS_DIR = utils/
 MAIN_FILES = main.c
 
 EXEC_FILES = exec_master.c \
-             exec.c \
-             manage_redirect.c
+	exec.c \
+	manage_redirect.c
 
 BUILTIN_FILES = add_localvar.c \
-                builtin_master.c \
-                ft_cd.c \
-                ft_echo.c \
-                ft_env.c \
-                ft_export.c \
-                ft_pwd.c \
-                ft_unset.c \
-                update_pwd.c
+	builtin_master.c \
+	ft_cd.c \
+	ft_echo.c \
+	ft_env.c \
+	ft_export.c \
+	ft_pwd.c \
+	ft_unset.c \
+	update_pwd.c
 
 PARSING_FILES = env_utils.c \
-                expand.c \
-                expand_in_quotes.c \
-                handle_command.c \
-                heredoc.c \
-                pars.c \
-                role.c \
-                utils_pars.c \
-                search_path.c
+	expand.c \
+	expand_in_quotes.c \
+	handle_command.c \
+	heredoc.c \
+	pars.c \
+	role.c \
+	utils_pars.c \
+	search_path.c
 
 UTILS_FILES = env_utils.c \
-              error.c \
-              ft_utils.c \
-              ft_utils2.c \
-		signal.c
+	error.c \
+	ft_utils.c \
+	ft_utils2.c \
+	signal.c
 
 # Full paths to source files
 SRCS = $(addprefix $(SRCS_DIR), $(MAIN_FILES)) \
-       $(addprefix $(SRCS_DIR)$(EXEC_DIR), $(EXEC_FILES)) \
-       $(addprefix $(SRCS_DIR)$(BUILTIN_DIR), $(BUILTIN_FILES)) \
-       $(addprefix $(SRCS_DIR)$(PARSING_DIR), $(PARSING_FILES)) \
-       $(addprefix $(SRCS_DIR)$(UTILS_DIR), $(UTILS_FILES))
+	$(addprefix $(SRCS_DIR)$(EXEC_DIR), $(EXEC_FILES)) \
+	$(addprefix $(SRCS_DIR)$(BUILTIN_DIR), $(BUILTIN_FILES)) \
+	$(addprefix $(SRCS_DIR)$(PARSING_DIR), $(PARSING_FILES)) \
+	$(addprefix $(SRCS_DIR)$(UTILS_DIR), $(UTILS_FILES))
 
 # Object files
 OBJS = $(SRCS:.c=.o)
@@ -73,21 +73,18 @@ $(NAME): $(LIBFT) $(OBJS)
 	@echo "$(NAME) compiled successfully!"
 
 $(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) -s
 
 %.o: %.c $(HEADERS)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-	@echo "Compiled: $<"
 
 clean:
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(LIBFT_DIR) clean -s
 	@$(RM) $(OBJS)
-	@echo "Object files cleaned"
 
 fclean: clean
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(LIBFT_DIR) fclean -s
 	@$(RM) $(NAME)
-	@echo "Executable cleaned"
 
 re: fclean all
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_command.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:53:50 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/24 10:37:18 by cprot            ###   ########.fr       */
+/*   Updated: 2025/08/03 18:11:44 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,48 @@ static int	check_command_errors(char *envp, char *str)
 }
 
 // Gère les erreurs de syntaxe pour les opérateurs
+// static int	handle_operator_error(t_token *current)
+// {
+
+// 	if (current->next && current->next->str && current->next->str[0] != '\0')
+// 		printf("minishell: syntax error near unexpected token '%s'\n",current->next->str);
+// 	else
+// 		printf("minishell: syntax error near unexpected token 'newline'\n");
+// 	g_signal = SYNTAX_ERROR_CODE;
+// 	return (0); // Erreur
+// }
+
 static int	handle_operator_error(t_token *current)
 {
-	if (current->next && current->next->str && current->next->str[0] != '\0')
-		printf("minishell: syntax error near unexpected token '%s'\n",
-			current->next->str);
+	// Si c'est un pipe, regarder s'il y a un autre pipe juste après
+	if (current->str && current->str[0] == '|')
+	{
+		// Regarder le token suivant pour voir si c'est aussi un pipe
+		if (current->next && current->next->str && current->next->str[0] == '|')
+			printf("minishell: syntax error near unexpected token '||'\n");
+		else
+			printf("minishell: syntax error near unexpected token '|'\n");
+	}
+	// Même logique pour &
+	else if (current->str && current->str[0] == '&')
+	{
+		if (current->next && current->next->str && current->next->str[0] == '&')
+			printf("minishell: syntax error near unexpected token '&&'\n");
+		else
+			printf("minishell: syntax error near unexpected token '&'\n");
+	}
 	else
-		printf("minishell: syntax error near unexpected token 'newline'\n");
-	return (0); // Erreur
+	{
+		// Logique existante pour les autres opérateurs
+		if (current->next && current->next->str
+			&& current->next->str[0] != '\0')
+			printf("minishell: syntax error near unexpected token '%s'\n",
+				current->next->str);
+		else
+			printf("minishell: syntax error near unexpected token 'newline'\n");
+	}
+	g_signal = SYNTAX_ERROR_CODE;
+	return (0);
 }
 
 // Traite les commandes externes (non-builtins)
@@ -42,9 +76,15 @@ static int	handle_external_command(t_token *current, t_env *env)
 {
 	current->envp = search_path(current->str, env); // Trouve le chemin complet
 	if (!current->envp)                             // Commande pas trouvée
+	{
+		g_signal = COMMAND_NOT_FOUND;
 		return (printf("%s: command not found\n", current->str), 0);
+	}
 	if (!check_command_errors(current->envp, current->str)) // Vérifie validité
+	{
+		g_signal = PERMISSION_DENIED;
 		return (0);
+	}
 	return (1); // Succès
 }
 
@@ -55,12 +95,24 @@ int	handle_command_state(t_token *current, t_parser_state *state, t_env *env)
 		return (0);
 	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
-		current->role = ROLE_COMMAND;
-		if (is_builtin(current)) // Commande builtin
-			current->envp = NULL;
-		else if (!handle_external_command(current, env)) // Commande externe
+		// Vérifier si le token est vide
+		if (!current->str || strlen(current->str) == 0)
+		{
+			// Ignorer les tokens vides, continuer à chercher une commande
+			return (1); // Ne pas changer l'état, rester en EXP_CMD
+		}
+		// Vérifier si le token contient des espaces (problématique pour une commande)
+		if (strchr(current->str, ' '))
+		{
+			write(2, "minishell: command not found\n", 29);
 			return (0);
-		*state = EXP_ARG; // Prochaine étape : arguments
+		}
+		current->role = ROLE_COMMAND;
+		if (is_builtin(current))
+			current->envp = NULL;
+		else if (!handle_external_command(current, env))
+			return (0);
+		*state = EXP_ARG;
 		return (1);
 	}
 	else if (current->type == CONTENT_OPERATOR)
