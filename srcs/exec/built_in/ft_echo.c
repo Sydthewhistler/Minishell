@@ -64,10 +64,13 @@ static void	print_echo_args(t_token *current, int is_newline)
 		else
 		{
 			skip_n_args = 0;
-			if (!first_word)
-				printf(" ");
-			printf("%s", current->str);
-			first_word = 0;
+			if (current->str && current->str[0] != '\0')
+			{
+				if (!first_word)
+					printf(" ");
+				printf("%s", current->str);
+				first_word = 0;
+			}
 			current = current->next;
 		}
 	}

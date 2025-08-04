@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/03 18:47:43 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/04 09:51:00 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ char	*get_var_value(t_env *env, t_localvar *localvar, char *name)
 {
 	t_localvar	*local;
 
+	// Cas spécial pour UID
+	if (ft_strcmp(name, "UID") == 0)
+	{
+		return (ft_itoa(getuid())); // ← ft_itoa au lieu de sprintf
+	}
 	// Chercher d'abord dans les variables locales
 	local = localvar;
 	while (local)
@@ -76,7 +81,7 @@ void	handle_variable(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 	if (*i == start)
 		return ;
 	name = ft_substr_len(line, start, *i - start);
-	value = get_var_value(ctx->env, ctx->localvar, name); // ← CORRIGÉ !
+	value = get_var_value(ctx->env, ctx->localvar, name);
 	if (!value)
 		value = ft_strdup("");
 	create_token(tokens, value, CONTENT_WORD);
@@ -94,21 +99,23 @@ void	handle_variable(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 void	parse_var(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 {
 	(*i)++; // Passer le $
-
 	if (line[*i] == '?')
 	{
 		handle_exit_status(i, tokens);
 		return ;
 	}
 	if (ft_isdigit(line[*i]))
+	{
+		(*i)++;
+		create_token(tokens, "", CONTENT_WORD); // ← Créer token vide
 		return ;
+	}
 	if (!line[*i] || (!ft_isalpha(line[*i]) && line[*i] != '_'))
 	{
 		// $ isolé ou $ suivi d'un caractère invalide
 		create_token(tokens, "$", CONTENT_WORD);
 		return ;
 	}
-
 	handle_variable(line, i, tokens, ctx);
 	skip_whitespace(line, i);
 }

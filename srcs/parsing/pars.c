@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/03 18:05:02 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/04 10:19:32 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,17 +140,21 @@ int	parse_line(char *line, t_token **tokens, t_env *env, t_localvar *localvar)
 	int			i;
 	t_parse_ctx	ctx;
 
-	// Créer le contexte de parsing
 	ctx.env = env;
 	ctx.localvar = localvar;
 	i = 0;
 	skip_whitespace(line, &i);
 	while (line[i])
 	{
-		if (line[i] == '"' || line[i] == '\'')
+		if (line[i] == '\\' && line[i + 1] == '$')
+		{
+			i += 2;                                  // Passer \$
+			create_token(tokens, "$", CONTENT_WORD); // $ littéral
+			skip_whitespace(line, &i);
+		}
+		else if (line[i] == '"' || line[i] == '\'')
 		{
 			parse_quoted(line, &i, tokens, &ctx);
-			// i++;
 			skip_whitespace(line, &i);
 		}
 		else if (line[i] == '<' && line[i + 1] == '<')

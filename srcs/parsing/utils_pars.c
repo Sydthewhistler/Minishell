@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/03 18:57:49 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/04 10:35:03 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,17 @@
 // * @param i: pointeur vers l'index actuel (modifié)
 void	skip_whitespace(char *line, int *i)
 {
-	while (line[*i] == ' ' || line[*i] == '\t' || line[*i] == ':'
-		|| line[*i] == '\\')
+	while (line[*i] == ' ' || line[*i] == '\t' || line[*i] == ':')
+		(*i)++;
+	// Gérer \ seulement s'il n'est PAS suivi de $
+	if (line[*i] == '\\' && line[*i + 1] != '$')
 		(*i)++;
 	// Cas spécial pour !
 	if (line[*i] == '!')
 	{
-		g_signal = 1;             // ! donne exit code 1
-		(*i)++;                   // Avancer pour l'ignorer
-		skip_whitespace(line, i); // Continuer à ignorer les espaces après
+		g_signal = 1;
+		(*i)++;
+		skip_whitespace(line, i);
 	}
 }
 

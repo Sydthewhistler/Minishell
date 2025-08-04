@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   role.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/06/18 10:57:00 by cprot            ###   ########.fr       */
+/*   Updated: 2025/08/04 10:27:15 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,10 @@ void	assign_operator_roles(t_token **tokens)
 				current->role = ROLE_PIPE; // Pipe pour connecter des commandes
 			else if (ft_strcmp(current->str, "<<") == 0)
 				current->role = ROLE_REDIRECT_HEREDOC;
-					// Here-document (lecture multi-ligne)
+			// Here-document (lecture multi-ligne)
 			else if (ft_strcmp(current->str, ">>") == 0)
 				current->role = ROLE_REDIRECT_APPEND;
-					// Redirection en mode ajout
+			// Redirection en mode ajout
 			else if (ft_strcmp(current->str, "<") == 0)
 				current->role = ROLE_REDIRECT_IN; // Redirection d'entrée
 			else if (ft_strcmp(current->str, ">") == 0)
@@ -58,7 +58,7 @@ static int	handle_argument_state(t_token *current, t_parser_state *state)
 		else if (current->role == ROLE_REDIRECT_OUT
 			|| current->role == ROLE_REDIRECT_APPEND
 			|| current->role == ROLE_REDIRECT_IN)
-			*state = EXP_FILE; // Après une redirection, on attend un nom de fichier
+			*state = EXP_FILE; // Après une redirection,on attend un nom de fichier
 		else if (current->role == ROLE_REDIRECT_HEREDOC)
 			*state = EXP_ARG; // Après <<, on attend le délimiteur (traité comme argument)
 	}
@@ -72,13 +72,14 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
 		current->role = ROLE_FILENAME; // C'est un nom de fichier
-		*state = EXP_ARG;// Retour à l'état normal après avoir trouvé le fichier
+		*state = EXP_ARG;             
+			// Retour à l'état normal après avoir trouvé le fichier
 	}
 	// Si c'est un opérateur au lieu d'un nom de fichier
 	else if (current->type == CONTENT_OPERATOR)
 	{
 		// Erreur de syntaxe : on attendait un fichier, pas un opérateur
-		printf("minishell: BIP syntax error near unexpected token '%s'\n",
+		printf("minishell: syntax error near unexpected token '%s'\n",
 			current->str);
 		return (0); // Échec - erreur de syntaxe
 	}

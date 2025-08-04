@@ -105,7 +105,6 @@ int	main(int ac, char **av, char **envp)
 		error("malloc issue in init_localvar");
 	*localvar = NULL;
 	env = init_env_from_envp(envp); // creer la liste chainee d env
-	setup_interactive_signals();
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
 	while (1)
 	{
