@@ -19,97 +19,50 @@ volatile sig_atomic_t	g_signal = 0;
 // 	}
 // }
 
-void	free_token(t_token **tokens)
+// Initialise les variables du shell
+static int	init_shell(char **envp, t_env **env, t_localvar ***localvar)
 {
-	t_token	*cur;
-	t_token	*tmp;
-
-	if (!tokens)
-		return ;
-	cur = *tokens;
-	while (cur)
-	{
-		tmp = cur->next;
-		if (cur->str)
-			free(cur->str);
-		if (cur->envp)
-			free(cur->envp);
-		free(cur);
-		cur = tmp;
-	}
-	*tokens = NULL;
-}
-
-void	free_all_env(t_env **env)
-{
-	t_env	*cur;
-	t_env	*tmp;
-
-	if (!env)
-		return ;
-	cur = *env;
-	while (cur)
-	{
-		tmp = cur->next;
-		if (cur->name)
-			free(cur->name);
-		if (cur->value)
-			free(cur->value);
-		free(cur);
-		cur = tmp;
-	}
-	*env = NULL;
-}
-
-void	free_all_localvar(t_localvar **localvar)
-{
-	t_localvar	*cur;
-	t_localvar	*tmp;
-
-	if (!localvar)
-		return ;
-	cur = *localvar;
-	while (cur)
-	{
-		tmp = cur->next;
-		if (cur->name)
-			free(cur->name);
-		if (cur->value)
-			free(cur->value);
-		free(cur);
-		cur = tmp;
-	}
-	*localvar = NULL;
-}
-
-int	main(int ac, char **av, char **envp)
-{
-	char		*line;
-	t_token		*tokens;
-	t_env		*env;
-	t_localvar	**localvar;
-	int			parsing_status;
-
-	tokens = NULL;
-	env = NULL;
-	localvar = NULL;
-	(void)ac;
-	(void)av;
 	if (!envp)
 	{
 		printf("Error : no env");
 		return (-1);
 	}
-	localvar = malloc(sizeof(t_localvar *));
-	if (!localvar)
-		error("malloc issue in init_localvar");
-	*localvar = NULL;
-	env = init_env_from_envp(envp); // creer la liste chainee d env
-	rl_readline_name = "minishell"; // juste pour l appeler mnishell
+	*localvar = malloc(sizeof(t_localvar *));
+	if (!*localvar)
+	{
+		printf("malloc issue in init_localvar");
+		return (-1);
+	}
+	**localvar = NULL;
+	*env = init_env_from_envp(envp);
+	rl_readline_name = "minishell";
+	return (0);
+}
+
+// Traite une ligne de commande
+static void	process_line(char *line, t_token **tokens, t_env **env,
+		t_localvar **localvar)
+{
+	int	parsing_status;
+
+	add_history(line);
+	parsing_status = parse_line(line, tokens, *env, *localvar);
+	if (*tokens && parsing_status)
+		g_signal = exec_master(*tokens, env, localvar);
+	free_token(tokens);
+	*tokens = NULL;
+}
+
+// Boucle principale du shell
+static void	shell_loop(t_env **env, t_localvar **localvar)
+{
+	char	*line;
+	t_token	*tokens;
+
+	tokens = NULL;
 	while (1)
 	{
-		line = readline("minishell>"); // affiche minishell> et recup la line
-		// g_signal = 0;                  // Reset signal
+		line = readline("minishell>");
 		if (!line)
 		{
 			printf("exit\n");
@@ -117,33 +70,45 @@ int	main(int ac, char **av, char **envp)
 		}
 		if (g_signal == SIGNAL_INTERRUPTED)
 		{
-			g_signal = 0; // reset pour nouvelle commande
+			g_signal = 0;
 			free(line);
-			continue ; // Nouvelle ligne prompt
+			continue ;
 		}
-		if (ft_strcmp(line, "exit") == 0) // pour sortir taper exit
+		if (ft_strcmp(line, "exit") == 0)
 		{
 			free(line);
 			break ;
 		}
 		if (*line != '\0')
-		{
-			add_history(line);
-			parsing_status = parse_line(line, &tokens, env, *localvar);
-			if (tokens && parsing_status) // Gardez votre condition originale
-			{
-				g_signal = exec_master(tokens, &env, localvar);
-			}
-			free_token(&tokens);
-			tokens = NULL;
-		}
+			process_line(line, &tokens, env, localvar);
 		else
 			g_signal = 0;
 		free(line);
 	}
+}
+
+// Nettoie la mémoire à la fin
+static void	cleanup_shell(t_env **env, t_localvar **localvar)
+{
 	rl_clear_history();
-	free_all_env(&env);
+	free_all_env(env);
 	free_all_localvar(localvar);
 	free(localvar);
+}
+
+// MAIN simplifié
+int	main(int ac, char **av, char **envp)
+{
+	t_env		*env;
+	t_localvar	**localvar;
+
+	env = NULL;
+	localvar = NULL;
+	(void)ac;
+	(void)av;
+	if (init_shell(envp, &env, &localvar) == -1)
+		return (-1);
+	shell_loop(&env, localvar);
+	cleanup_shell(&env, localvar);
 	return (0);
 }

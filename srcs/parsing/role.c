@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/04 10:27:15 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/06 23:53:55 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,10 @@ static int	handle_argument_state(t_token *current, t_parser_state *state)
 		else if (current->role == ROLE_REDIRECT_OUT
 			|| current->role == ROLE_REDIRECT_APPEND
 			|| current->role == ROLE_REDIRECT_IN)
-			*state = EXP_FILE; // Après une redirection,on attend un nom de fichier
+			*state = EXP_FILE;
+		// Après une redirection,on attend un nom de fichier
 		else if (current->role == ROLE_REDIRECT_HEREDOC)
-			*state = EXP_ARG; // Après <<, on attend le délimiteur (traité comme argument)
+			*state = EXP_ARG;
 	}
 	return (1); // Succès
 }
@@ -72,8 +73,8 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
 		current->role = ROLE_FILENAME; // C'est un nom de fichier
-		*state = EXP_ARG;             
-			// Retour à l'état normal après avoir trouvé le fichier
+		*state = EXP_ARG;
+		// Retour à l'état normal après avoir trouvé le fichier
 	}
 	// Si c'est un opérateur au lieu d'un nom de fichier
 	else if (current->type == CONTENT_OPERATOR)
@@ -86,7 +87,6 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 	return (1); // Succès
 }
 
-// Fonction principale qui applique les rôles à tous les tokens selon le contexte
 int	apply_role(t_token **tokens, t_env *env)
 {
 	t_parser_state	state;

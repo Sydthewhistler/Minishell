@@ -6,18 +6,17 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/04 10:19:32 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/06 23:53:52 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//  * Construit une chaîne de caractères entre guillemets (simples ou doubles)
-//  * @param s: la chaîne source à parser
-//  * @param i: pointeur vers l'index actuel dans la chaîne (modifié)
-//  * @param c: le caractère de fermeture de guillemet (' ou ")
-//  * @return: la chaîne extraite entre guillemets, ou NULL en cas d'erreur
-
+//  * Fonction principale de parsing d'une ligne de commande
+//  * Analyse chaque caractère et délègue le parsing selon le contexte
+//  * @param line: ligne de commande à parser
+//  * @param tokens: liste des tokens à construire
+//  * @param env: environnement pour l'expansion de variables
 static char	*build_quoted_string(char *s, int *i, char c)
 {
 	char temp[1024]; // Buffer temporaire pour stocker la chaîne
@@ -101,7 +100,8 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 
 void	parse_operator(char *line, int *i, t_token **tokens)
 {
-	char s[3]; // Augmenté pour gérer les opérateurs de 2 caractères
+	char	s[3];
+
 	// Vérifier d'abord les opérateurs de 2 caractères
 	if (line[*i] == '>' && line[*i + 1] == '>')
 	{
@@ -115,13 +115,22 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 	}
 	else if (line[*i] == '<' && line[*i + 1] == '<')
 	{
-		// Laisser parse_heredoc gérer
 		parse_heredoc(line, i, tokens);
-		return ; // Important : ne pas appeler skip_whitespace
+		return ;
+	}
+	else if (line[*i] == '|' && line[*i + 1] == '|')
+	{
+		create_token(tokens, "||", CONTENT_OPERATOR);
+		(*i) += 2;
+	}
+	else if (line[*i] == '&' && line[*i + 1] == '&')
+	{
+		create_token(tokens, "&&", CONTENT_OPERATOR);
+		(*i) += 2;
 	}
 	else
 	{
-		// Opérateur simple : |, <, >
+		// Opérateur simple : |, <, >, &
 		s[0] = line[*i];
 		s[1] = '\0';
 		create_token(tokens, s, CONTENT_OPERATOR);
@@ -148,8 +157,8 @@ int	parse_line(char *line, t_token **tokens, t_env *env, t_localvar *localvar)
 	{
 		if (line[i] == '\\' && line[i + 1] == '$')
 		{
-			i += 2;                                  // Passer \$
-			create_token(tokens, "$", CONTENT_WORD); // $ littéral
+			i += 2;
+			create_token(tokens, "$", CONTENT_WORD);
 			skip_whitespace(line, &i);
 		}
 		else if (line[i] == '"' || line[i] == '\'')

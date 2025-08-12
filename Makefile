@@ -42,6 +42,7 @@ PARSING_FILES = env_utils.c \
 
 UTILS_FILES = env_utils.c \
 	error.c \
+	free.c \
 	ft_utils.c \
 	ft_utils2.c \
 	signal.c

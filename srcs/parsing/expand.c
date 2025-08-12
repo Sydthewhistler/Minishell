@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/04 09:51:00 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/06 23:53:56 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ void	parse_var(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 		create_token(tokens, "", CONTENT_WORD); // ← Créer token vide
 		return ;
 	}
+	if (line[*i] == '"')
+		return ;
 	if (!line[*i] || (!ft_isalpha(line[*i]) && line[*i] != '_'))
 	{
 		// $ isolé ou $ suivi d'un caractère invalide
