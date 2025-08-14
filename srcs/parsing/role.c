@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/06 23:53:55 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/14 11:51:22 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,22 +69,20 @@ static int	handle_argument_state(t_token *current, t_parser_state *state)
 // Gère l'état EXP_FILE (on attend un nom de fichier après une redirection)
 static int	handle_filename_state(t_token *current, t_parser_state *state)
 {
-	// Si c'est un mot ou une chaîne quotée
-	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
+	if (!current || !current->str) // ← Ajouter cette vérification
+		return (0);
+	else if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
-		current->role = ROLE_FILENAME; // C'est un nom de fichier
+		current->role = ROLE_FILENAME;
 		*state = EXP_ARG;
-		// Retour à l'état normal après avoir trouvé le fichier
 	}
-	// Si c'est un opérateur au lieu d'un nom de fichier
 	else if (current->type == CONTENT_OPERATOR)
 	{
-		// Erreur de syntaxe : on attendait un fichier, pas un opérateur
-		printf("minishell: syntax error near unexpected token '%s'\n",
-			current->str);
-		return (0); // Échec - erreur de syntaxe
+		// C'est ici qu'on gère les vraies erreurs de syntaxe !
+		ft_error_syntax(current->str); // ← Au lieu de handle_operator_error
+		return (0);
 	}
-	return (1); // Succès
+	return (1);
 }
 
 int	apply_role(t_token **tokens, t_env *env)
@@ -93,35 +91,35 @@ int	apply_role(t_token **tokens, t_env *env)
 	t_token			*current;
 
 	current = *tokens;
-	state = EXP_CMD; // On commence en attendant une commande
-	// D'abord, assigne les rôles aux opérateurs
+	state = EXP_CMD;
 	assign_operator_roles(tokens);
-	// Ensuite, parcourt tous les tokens pour assigner les autres rôles
 	while (current)
 	{
 		if (state == EXP_CMD)
 		{
-			// On attend une commande
 			if (!handle_command_state(current, &state, env))
-				return (-1); // Erreur lors du traitement de la commande
+				return (-1);
 		}
 		else if (state == EXP_ARG)
 		{
-			// On attend un argument
 			if (!handle_argument_state(current, &state))
-				return (-2); // Erreur lors du traitement de l'argument
+				return (-2);
 		}
 		else if (state == EXP_FILE)
 		{
-			// On attend un nom de fichier
 			if (!handle_filename_state(current, &state))
-				return (-3); // Erreur lors du traitement du fichier
+				return (-3);
 		}
 		current = current->next;
 	}
+	// ← AJOUTER ICI :
+	if (state == EXP_FILE)
+	{
+		ft_error_syntax("newline");
+		return (-3);
+	}
 	return (0);
 }
-
 /*
 RÉSUMÉ DU FONCTIONNEMENT :
 

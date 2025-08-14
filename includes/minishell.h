@@ -88,6 +88,8 @@ int								parse_line(char *line, t_token **tokens,
 									t_env *env, t_localvar *localvar);
 void							parse_quoted(char *s, int *i, t_token **tokens,
 									t_parse_ctx *ctx);
+void							create_and_advance(t_token **tokens, char *op,
+									int *i, int len);
 
 // HEREDOC
 char							*extract_delimiter(char *s);

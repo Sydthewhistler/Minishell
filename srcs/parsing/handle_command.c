@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:53:50 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/06 23:54:03 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/14 11:47:23 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,23 +35,19 @@ static int	handle_operator_error(t_token *current)
 		else
 			ft_error_syntax("|");
 	}
-	else if (current->str && current->str[0] == '>')
+	else if (current->str && (current->str[0] == '>' || current->str[0] == '<'))
 	{
-		if (current->str[1] == '>')
-			ft_error_syntax("newline"); // >> -> newline
+		if (!current->next || !current->next->str
+			|| current->next->str[0] == '\0')
+			ft_error_syntax("newline");
+		else if (current->next->type == CONTENT_OPERATOR)
+			ft_error_syntax(current->next->str);
 		else
-			ft_error_syntax("newline"); // > -> newline
-	}
-	else if (current->str && current->str[0] == '<')
-	{
-		if (current->str[1] == '<')
-			ft_error_syntax("newline"); // << -> newline
-		else
-			ft_error_syntax("newline"); // < -> newline
+			return (1); // Redirection valide
 	}
 	else if (current->str && current->str[0] == '&')
 	{
-		if (current->next && current->next->str && current->next->str[0] == '&')
+		if (current->str[1] == '&')
 			ft_error_syntax("&&");
 		else
 			ft_error_syntax("&");
@@ -62,7 +58,7 @@ static int	handle_operator_error(t_token *current)
 			&& current->next->str[0] != '\0')
 			ft_error_syntax(current->next->str);
 		else
-			ft_error_syntax("newline"); // Par défaut -> newline
+			ft_error_syntax("newline");
 	}
 	return (0);
 }

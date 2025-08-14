@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/06 23:53:52 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/14 11:44:06 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,45 +100,31 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 
 void	parse_operator(char *line, int *i, t_token **tokens)
 {
-	char	s[3];
+	char	s[4];
 
-	// Vérifier d'abord les opérateurs de 2 caractères
-	if (line[*i] == '>' && line[*i + 1] == '>')
-	{
-		create_token(tokens, ">>", CONTENT_OPERATOR);
-		(*i) += 2;
-	}
-	else if (line[*i] == '<' && line[*i + 1] == '>')
-	{
-		create_token(tokens, "<>", CONTENT_OPERATOR);
-		(*i) += 2;
-	}
+	if (line[*i] == '<' && line[*i + 1] == '<' && line[*i + 2] == '<')
+		create_and_advance(tokens, "<<<", i, 3);
+	else if (line[*i] == '>' && line[*i + 1] == '>')
+		create_and_advance(tokens, ">>", i, 2);
 	else if (line[*i] == '<' && line[*i + 1] == '<')
 	{
 		parse_heredoc(line, i, tokens);
 		return ;
 	}
+	else if (line[*i] == '<' && line[*i + 1] == '>')
+		create_and_advance(tokens, "<>", i, 2);
 	else if (line[*i] == '|' && line[*i + 1] == '|')
-	{
-		create_token(tokens, "||", CONTENT_OPERATOR);
-		(*i) += 2;
-	}
+		create_and_advance(tokens, "||", i, 2);
 	else if (line[*i] == '&' && line[*i + 1] == '&')
-	{
-		create_token(tokens, "&&", CONTENT_OPERATOR);
-		(*i) += 2;
-	}
+		create_and_advance(tokens, "&&", i, 2);
 	else
 	{
-		// Opérateur simple : |, <, >, &
 		s[0] = line[*i];
 		s[1] = '\0';
-		create_token(tokens, s, CONTENT_OPERATOR);
-		(*i)++;
+		create_and_advance(tokens, s, i, 1);
 	}
 	skip_whitespace(line, i);
 }
-
 //  * Fonction principale de parsing d'une ligne de commande
 //  * Analyse chaque caractère et délègue le parsing selon le contexte
 //  * @param line: ligne de commande à parser

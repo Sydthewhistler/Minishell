@@ -38,14 +38,15 @@ PARSING_FILES = env_utils.c \
 	pars.c \
 	role.c \
 	utils_pars.c \
-	search_path.c
+	search_path.c \
+	utils_pars2.c
 
 UTILS_FILES = env_utils.c \
 	error.c \
 	free.c \
 	ft_utils.c \
 	ft_utils2.c \
-	signal.c
+	signal.c 
 
 # Full paths to source files
 SRCS = $(addprefix $(SRCS_DIR), $(MAIN_FILES)) \
