@@ -71,7 +71,7 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 		error("fork failed");
 	if (id == 0)
 	{
-		setup_execution_signals();
+		//setup_execution_signals();
 		redirect(token, p_read, p_write);
 		if (execve(token->envp, cmd_arg, env_arg) == -1)
 			error("execve failed");

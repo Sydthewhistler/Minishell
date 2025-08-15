@@ -109,7 +109,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (init_shell(envp, &env, &localvar) == -1)
 		return (-1);
-	setup_interactive_signals();
+	ft_setup_signals();
 	shell_loop(&env, localvar);
 	cleanup_shell(&env, localvar);
 	return (0);
