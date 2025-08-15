@@ -129,6 +129,7 @@ char							*find_in_path(char *cmd, char *path_dirs);
 
 // SIGNAL
 void							setup_interactive_signals(void);
+void							setup_execution_signals(void);
 
 // ERROR
 void							ft_error_cmd_not_found(char *cmd);
