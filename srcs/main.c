@@ -106,18 +106,19 @@ int	main(int ac, char **av, char **envp)
 	*localvar = NULL;
 	env = init_env_from_envp(envp); // creer la liste chainee d env
 	rl_readline_name = "minishell"; // juste pour l appeler mnishell
+	setup_interactive_signals(); // setup des signaux pour le mode interactif
 	while (1)
 	{
 		line = readline("minishell>"); // affiche minishell> et recup la line
-		// g_signal = 0;                  // Reset signal
+		g_signal = 0;                  // Reset signal
 		if (!line)
 		{
 			printf("exit\n");
 			break ;
 		}
-		if (g_signal == SIGNAL_INTERRUPTED)
+		if (g_signal == SIGINT)
 		{
-			g_signal = 0; // reset pour nouvelle commande
+			//g_signal = 0; // reset pour nouvelle commande
 			free(line);
 			continue ; // Nouvelle ligne prompt
 		}

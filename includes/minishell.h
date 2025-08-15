@@ -36,6 +36,7 @@
 #define COMMAND_NOT_FOUND 127    // Code pour commandes introuvables (comme bash)
 #define PERMISSION_DENIED 126 
 #define SIGNAL_INTERRUPTED 130   // Code pour Ctrl+C (128 + SIGINT = 130, convention Unix)
+#define _POSIX_C_SOURCE 200809L
 
 extern volatile sig_atomic_t g_signal;
 
@@ -125,5 +126,6 @@ char					*find_in_path(char *cmd, char *path_dirs);
 
 // SIGNAL
 void					setup_interactive_signals(void);
+void					setup_execution_signals(void);
 
 #endif
