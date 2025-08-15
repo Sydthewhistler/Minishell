@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/14 11:44:06 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:04:10 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 {
 	char	*delimiter;
 	char	*heredoc_content;
+	int		delimiter_len;
 
 	*i += 2;
 	while (s[*i] == ' ' || s[*i] == '\t')
@@ -93,7 +94,11 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	create_token(tokens, "<<", CONTENT_OPERATOR);
 	create_token(tokens, heredoc_content, CONTENT_HEREDOC);
 	free(heredoc_content);
-	while (s[*i] && s[*i] != ' ' && s[*i] != '\t' && s[*i] != '\n')
+	// CORRECTION: Avancer de la longueur exacte du délimiteur
+	delimiter_len = ft_strlen(delimiter);
+	*i += delimiter_len;
+	// Puis passer les espaces optionnels qui suivent
+	while (s[*i] && (s[*i] == ' ' || s[*i] == '\t'))
 		(*i)++;
 	free(delimiter);
 }
@@ -125,6 +130,7 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 	}
 	skip_whitespace(line, i);
 }
+
 //  * Fonction principale de parsing d'une ligne de commande
 //  * Analyse chaque caractère et délègue le parsing selon le contexte
 //  * @param line: ligne de commande à parser

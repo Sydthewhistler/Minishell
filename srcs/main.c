@@ -71,7 +71,7 @@ static void	shell_loop(t_env **env, t_localvar **localvar)
 		}
 		if (g_signal == SIGNAL_INTERRUPTED)
 		{
-			//g_signal = 0;
+			// g_signal = 0;
 			free(line);
 			continue ;
 		}
@@ -109,7 +109,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (init_shell(envp, &env, &localvar) == -1)
 		return (-1);
-	ft_setup_signals();
+	// ft_setup_signals();
 	shell_loop(&env, localvar);
 	cleanup_shell(&env, localvar);
 	return (0);

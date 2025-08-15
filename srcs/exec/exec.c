@@ -36,21 +36,25 @@ char	**create_cmd(t_token *token)
 void	redirect(t_token *token, int p_read, int p_write)
 {
 	int	fd;
+	int	heredoc_handled;
 
 	fd = -1;
-	if (is_redirectin(token)) // si provient redirection fichier
+	heredoc_handled = handle_heredoc_redirect(token);
+	if (!heredoc_handled && is_redirectin(token))
 	{
-		fd = open(find_rdin_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		dup2(fd, STDIN_FILENO);
+		fd = open(find_rdin_file(token), O_RDONLY);
+		if (fd != -1)
+			dup2(fd, STDIN_FILENO);
 	}
-	if (is_precededpipe(token)) // si précédé d un pipe
+	if (!heredoc_handled && is_precededpipe(token))
 		dup2(p_read, STDIN_FILENO);
-	if (is_redirectout(token)) // si va redirection fichier
+	if (is_redirectout(token))
 	{
 		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		dup2(fd, STDOUT_FILENO);
+		if (fd != -1)
+			dup2(fd, STDOUT_FILENO);
 	}
-	if (is_followedpipe(token)) // si suivit d un pipe
+	if (is_followedpipe(token))
 		dup2(p_write, STDOUT_FILENO);
 	if (fd != -1)
 		close(fd);
@@ -71,7 +75,7 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 		error("fork failed");
 	if (id == 0)
 	{
-		//setup_execution_signals();
+		// setup_execution_signals();
 		redirect(token, p_read, p_write);
 		if (execve(token->envp, cmd_arg, env_arg) == -1)
 			error("execve failed");
