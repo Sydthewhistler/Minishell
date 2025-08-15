@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:06:12 by scavalli          #+#    #+#             */
-/*   Updated: 2025/07/05 15:02:55 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/08/15 17:34:19 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ char		*ft_strtok(char *str, const char sep);
 bool		ft_contains(char *haystack, char *needle);
 void		which_built_in(t_token *token, t_env **env, t_localvar **localvar);
 void		free_tab(char **tab);
-char *ft_filename(t_token *token);
+char		*ft_filename(t_token *token);
+int			handle_heredoc_redirect(t_token *token);
 
 /*                BUILT_IN FUNCTIONS                */
 
 void		ft_echo(t_token *lst);
-void	ft_pwd(t_env *env, t_token *token);
+void		ft_pwd(t_env *env, t_token *token);
 void		ft_cd(t_token *token, t_env *env);
 void		ft_env(t_env *env);
 void		ft_unset(t_localvar **localvar, t_env **env, t_token *token);
@@ -58,7 +59,7 @@ bool		is_builtin(t_token *token);
 
 /*                   EXEC FUNCTIONS                  */
 
-void	exec(t_token *token, t_env *env, int p_read, int p_write);
+void		exec(t_token *token, t_env *env, int p_read, int p_write);
 
 /*                   EXEC UTILS FUNCTIONS             */
 
