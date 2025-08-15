@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 10:15:19 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/14 11:47:14 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/15 18:37:03 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,25 +99,31 @@ void	handle_variable(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 void	parse_var(char *line, int *i, t_token **tokens, t_parse_ctx *ctx)
 {
 	(*i)++; // Passer le $
+
 	if (line[*i] == '?')
 	{
 		handle_exit_status(i, tokens);
 		return ;
 	}
+
 	if (ft_isdigit(line[*i]))
 	{
 		(*i)++;
-		create_token(tokens, "", CONTENT_WORD); // ← Créer token vide
+		create_token(tokens, "", CONTENT_WORD);
 		return ;
 	}
-	if (line[*i] == '"')
+
+	// AJOUT : Vérifier aussi les guillemets simples
+	if (line[*i] == '"' || line[*i] == '\'')
 		return ;
+
 	if (!line[*i] || (!ft_isalpha(line[*i]) && line[*i] != '_'))
 	{
 		// $ isolé ou $ suivi d'un caractère invalide
 		create_token(tokens, "$", CONTENT_WORD);
 		return ;
 	}
+
 	handle_variable(line, i, tokens, ctx);
 	skip_whitespace(line, i);
 }

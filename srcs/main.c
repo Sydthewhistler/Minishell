@@ -59,6 +59,7 @@ static void	shell_loop(t_env **env, t_localvar **localvar)
 {
 	char	*line;
 	t_token	*tokens;
+	int		error_signal;
 
 	tokens = NULL;
 	while (1)
@@ -84,10 +85,10 @@ static void	shell_loop(t_env **env, t_localvar **localvar)
 			free(line);
 			break ;
 		}
+		g_signal = error_signal;
 		if (*line != '\0')
 			process_line(line, &tokens, env, localvar);
-		else
-			g_signal = 0;
+		error_signal = g_signal;
 		free(line);
 	}
 }
