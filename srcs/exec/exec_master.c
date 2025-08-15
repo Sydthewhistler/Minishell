@@ -20,6 +20,7 @@ int	exec_master(t_token *token, t_env **env, t_localvar **localvar)
 	int prev_pipe;
 
 	prev_pipe = -1;
+	ft_setup_execution_signal();
 	while(1)
 	{
 		pipe(pipe_fd);

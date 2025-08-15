@@ -27,7 +27,6 @@ char		*ft_strndup(const char *str, int n);
 char		*ft_strtok(char *str, const char sep);
 bool		ft_contains(char *haystack, char *needle);
 void		which_built_in(t_token *token, t_env **env, t_localvar **localvar);
-bool		is_builtin(t_token *token);
 void		free_tab(char **tab);
 char *ft_filename(t_token *token);
 

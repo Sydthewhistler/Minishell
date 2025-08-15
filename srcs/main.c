@@ -51,6 +51,7 @@ static void	process_line(char *line, t_token **tokens, t_env **env,
 		g_signal = exec_master(*tokens, env, localvar);
 	free_token(tokens);
 	*tokens = NULL;
+	ft_setup_interactive_signal();
 }
 
 // Boucle principale du shell
@@ -69,9 +70,12 @@ static void	shell_loop(t_env **env, t_localvar **localvar)
 			printf("exit\n");
 			break ;
 		}
-		if (g_signal == SIGNAL_INTERRUPTED)
+		if (g_signal == SIGINT)
 		{
-			//g_signal = 0;
+			g_signal = 0;
+			rl_on_new_line();
+			rl_replace_line("", 0);
+			rl_redisplay();
 			free(line);
 			continue ;
 		}
@@ -109,7 +113,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (init_shell(envp, &env, &localvar) == -1)
 		return (-1);
-	ft_setup_signals();
+	ft_setup_interactive_signal();
 	shell_loop(&env, localvar);
 	cleanup_shell(&env, localvar);
 	return (0);
