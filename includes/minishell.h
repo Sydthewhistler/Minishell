@@ -19,26 +19,30 @@
 # define CONTENT_WORD 1
 # define CONTENT_QUOTED 2
 # define CONTENT_OPERATOR 3
-# define CONTENT_HEREDOC 4 // ← Ajout pour le contenu des heredocs
+# define CONTENT_HEREDOC 4
 
 // ROLE types (fonction du token dans la commande)
 # define ROLE_COMMAND 1
 # define ROLE_ARGUMENT 2
 # define ROLE_FILENAME 3
 # define ROLE_PIPE 4
-# define ROLE_REDIRECT_IN 5     //
-# define ROLE_REDIRECT_OUT 6    // >
-# define ROLE_REDIRECT_APPEND 7 // ← Ajout pour >>
+# define ROLE_REDIRECT_IN 5
+# define ROLE_REDIRECT_OUT 6
+# define ROLE_REDIRECT_APPEND 7
 # define ROLE_REDIRECT_HEREDOC 8
 # define ROLE_HEREDOC_CONTENT 9
 
-# define SYNTAX_ERROR_CODE 2   // Code pour erreurs de syntaxe (comme bash)
-# define COMMAND_NOT_FOUND 127 // Code pour commandes introuvables (comme bash)
+// CODES D'ERREUR (comme bash)
+# define SUCCESS 0
+# define SYNTAX_ERROR_CODE 2
+# define COMMAND_NOT_FOUND 127
 # define PERMISSION_DENIED 126
-# define SIGNAL_INTERRUPTED 130 // Code pour Ctrl+C
+# define SIGNAL_INTERRUPTED 130
 
+// Variable globale pour les signaux (gardée pour votre binôme)
 extern volatile sig_atomic_t	g_signal;
 
+// ENUM pour l'état du parseur
 typedef enum
 {
 	EXP_CMD,
@@ -46,6 +50,7 @@ typedef enum
 	EXP_FILE
 }								t_parser_state;
 
+// Structure pour les tokens
 typedef struct s_token
 {
 	char						*str;
@@ -56,6 +61,7 @@ typedef struct s_token
 	struct s_token				*prev;
 }								t_token;
 
+// Structure pour les variables d'environnement
 typedef struct s_env
 {
 	char						*name;
@@ -64,6 +70,7 @@ typedef struct s_env
 	struct s_env				*prev;
 }								t_env;
 
+// Structure pour les variables locales
 typedef struct s_localvar
 {
 	char						*name;
@@ -72,22 +79,28 @@ typedef struct s_localvar
 	struct s_localvar			*prev;
 }								t_localvar;
 
-typedef struct s_parse_ctx
+// NOUVELLE STRUCTURE CENTRALE (remplace g_signal pour les codes d'erreur)
+typedef struct s_shell
 {
-	t_env						*env;
-	t_localvar					*localvar;
-}								t_parse_ctx;
+	t_env *env;            // Variables d'environnement
+	t_localvar **localvar; // Variables locales
+	int exit_code;         // Code de sortie pour echo $?
+	int should_exit;       // Flag pour sortir du shell
+}								t_shell;
+
+// PROTOTYPES REFACTORISÉS
 
 // UTILS
 void							create_token(t_token **tokens, char *content,
 									int content_type);
-void							skip_whitespace(char *line, int *i);
-void							parse_word(char *line, int *i,
-									t_token **tokens);
+void							skip_whitespace(char *line, int *i,
+									t_shell *shell);
+void							parse_word(char *line, int *i, t_token **tokens,
+									t_shell *shell);
 int								parse_line(char *line, t_token **tokens,
-									t_env *env, t_localvar *localvar);
+									t_shell *shell);
 void							parse_quoted(char *s, int *i, t_token **tokens,
-									t_parse_ctx *ctx);
+									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
 
@@ -104,21 +117,21 @@ char							*get_var_value(t_env *env, t_localvar *localvar,
 									char *name);
 
 // EXPAND
-void							handle_exit_status(int *i, t_token **tokens);
+void							handle_exit_status(int *i, t_token **tokens,
+									t_shell *shell);
 void							handle_variable(char *line, int *i,
-									t_token **tokens, t_parse_ctx *ctx);
+									t_token **tokens, t_shell *shell);
 void							parse_var(char *line, int *i, t_token **tokens,
-									t_parse_ctx *ctx);
+									t_shell *shell);
 char							*get_var_value(t_env *env, t_localvar *localvar,
 									char *name);
 char							*handle_expand_in_quotes(char *str,
-									t_parse_ctx *ctx);
-char							*get_exit_status_string(void);
+									t_shell *shell);
 
 // ROLE
-int								apply_role(t_token **tokens, t_env *env);
+int								apply_role(t_token **tokens, t_shell *shell);
 int								handle_command_state(t_token *current,
-									t_parser_state *state, t_env *env);
+									t_parser_state *state, t_shell *shell);
 bool							is_builtin(t_token *token);
 
 // SEARCH PATH
@@ -128,16 +141,17 @@ char							*create_path(char *dir, char *cmd);
 char							*find_in_path(char *cmd, char *path_dirs);
 
 // SIGNAL
-// void							setup_interactive_signals(void);
-// void							setup_execution_signals(void);
 void							ft_setup_interactive_signal(void);
 void							ft_setup_execution_signal(void);
 
-// ERROR
-void							ft_error_cmd_not_found(char *cmd);
-void							ft_error_permission_denied(char *cmd);
-void							ft_error_file(char *cmd, int is_dir);
-void							ft_error_syntax(char *token);
+// ERROR (modifiées pour utiliser t_shell au lieu de g_signal)
+void							ft_error_cmd_not_found(char *cmd,
+									t_shell *shell);
+void							ft_error_permission_denied(char *cmd,
+									t_shell *shell);
+void							ft_error_file(char *cmd, int is_dir,
+									t_shell *shell);
+void							ft_error_syntax(char *token, t_shell *shell);
 
 // FREE
 void							free_token(t_token **tokens);

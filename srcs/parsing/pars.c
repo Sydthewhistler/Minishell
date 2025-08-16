@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pars.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/15 17:04:10 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/16 14:06:32 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static char	*build_quoted_string(char *s, int *i, char c)
 //  * @param i: pointeur vers l'index actuel
 //  * @param tokens: liste des tokens à enrichir
 //  * @param env: environnement pour l'expansion de variables
-void	parse_quoted(char *s, int *i, t_token **tokens, t_parse_ctx *ctx)
+void	parse_quoted(char *s, int *i, t_token **tokens, t_shell *shell)
 {
 	char	*str;
 	char	*expanded;
@@ -64,7 +64,7 @@ void	parse_quoted(char *s, int *i, t_token **tokens, t_parse_ctx *ctx)
 		return ;
 	if (c == '"')
 	{
-		expanded = handle_expand_in_quotes(str, ctx); // ← CORRIGÉ !
+		expanded = handle_expand_in_quotes(str, shell);
 		free(str);
 		str = expanded;
 	}
@@ -94,16 +94,14 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	create_token(tokens, "<<", CONTENT_OPERATOR);
 	create_token(tokens, heredoc_content, CONTENT_HEREDOC);
 	free(heredoc_content);
-	// CORRECTION: Avancer de la longueur exacte du délimiteur
 	delimiter_len = ft_strlen(delimiter);
 	*i += delimiter_len;
-	// Puis passer les espaces optionnels qui suivent
 	while (s[*i] && (s[*i] == ' ' || s[*i] == '\t'))
 		(*i)++;
 	free(delimiter);
 }
 
-void	parse_operator(char *line, int *i, t_token **tokens)
+void	parse_operator(char *line, int *i, t_token **tokens, t_shell *shell)
 {
 	char	s[4];
 
@@ -128,7 +126,7 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 		s[1] = '\0';
 		create_and_advance(tokens, s, i, 1);
 	}
-	skip_whitespace(line, i);
+	skip_whitespace(line, i, shell);  // ← CRUCIAL : ajout de shell !
 }
 
 //  * Fonction principale de parsing d'une ligne de commande
@@ -136,39 +134,36 @@ void	parse_operator(char *line, int *i, t_token **tokens)
 //  * @param line: ligne de commande à parser
 //  * @param tokens: liste des tokens à construire
 //  * @param env: environnement pour l'expansion de variables
-int	parse_line(char *line, t_token **tokens, t_env *env, t_localvar *localvar)
+int	parse_line(char *line, t_token **tokens, t_shell *shell)
 {
-	int			i;
-	t_parse_ctx	ctx;
+	int i;
 
-	ctx.env = env;
-	ctx.localvar = localvar;
 	i = 0;
-	skip_whitespace(line, &i);
+	skip_whitespace(line, &i, shell);
 	while (line[i])
 	{
 		if (line[i] == '\\' && line[i + 1] == '$')
 		{
 			i += 2;
 			create_token(tokens, "$", CONTENT_WORD);
-			skip_whitespace(line, &i);
+			skip_whitespace(line, &i, shell);
 		}
 		else if (line[i] == '"' || line[i] == '\'')
 		{
-			parse_quoted(line, &i, tokens, &ctx);
-			skip_whitespace(line, &i);
+			parse_quoted(line, &i, tokens, shell);
+			skip_whitespace(line, &i, shell);
 		}
 		else if (line[i] == '<' && line[i + 1] == '<')
 			parse_heredoc(line, &i, tokens);
 		else if (line[i] == '|' || line[i] == '<' || line[i] == '>'
 			|| line[i] == '&')
-			parse_operator(line, &i, tokens);
+			parse_operator(line, &i, tokens, shell);
 		else if (line[i] == '$')
-			parse_var(line, &i, tokens, &ctx);
+			parse_var(line, &i, tokens, shell);
 		else
-			parse_word(line, &i, tokens);
+			parse_word(line, &i, tokens, shell);
 	}
-	if (apply_role(tokens, env) != 0)
+	if (apply_role(tokens, shell) != 0)
 		return (0);
 	return (1);
 }

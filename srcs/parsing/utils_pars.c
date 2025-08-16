@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_pars.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/14 11:24:28 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/16 13:57:52 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 // * Ignore les espaces, tabulations et caractères spéciaux (:, !)
 // * @param line: ligne de commande
 // * @param i: pointeur vers l'index actuel (modifié)
-void	skip_whitespace(char *line, int *i)
+void	skip_whitespace(char *line, int *i, t_shell *shell)
 {
 	while (line[*i] == ' ' || line[*i] == '\t' || line[*i] == ':')
 		(*i)++;
@@ -25,9 +25,9 @@ void	skip_whitespace(char *line, int *i)
 	// Cas spécial pour !
 	if (line[*i] == '!')
 	{
-		g_signal = 1;
+		shell->exit_code = 1;
 		(*i)++;
-		skip_whitespace(line, i);
+		skip_whitespace(line, i, shell);
 	}
 }
 
@@ -92,7 +92,7 @@ void	create_token(t_token **tokens, char *content, int content_type)
 // * @param line: ligne de commande
 // * @param i: pointeur vers l'index actuel (modifié)
 // * @param tokens: liste des tokens à enrichir
-void	parse_word(char *line, int *i, t_token **tokens)
+void	parse_word(char *line, int *i, t_token **tokens, t_shell *shell)
 {
 	char	*str;
 	int		start;
@@ -110,5 +110,5 @@ void	parse_word(char *line, int *i, t_token **tokens)
 		// Créer un token de type WORD
 		free(str);
 	}
-	skip_whitespace(line, i); // Ignorer les espaces suivants
+	skip_whitespace(line, i, shell); // Ignorer les espaces suivants
 }

@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   role.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/06 10:41:09 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/14 11:51:22 by coraline         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 // Fonction qui assigne les rôles spécifiques aux opérateurs de redirection et pipe
@@ -67,9 +55,10 @@ static int	handle_argument_state(t_token *current, t_parser_state *state)
 }
 
 // Gère l'état EXP_FILE (on attend un nom de fichier après une redirection)
-static int	handle_filename_state(t_token *current, t_parser_state *state)
+static int	handle_filename_state(t_token *current, t_parser_state *state,
+		t_shell *shell)
 {
-	if (!current || !current->str) // ← Ajouter cette vérification
+	if (!current || !current->str) // ← Vérification de sécurité
 		return (0);
 	else if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
@@ -79,13 +68,13 @@ static int	handle_filename_state(t_token *current, t_parser_state *state)
 	else if (current->type == CONTENT_OPERATOR)
 	{
 		// C'est ici qu'on gère les vraies erreurs de syntaxe !
-		ft_error_syntax(current->str); // ← Au lieu de handle_operator_error
+		ft_error_syntax(current->str, shell); // ← CORRIGÉ : ajout shell
 		return (0);
 	}
 	return (1);
 }
 
-int	apply_role(t_token **tokens, t_env *env)
+int	apply_role(t_token **tokens, t_shell *shell)
 {
 	t_parser_state	state;
 	t_token			*current;
@@ -97,7 +86,8 @@ int	apply_role(t_token **tokens, t_env *env)
 	{
 		if (state == EXP_CMD)
 		{
-			if (!handle_command_state(current, &state, env))
+			if (!handle_command_state(current, &state, shell))
+				// ← CORRIGÉ : shell au lieu de env
 				return (-1);
 		}
 		else if (state == EXP_ARG)
@@ -107,45 +97,46 @@ int	apply_role(t_token **tokens, t_env *env)
 		}
 		else if (state == EXP_FILE)
 		{
-			if (!handle_filename_state(current, &state))
+			if (!handle_filename_state(current, &state, shell))
+				// ← CORRIGÉ : ajout shell
 				return (-3);
 		}
 		current = current->next;
 	}
-	// ← AJOUTER ICI :
+	// Vérification finale
 	if (state == EXP_FILE)
 	{
-		ft_error_syntax("newline");
+		ft_error_syntax("newline", shell); // ← CORRIGÉ : ajout shell
 		return (-3);
 	}
 	return (0);
 }
-/*
-RÉSUMÉ DU FONCTIONNEMENT :
 
-1. assign_operator_roles() : Identifie et assigne les rôles aux opérateurs (|,
-	<, >, <<, >>)
 
-2. La fonction apply_role() utilise une machine à états avec 3 états :
-   - EXP_CMD : attend une commande
-   - EXP_ARG : attend un argument
-   - EXP_FILE : attend un nom de fichier
+// RÉSUMÉ DU FONCTIONNEMENT :
 
-3. Les transitions d'états se font selon les règles :
-   - Après une commande → EXP_ARG (arguments)
-   - Après un pipe → EXP_CMD (nouvelle commande)
-   - Après une redirection → EXP_FILE (nom de fichier)
-   - Après un fichier → EXP_ARG (retour normal)
+// 1. assign_operator_roles() : Identifie et assigne les rôles aux opérateurs (|,
+// 	<, >, <<, >>)
 
-4. Gestion d'erreurs : Si on trouve un opérateur quand on attend un fichier,
-   c'est une erreur de syntaxe.
+// 2. La fonction apply_role() utilise une machine à états avec 3 états :
+//    - EXP_CMD : attend une commande
+//    - EXP_ARG : attend un argument
+//    - EXP_FILE : attend un nom de fichier
 
-Exemple : "ls -l > file.txt | grep test"
-- "ls" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
-- "-l" → ROLE_ARGUMENT
-- ">" → ROLE_REDIRECT_OUT (EXP_ARG → EXP_FILE)
-- "file.txt" → ROLE_FILENAME (EXP_FILE → EXP_ARG)
-- "|" → ROLE_PIPE (EXP_ARG → EXP_CMD)
-- "grep" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
-- "test" → ROLE_ARGUMENT
-*/
+// 3. Les transitions d'états se font selon les règles :
+//    - Après une commande → EXP_ARG (arguments)
+//    - Après un pipe → EXP_CMD (nouvelle commande)
+//    - Après une redirection → EXP_FILE (nom de fichier)
+//    - Après un fichier → EXP_ARG (retour normal)
+
+// 4. Gestion d'erreurs : Si on trouve un opérateur quand on attend un fichier,
+//    c'est une erreur de syntaxe.
+
+// Exemple : "ls -l > file.txt | grep test"
+// - "ls" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
+// - "-l" → ROLE_ARGUMENT
+// - ">" → ROLE_REDIRECT_OUT (EXP_ARG → EXP_FILE)
+// - "file.txt" → ROLE_FILENAME (EXP_FILE → EXP_ARG)
+// - "|" → ROLE_PIPE (EXP_ARG → EXP_CMD)
+// - "grep" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
+// - "test" → ROLE_ARGUMENT
