@@ -39,7 +39,7 @@
 # define PERMISSION_DENIED 126
 # define SIGNAL_INTERRUPTED 130
 
-// Variable globale pour les signaux (gardée pour votre binôme)
+// Variable globale pour les signaux
 extern volatile sig_atomic_t	g_signal;
 
 // ENUM pour l'état du parseur
