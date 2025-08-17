@@ -116,7 +116,7 @@ static int	validate_exit_args(t_token *token, t_shell *shell)
 	{
 		putstr_error("minishell: exit: too many arguments\n");
 		shell->exit_code = 1;
-		return (1);
+		return (1); // Ne pas sortir !
 	}
 	// 1 argument : vérifier si numérique
 	if (!is_numeric(token->next->str))
@@ -136,7 +136,7 @@ static int	validate_exit_args(t_token *token, t_shell *shell)
 
 int	validate_builtin_arguments(t_token *tokens, t_shell *shell)
 {
-	t_token	*current;
+	t_token *current;
 
 	current = tokens;
 	while (current)

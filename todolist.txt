@@ -1,11 +1,9 @@
 
 
-faire signaux
-
 echo -n coucou > test.txt a verifier ecole
 
-exit thwetherwg -> doit quitter
-exit 9 -> doit quitter avec code fermeture 9
+exit thwetherwg -> doit quitter ---> ok a voir message erreur
+exit 9 -> doit quitter avec code fermeture 9 --> ok je pense
 
 https://docs.google.com/spreadsheets/d/1UcKCtNE6Oa1_5VeO3PBR0FYwj2mM9jInu9bqfge13eo/edit?gid=0#gid=0
 
@@ -18,4 +16,46 @@ minishell>nano test.c
 minishell>< test.c cat
 minishell: syntax error near unexpected token 'test.c'
 minishell>exit" 
+--> ok la non ??
+
+pb avec tester redirect, pipes 
+———————————— os_specific
+Test   1: ✅ unset HELLO= 
+Test   2: ❌ unset  A- 
+mini exit code = 1
+bash exit code = 0
+mini error = ( not a valid identifier)
+bash error = ()
+Test   3: ✅⚠️  export HELLO=123 A- WORLD=456 
+mini error = ( not a valid identifier)
+bash error = ( identifiant non valable)
+Test   4: ❌ unset  HELLO A- WORLD 
+mini exit code = 1
+bash exit code = 0
+mini error = ( not a valid identifier)
+bash error = ()
+Test   5: ❌ export UNO=1 DOS-2 TRES=3 || env | grep TRES 
+mini output = ()
+bash output = (TRES=3)
+mini exit code = 1
+bash exit code = 0
+mini error = ( not a valid identifier)
+bash error = ( identifiant non valable)
+Test   6: ❌ export | sort | grep -v SHLVL | grep -v "declare -x _" | grep -v "PS.=" 
+Test   7: ✅ exit 9223372036854775807 
+Test   8: ❌ exit 9223372036854775808 
+mini exit code = 0
+bash exit code = 2
+mini error = ()
+bash error = ( argument numérique nécessaire)
+Test   9: ✅ exit -9223372036854775807 
+Test  10: ✅ exit -9223372036854775808 
+Test  11: ❌ exit -9223372036854775809 
+mini exit code = 255
+bash exit code = 2
+mini error = ()
+bash error = ( argument numérique nécessaire)
+5/11
+😭 😭 😭
+validate built in normes -->6 foncitons
 
