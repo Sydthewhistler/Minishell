@@ -3,26 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 17:30:43 by scavalli          #+#    #+#             */
-/*   Updated: 2025/07/05 15:08:26 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/08/17 16:33:42 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 void	ft_pwd(t_env *env, t_token *token)
 {
-	char	*pwd;
+	char *pwd;
 
-	if(token->next && (token->next->role != ROLE_PIPE && token->next->role != ROLE_REDIRECT_OUT))
+	(void)token; // Ignorer tous les arguments comme bash
+
+	pwd = return_env_value("PWD", env);
+	if (!pwd)
 	{
-		printf("pwd: too many arguments\n");
+		// Fallback si PWD n'existe pas
+		pwd = getcwd(NULL, 0);
+		if (!pwd)
+		{
+			perror("pwd");
+			return ;
+		}
+		printf("%s\n", pwd);
+		free(pwd);
 		return ;
 	}
-	pwd = return_env_value("PWD", env); // va chercher valeur de PWD dans t_env
+
 	printf("%s\n", pwd);
-	return ;
 }

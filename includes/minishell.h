@@ -88,8 +88,6 @@ typedef struct s_shell
 	int should_exit;       // Flag pour sortir du shell
 }								t_shell;
 
-// PROTOTYPES REFACTORISÉS
-
 // UTILS
 void							create_token(t_token **tokens, char *content,
 									int content_type);
@@ -99,10 +97,21 @@ void							parse_word(char *line, int *i, t_token **tokens,
 									t_shell *shell);
 int								parse_line(char *line, t_token **tokens,
 									t_shell *shell);
-void							parse_quoted(char *s, int *i, t_token **tokens,
-									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
+
+// QUOTES
+char							*extract_quoted_content(char *line, int *i,
+									t_shell *shell);
+char							*append_quoted_content(char *result, char *line,
+									int *i, t_shell *shell);
+
+// PARSING HELPERS
+char							*append_char(char *str, char c);
+char							*append_variable_content(char *result,
+									char *line, int *i, t_shell *shell);
+char							*parse_complete_segment(char *line, int *i,
+									t_shell *shell);
 
 // HEREDOC
 char							*extract_delimiter(char *s);
@@ -123,8 +132,6 @@ void							handle_variable(char *line, int *i,
 									t_token **tokens, t_shell *shell);
 void							parse_var(char *line, int *i, t_token **tokens,
 									t_shell *shell);
-char							*get_var_value(t_env *env, t_localvar *localvar,
-									char *name);
 char							*handle_expand_in_quotes(char *str,
 									t_shell *shell);
 
@@ -144,7 +151,7 @@ char							*find_in_path(char *cmd, char *path_dirs);
 void							ft_setup_interactive_signal(void);
 void							ft_setup_execution_signal(void);
 
-// ERROR (modifiées pour utiliser t_shell au lieu de g_signal)
+// ERROR
 void							ft_error_cmd_not_found(char *cmd,
 									t_shell *shell);
 void							ft_error_permission_denied(char *cmd,

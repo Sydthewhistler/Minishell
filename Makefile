@@ -39,7 +39,8 @@ PARSING_FILES = env_utils.c \
 	role.c \
 	utils_pars.c \
 	search_path.c \
-	utils_pars2.c
+	utils_pars2.c \
+	quotes.c
 
 UTILS_FILES = env_utils.c \
 	error.c \
