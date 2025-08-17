@@ -99,6 +99,8 @@ int								parse_line(char *line, t_token **tokens,
 									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
+int								validate_builtin_arguments(t_token *tokens,
+									t_shell *shell);
 
 // QUOTES
 char							*extract_quoted_content(char *line, int *i,
@@ -159,6 +161,7 @@ void							ft_error_permission_denied(char *cmd,
 void							ft_error_file(char *cmd, int is_dir,
 									t_shell *shell);
 void							ft_error_syntax(char *token, t_shell *shell);
+void							putstr_error(char *str);
 
 // FREE
 void							free_token(t_token **tokens);

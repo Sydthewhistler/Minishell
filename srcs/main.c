@@ -33,7 +33,7 @@ static void	process_line(char *line, t_token **tokens, t_shell *shell)
 
 	add_history(line);
 	parsing_status = parse_line(line, tokens, shell);
-	if (*tokens && parsing_status)
+	if (*tokens && parsing_status && ft_strcmp((*tokens)->str, "exit") != 0)
 		shell->exit_code = exec_master(*tokens, &(shell->env), shell->localvar);
 	free_token(tokens);
 	*tokens = NULL;
@@ -61,14 +61,14 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 		free(line);
 		return (1);
 	}
-	if (ft_strcmp(line, "exit") == 0)
+	if (*line != '\0')
+		process_line(line, tokens, shell);
+	// AJOUTER CETTE VÉRIFICATION :
+	if (shell->should_exit)
 	{
-		shell->should_exit = 1;
 		free(line);
 		return (0);
 	}
-	if (*line != '\0')
-		process_line(line, tokens, shell);
 	free(line);
 	return (1);
 }
@@ -90,7 +90,7 @@ static void	shell_loop(t_shell *shell)
 // Fonction 5: MAIN principal (16 lignes)
 int	main(int ac, char **av, char **envp)
 {
-	t_shell shell;
+	t_shell	shell;
 
 	(void)ac;
 	(void)av;

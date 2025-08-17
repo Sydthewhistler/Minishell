@@ -6,7 +6,7 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/22 13:51:07 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/17 16:28:42 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/17 16:52:51 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ int	parse_line(char *line, t_token **tokens, t_shell *shell)
 		skip_whitespace(line, &i, shell);
 	}
 	if (apply_role(tokens, shell) != 0)
+		return (0);
+	if (!validate_builtin_arguments(*tokens, shell))
 		return (0);
 	return (1);
 }

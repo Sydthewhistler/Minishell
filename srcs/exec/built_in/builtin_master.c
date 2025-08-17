@@ -25,6 +25,8 @@ bool	is_builtin(t_token *token)
 		return (true);
 	else if(ft_contains(token->str, "=")) // si declaration nouvelle localvar
 		return (true);
+	else if (!ft_strcmp(token->str, "exit"))
+		return (true);
 	return (false);
 }
 
