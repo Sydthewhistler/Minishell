@@ -46,6 +46,7 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 	char	*line;
 
 	line = readline("minishell>");
+	g_signal = 0;
 	if (!line)
 	{
 		printf("exit\n");
@@ -63,7 +64,6 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 	}
 	if (*line != '\0')
 		process_line(line, tokens, shell);
-	// AJOUTER CETTE VÉRIFICATION :
 	if (shell->should_exit)
 	{
 		free(line);
