@@ -99,9 +99,6 @@ int								parse_line(char *line, t_token **tokens,
 									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
-int								validate_builtin_arguments(t_token *tokens,
-									t_shell *shell);
-
 // QUOTES
 char							*extract_quoted_content(char *line, int *i,
 									t_shell *shell);
@@ -167,5 +164,19 @@ void							putstr_error(char *str);
 void							free_token(t_token **tokens);
 void							free_all_env(t_env **env);
 void							free_all_localvar(t_localvar **localvar);
+
+// VALIDATE BUILT IN
+int								validate_builtin_arguments(t_token *tokens,
+									t_shell *shell);
+int								is_numeric(char *str);
+int								is_valid_identifier(char *name);
+int								validate_unset(t_token *token, t_shell *shell,
+									char *cmd);
+int								validate_export(t_token *token, t_shell *shell,
+									char *cmd);
+int								validate_cd_args(t_token *token,
+									t_shell *shell);
+int								validate_exit_args(t_token *token,
+									t_shell *shell);
 
 #endif

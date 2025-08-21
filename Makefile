@@ -41,7 +41,8 @@ PARSING_FILES = env_utils.c \
 	search_path.c \
 	utils_pars2.c \
 	quotes.c \
-	validate_builtins.c
+	validate_builtins.c \
+	validate_builtins2.c 
 
 UTILS_FILES = env_utils.c \
 	error.c \
