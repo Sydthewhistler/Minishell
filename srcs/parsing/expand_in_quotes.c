@@ -61,7 +61,6 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 	char	*new_result;
 
 	start = *i; // Marquer début du nom de variable
-	// Lire nom variable (alphanumériques + underscore)
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
 		(*i)++;
 	if (*i == start) // Si aucun nom valide trouvé
@@ -73,15 +72,10 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 		return (NULL);
 	}
 	value = get_var_value(shell->env, *(shell->localvar), name);
-	// Chercher dans l'environnement
 	if (!value)
-		// Si variable non définie
 		value = ft_strdup("");
-	// Utiliser chaîne vide
 	new_result = ft_strjoin(result, value);
-	// Concaténer au résultat
 	free(result);
-	// Libérer ancien résultat
 	free(name);  // Libérer le nom
 	free(value); // Libérer la valeur
 	return (new_result);

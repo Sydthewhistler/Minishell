@@ -69,7 +69,7 @@ static int	validate_single_builtin(t_token *current, t_shell *shell)
 
 int	validate_builtin_arguments(t_token *tokens, t_shell *shell)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = tokens;
 	while (current)

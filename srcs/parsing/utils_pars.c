@@ -1,28 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   utils_pars.c                                       :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/04 10:12:38 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/17 16:20:57 by coraline         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
-// * Ignore les espaces, tabulations et caractères spéciaux (:, !)
-// * @param line: ligne de commande
-// * @param i: pointeur vers l'index actuel (modifié)
 void	skip_whitespace(char *line, int *i, t_shell *shell)
 {
 	while (line[*i] == ' ' || line[*i] == '\t' || line[*i] == ':')
 		(*i)++;
-	// Gérer \ seulement s'il n'est PAS suivi de $
 	if (line[*i] == '\\' && line[*i + 1] != '$')
 		(*i)++;
-	// Cas spécial pour !
 	if (line[*i] == '!')
 	{
 		shell->exit_code = 1;
@@ -31,84 +14,71 @@ void	skip_whitespace(char *line, int *i, t_shell *shell)
 	}
 }
 
-// * Trouve le dernier token de la liste chaînée
-// * @param tokens: premier token de la liste
-// * @return: pointeur vers le dernier token, ou NULL si liste vide
 t_token	*found_last(t_token *tokens)
 {
-	if (!tokens) // Si la liste est vide
+	if (!tokens)
 		return (NULL);
-	while (tokens->next) // Parcourir jusqu'au dernier élément
+	while (tokens->next)
 		tokens = tokens->next;
-	return (tokens); // Retourner le dernier token
+	return (tokens);
 }
 
-// * Wrapper pour créer un token d'opérateur
-// * @param tokens: liste des tokens à enrichir
-// * @param operator: chaîne de l'opérateur
-// * @param content_type: type de contenu du token
-void	create_operator_token(t_token **tokens, char *operator,
-		int content_type)
+static t_token	*init_new_token(char *content, int content_type)
 {
-	create_token(tokens, operator, content_type); // Déléguer à create_token
+	t_token	*new_token;
+
+	new_token = malloc(sizeof(t_token));
+	if (!new_token)
+		return (NULL);
+	new_token->str = ft_strdup(content);
+	if (!new_token->str)
+	{
+		free(new_token);
+		return (NULL);
+	}
+	new_token->type = content_type;
+	new_token->role = 0;
+	new_token->envp = NULL;
+	new_token->next = NULL;
+	new_token->prev = NULL;
+	return (new_token);
 }
 
-// * Crée et ajoute un nouveau token à la fin de la liste
-// * @param tokens: pointeur vers la liste des tokens
-// * @param content: contenu du token à créer
-// * @param content_type: type du token (WORD, OPERATOR, etc.)
 void	create_token(t_token **tokens, char *content, int content_type)
 {
 	t_token	*new_token;
 	t_token	*last;
 
-	new_token = malloc(sizeof(t_token)); // Allouer un nouveau token
-	if (!new_token || !tokens)
-		// Vérifier l'allocation et les paramètres
+	if (!tokens)
 		return ;
-	new_token->str = ft_strdup(content); // Copier le contenu
-	if (!new_token->str)                 // Vérifier l'allocation de la chaîne
-	{
-		free(new_token);
+	new_token = init_new_token(content, content_type);
+	if (!new_token)
 		return ;
-	}
-	new_token->type = content_type; // Définir le type
-	new_token->role = 0;            // Initialiser le rôle à 0
-	new_token->envp = NULL;
-	new_token->next = NULL; // Pas de suivant pour l'instant
-	new_token->prev = NULL; // Pas de précédent pour l'instant
-	if (!(*tokens))         // Si c'est le premier token de la liste
+	if (!(*tokens))
 		*tokens = new_token;
-	else // Sinon, l'ajouter à la fin
+	else
 	{
-		last = found_last(*tokens); // Trouver le dernier token
-		last->next = new_token;     // Lier le dernier au nouveau
+		last = found_last(*tokens);
+		last->next = new_token;
 		new_token->prev = last;
-		// Lier le nouveau au dernier (liste doublement chaînée)
 	}
 }
 
-// * Parse un mot (séquence de caractères sans espaces ni opérateurs)
-// * @param line: ligne de commande
-// * @param i: pointeur vers l'index actuel (modifié)
-// * @param tokens: liste des tokens à enrichir
 void	parse_word(char *line, int *i, t_token **tokens, t_shell *shell)
 {
 	char	*str;
 	int		start;
 
-	start = *i; // Marquer le début du mot
-	// Avancer tant qu'on ne rencontre pas un caractère spécial
+	start = *i;
 	while (line[*i] != '\0' && line[*i] != ' ' && line[*i] != '\t'
 		&& line[*i] != '>' && line[*i] != '<' && line[*i] != '$'
 		&& line[*i] != '\'' && line[*i] != '"')
 		(*i)++;
-	if (*i > start) // Si on a trouvé au moins un caractère
+	if (*i > start)
 	{
-		str = ft_substr_len(line, start, *i - start); // Extraire la sous-chaîne
+		str = ft_substr_len(line, start, *i - start);
 		create_token(tokens, str, CONTENT_WORD);
-		// Créer un token de type WORD
 		free(str);
 	}
-	skip_whitespace(line, i, shell); // Ignorer les espaces suivants
+	skip_whitespace(line, i, shell);
 }

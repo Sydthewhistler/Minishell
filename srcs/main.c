@@ -1,10 +1,8 @@
-
 #include "exec.h"
 #include "minishell.h"
 
 volatile sig_atomic_t	g_signal = 0;
 
-// Fonction 1: Initialise la structure shell (25 lignes max)
 static int	init_shell(char **envp, t_shell *shell)
 {
 	if (!envp)
@@ -26,7 +24,6 @@ static int	init_shell(char **envp, t_shell *shell)
 	return (0);
 }
 
-// Fonction 2: Traite une ligne de commande (12 lignes)
 static void	process_line(char *line, t_token **tokens, t_shell *shell)
 {
 	int	parsing_status;
@@ -40,7 +37,21 @@ static void	process_line(char *line, t_token **tokens, t_shell *shell)
 	ft_setup_interactive_signal();
 }
 
-// Fonction 3: Gère les signaux et traite une ligne (25 lignes max)
+static int	handle_signal_interrupt(t_shell *shell, char *line)
+{
+	if (g_signal == SIGINT)
+	{
+		shell->exit_code = SIGNAL_INTERRUPTED;
+		g_signal = 0;
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		free(line);
+		return (1);
+	}
+	return (0);
+}
+
 static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 {
 	char	*line;
@@ -52,16 +63,8 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 		printf("exit\n");
 		return (0);
 	}
-	if (g_signal == SIGINT)
-	{
-		shell->exit_code = SIGNAL_INTERRUPTED;
-		g_signal = 0;
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-		free(line);
+	if (handle_signal_interrupt(shell, line))
 		return (1);
-	}
 	if (*line != '\0')
 		process_line(line, tokens, shell);
 	if (shell->should_exit)
@@ -73,30 +76,22 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 	return (1);
 }
 
-// Fonction 4: Boucle principale du shell (11 lignes)
-static void	shell_loop(t_shell *shell)
-{
-	t_token	*tokens;
-
-	tokens = NULL;
-	ft_setup_interactive_signal();
-	while (!shell->should_exit)
-	{
-		if (!handle_shell_iteration(shell, &tokens))
-			break ;
-	}
-}
-
-// Fonction 5: MAIN principal (16 lignes)
 int	main(int ac, char **av, char **envp)
 {
-	t_shell	shell;
+	t_shell shell;
+	t_token *tokens;
 
 	(void)ac;
 	(void)av;
+	tokens = NULL;
 	if (init_shell(envp, &shell) == -1)
 		return (-1);
-	shell_loop(&shell);
+	ft_setup_interactive_signal();
+	while (!shell.should_exit)
+	{
+		if (!handle_shell_iteration(&shell, &tokens))
+			break ;
+	}
 	rl_clear_history();
 	free_all_env(&(shell.env));
 	free_all_localvar(shell.localvar);

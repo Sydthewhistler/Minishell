@@ -99,6 +99,9 @@ int								parse_line(char *line, t_token **tokens,
 									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
+char							*extract_delimiter(char *s);
+char							*add_line_to_result(char *result, char *line);
+
 // QUOTES
 char							*extract_quoted_content(char *line, int *i,
 									t_shell *shell);

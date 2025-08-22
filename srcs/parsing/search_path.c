@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   search_path.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/24 10:22:44 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/16 14:03:40 by cprot            ###   ########.fr       */
+/*   Updated: 2025/08/22 10:24:46 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Libère un tableau de chaînes
 void	free_args(char **args)
 {
 	int	i;
@@ -20,72 +19,75 @@ void	free_args(char **args)
 	if (!args)
 		return ;
 	i = 0;
-	while (args[i]) // Libère chaque chaîne
+	while (args[i])
 	{
 		free(args[i]);
 		i++;
 	}
-	free(args); // Libère le tableau lui-même
+	free(args);
 }
 
-// Construit un chemin complet : dir + "/" + cmd
 char	*create_path(char *dir, char *cmd)
 {
 	char	*path;
 	char	*temp;
 
-	temp = ft_strjoin(dir, "/"); // dir + "/"
+	temp = ft_strjoin(dir, "/");
 	if (!temp)
 		return (NULL);
-	path = ft_strjoin(temp, cmd); // dir + "/" + cmd
-	free(temp);                   // Libère le temporaire
+	path = ft_strjoin(temp, cmd);
+	free(temp);
 	return (path);
 }
 
-// Cherche une commande dans les répertoires du PATH
+static int	is_executable_file(char *full_path)
+{
+	struct stat	info;
+
+	if (stat(full_path, &info) == 0)
+	{
+		if (S_ISREG(info.st_mode) && access(full_path, X_OK) == 0)
+			return (1);
+	}
+	return (0);
+}
+
 char	*find_in_path(char *cmd, char *path_dirs)
 {
-	int			i;
-	struct stat	info;
-	char		**dirs;
-	char		*full_path;
+	int		i;
+	char	**dirs;
+	char	*full_path;
 
-	dirs = ft_split(path_dirs, ':'); // Découpe PATH en répertoires
+	dirs = ft_split(path_dirs, ':');
 	if (!dirs)
 		return (NULL);
 	i = 0;
-	while (dirs[i]) // Teste chaque répertoire
+	while (dirs[i])
 	{
-		full_path = create_path(dirs[i], cmd); // Construit le chemin
+		full_path = create_path(dirs[i], cmd);
 		if (!full_path)
 			return (free_args(dirs), NULL);
-		if (stat(full_path, &info) == 0) // Le fichier existe ?
-		{
-			if (S_ISREG(info.st_mode) && access(full_path, X_OK) == 0)
-				// Fichier exécutable ?
-				return (free_args(dirs), full_path);                  
-					// Trouvé !
-		}
-		free(full_path); // Pas bon, on continue
+		if (is_executable_file(full_path))
+			return (free_args(dirs), full_path);
+		free(full_path);
 		i++;
 	}
 	free_args(dirs);
-	return (NULL); // Pas trouvé
+	return (NULL);
 }
 
-// Interface principale : trouve le chemin d'une commande
 char	*search_path(char *cmd, t_env *env)
 {
-	t_env *current;
+	t_env	*current;
 
 	current = env;
-	if (ft_strrchr(cmd, '/'))    // Contient déjà un chemin ?
-		return (ft_strdup(cmd)); // Retourne tel quel
-	while (current)              // Cherche la variable PATH
+	if (ft_strrchr(cmd, '/'))
+		return (ft_strdup(cmd));
+	while (current)
 	{
 		if (ft_strcmp(current->name, "PATH") == 0)
-			return (find_in_path(cmd, current->value)); // Cherche dans PATH
+			return (find_in_path(cmd, current->value));
 		current = current->next;
 	}
-	return (NULL); // PATH pas trouvé
+	return (NULL);
 }

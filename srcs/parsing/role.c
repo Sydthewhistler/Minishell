@@ -1,117 +1,110 @@
+
 #include "minishell.h"
 
-// Fonction qui assigne les rôles spécifiques aux opérateurs de redirection et pipe
 void	assign_operator_roles(t_token **tokens)
 {
 	t_token	*current;
 
 	current = *tokens;
-	// Parcourt tous les tokens de la liste
 	while (current)
 	{
-		// Si le token est identifié comme un opérateur
 		if (current->type == CONTENT_OPERATOR)
 		{
-			// Assigne le rôle spécifique selon l'opérateur trouvé
 			if (ft_strcmp(current->str, "|") == 0)
-				current->role = ROLE_PIPE; // Pipe pour connecter des commandes
+				current->role = ROLE_PIPE;
 			else if (ft_strcmp(current->str, "<<") == 0)
 				current->role = ROLE_REDIRECT_HEREDOC;
-			// Here-document (lecture multi-ligne)
 			else if (ft_strcmp(current->str, ">>") == 0)
 				current->role = ROLE_REDIRECT_APPEND;
-			// Redirection en mode ajout
 			else if (ft_strcmp(current->str, "<") == 0)
-				current->role = ROLE_REDIRECT_IN; // Redirection d'entrée
+				current->role = ROLE_REDIRECT_IN;
 			else if (ft_strcmp(current->str, ">") == 0)
-				current->role = ROLE_REDIRECT_OUT; // Redirection de sortie
+				current->role = ROLE_REDIRECT_OUT;
 		}
 		current = current->next;
 	}
 }
 
-// Gère l'état EXP_ARG (on attend un argument ou un opérateur)
 static int	handle_argument_state(t_token *current, t_parser_state *state)
 {
-	// Si c'est un mot ou une chaîne quotée
 	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
-	{
-		current->role = ROLE_ARGUMENT; // C'est un argument de commande
-	}
-	// Si c'est un opérateur
+		current->role = ROLE_ARGUMENT;
 	else if (current->type == CONTENT_OPERATOR)
 	{
 		if (current->role == ROLE_PIPE)
-			*state = EXP_CMD; // Après un pipe, on attend une nouvelle commande
+			*state = EXP_CMD;
 		else if (current->role == ROLE_REDIRECT_OUT
 			|| current->role == ROLE_REDIRECT_APPEND
 			|| current->role == ROLE_REDIRECT_IN)
 			*state = EXP_FILE;
-		// Après une redirection,on attend un nom de fichier
 		else if (current->role == ROLE_REDIRECT_HEREDOC)
 			*state = EXP_ARG;
 	}
-	return (1); // Succès
+	return (1);
 }
 
-// Gère l'état EXP_FILE (on attend un nom de fichier après une redirection)
 static int	handle_filename_state(t_token *current, t_parser_state *state,
 		t_shell *shell)
 {
-	if (!current || !current->str) // ← Vérification de sécurité
+	if (!current || !current->str)
 		return (0);
-	else if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
+	if (current->type == CONTENT_WORD || current->type == CONTENT_QUOTED)
 	{
 		current->role = ROLE_FILENAME;
 		*state = EXP_ARG;
 	}
 	else if (current->type == CONTENT_OPERATOR)
 	{
-		// C'est ici qu'on gère les vraies erreurs de syntaxe !
-		ft_error_syntax(current->str, shell); // ← CORRIGÉ : ajout shell
+		ft_error_syntax(current->str, shell);
 		return (0);
 	}
 	return (1);
+}
+
+static int	process_current_token(t_token *current, t_parser_state *state,
+		t_shell *shell)
+{
+	if (*state == EXP_CMD)
+	{
+		if (!handle_command_state(current, state, shell))
+			return (-1);
+	}
+	else if (*state == EXP_ARG)
+	{
+		if (!handle_argument_state(current, state))
+			return (-2);
+	}
+	else if (*state == EXP_FILE)
+	{
+		if (!handle_filename_state(current, state, shell))
+			return (-3);
+	}
+	return (0);
 }
 
 int	apply_role(t_token **tokens, t_shell *shell)
 {
 	t_parser_state	state;
 	t_token			*current;
+	int				result;
 
 	current = *tokens;
 	state = EXP_CMD;
 	assign_operator_roles(tokens);
 	while (current)
 	{
-		if (state == EXP_CMD)
-		{
-			if (!handle_command_state(current, &state, shell))
-				// ← CORRIGÉ : shell au lieu de env
-				return (-1);
-		}
-		else if (state == EXP_ARG)
-		{
-			if (!handle_argument_state(current, &state))
-				return (-2);
-		}
-		else if (state == EXP_FILE)
-		{
-			if (!handle_filename_state(current, &state, shell))
-				// ← CORRIGÉ : ajout shell
-				return (-3);
-		}
+		result = process_current_token(current, &state, shell);
+		if (result != 0)
+			return (result);
 		current = current->next;
 	}
-	// Vérification finale
 	if (state == EXP_FILE)
 	{
-		ft_error_syntax("newline", shell); // ← CORRIGÉ : ajout shell
+		ft_error_syntax("newline", shell);
 		return (-3);
 	}
 	return (0);
 }
-
 
 // RÉSUMÉ DU FONCTIONNEMENT :
 
