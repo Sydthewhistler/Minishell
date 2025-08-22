@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 void	assign_operator_roles(t_token **tokens)

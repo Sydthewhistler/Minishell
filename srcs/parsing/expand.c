@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 // Ancienne fonction - QUE l'environnement (pour les builtins)
@@ -20,11 +19,12 @@ char	*get_env_value(t_env *env, char *name)
 char	*get_var_value(t_env *env, t_localvar *localvar, char *name)
 {
 	t_localvar	*local;
+	char		*uid_env;
 
 	// Cas spécial pour UID
 	if (ft_strcmp(name, "UID") == 0)
 	{
-		char *uid_env = getenv("UID"); // getenv() EST AUTORISÉ !
+		uid_env = getenv("UID"); // getenv() EST AUTORISÉ !
 		if (uid_env)
 			return (ft_strdup(uid_env));
 		else

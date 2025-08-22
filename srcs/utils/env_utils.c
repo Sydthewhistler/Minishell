@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 #include "exec.h"
 
@@ -11,11 +10,11 @@ t_env	*find_last_exportvar(t_env *node)
 	return (node);
 }
 
-char *return_env_value(const char *name, const t_env *env)
+char	*return_env_value(const char *name, const t_env *env)
 {
-	while(env)
+	while (env)
 	{
-		if(!ft_strcmp(env->name, name))
+		if (!ft_strcmp(env->name, name))
 			return (env->value);
 		env = env->next;
 	}
@@ -33,7 +32,8 @@ t_env	*find_env_var(t_env *env, const char *name)
 	return (NULL);
 }
 
-void	set_env_value(t_env *env, char *name, char *new_value) //modifie valeur de name dans env
+//modifie valeur de name dans env
+void	set_env_value(t_env *env, char *name, char *new_value)
 {
 	while (env)
 	{

@@ -1,4 +1,3 @@
-
 #include "exec.h"
 #include <minishell.h>
 
@@ -57,6 +56,9 @@ void	ft_error_syntax(char *token, t_shell *shell)
 		putstr_error("'\n");
 	}
 	else
-		putstr_error("minishell: syntax error near unexpected token 'newline'\n");
+	{
+		putstr_error("minishell: syntax error near unexpected token "
+			"'newline'\n");
+	}
 	shell->exit_code = SYNTAX_ERROR_CODE;
 }

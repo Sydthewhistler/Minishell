@@ -1,6 +1,5 @@
-
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 char	*ft_strndup(const char *str, int n)
 {
@@ -93,12 +92,12 @@ void	free_localvar(t_localvar *local, t_localvar **localvar)
 	free(local);
 }
 
-void free_tab(char **tab)
+void	free_tab(char **tab)
 {
-	int i;
+	int	i;
 
 	if (!tab)
-		return;
+		return ;
 	i = 0;
 	while (tab[i])
 	{

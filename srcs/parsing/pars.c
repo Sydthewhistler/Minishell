@@ -1,16 +1,14 @@
-
 #include "minishell.h"
 
 void	parse_heredoc(char *s, int *i, t_token **tokens)
 {
 	char	*delimiter;
-	char	*heredoc_content;
-	int		delimiter_len;
 
 	*i += 2;
 	while (s[*i] == ' ' || s[*i] == '\t')
 		(*i)++;
-	if (!s[*i] || s[*i] == '\n' || s[*i] == '!' || s[*i] == '<' || s[*i] == '>')
+	if (!s[*i] || s[*i] == '\n' || s[*i] == '!' || s[*i] == '<'
+		|| s[*i] == '>')
 		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	delimiter = extract_delimiter(s + *i);
 	if (!delimiter || !delimiter[0])
@@ -19,14 +17,7 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 			free(delimiter);
 		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	}
-	heredoc_content = handle_heredoc(delimiter);
-	create_token(tokens, "<<", CONTENT_OPERATOR);
-	create_token(tokens, heredoc_content, CONTENT_HEREDOC);
-	free(heredoc_content);
-	delimiter_len = ft_strlen(delimiter);
-	*i += delimiter_len;
-	while (s[*i] && (s[*i] == ' ' || s[*i] == '\t'))
-		(*i)++;
+	process_heredoc_content(delimiter, tokens, s, i);
 	free(delimiter);
 }
 
@@ -55,11 +46,11 @@ void	parse_operator(char *line, int *i, t_token **tokens, t_shell *shell)
 		s[1] = '\0';
 		create_and_advance(tokens, s, i, 1);
 	}
-	skip_whitespace(line, i, shell); // ← CRUCIAL : ajout de shell !
+	skip_whitespace(line, i, shell);
 }
 
-static void	handle_segment_parsing(char *line, int *i, t_token **tokens,
-		t_shell *shell)
+void	handle_segment_parsing(char *line, int *i, t_token **tokens,
+	t_shell *shell)
 {
 	char	*segment;
 
@@ -71,6 +62,18 @@ static void	handle_segment_parsing(char *line, int *i, t_token **tokens,
 	}
 }
 
+void	parse_line_character(char *line, int *i, t_token **tokens,
+	t_shell *shell)
+{
+	if (line[*i] == '<' && line[*i + 1] == '<')
+		parse_heredoc(line, i, tokens);
+	else if (line[*i] == '|' || line[*i] == '<' || line[*i] == '>'
+		|| line[*i] == '&')
+		parse_operator(line, i, tokens, shell);
+	else
+		handle_segment_parsing(line, i, tokens, shell);
+}
+
 int	parse_line(char *line, t_token **tokens, t_shell *shell)
 {
 	int	i;
@@ -79,13 +82,7 @@ int	parse_line(char *line, t_token **tokens, t_shell *shell)
 	skip_whitespace(line, &i, shell);
 	while (line[i])
 	{
-		if (line[i] == '<' && line[i + 1] == '<')
-			parse_heredoc(line, &i, tokens);
-		else if (line[i] == '|' || line[i] == '<' || line[i] == '>'
-			|| line[i] == '&')
-			parse_operator(line, &i, tokens, shell);
-		else
-			handle_segment_parsing(line, &i, tokens, shell);
+		parse_line_character(line, &i, tokens, shell);
 		skip_whitespace(line, &i, shell);
 	}
 	if (apply_role(tokens, shell) != 0)

@@ -38,7 +38,7 @@ void	ft_sigint_execution_handler(int sig)
 
 void	ft_setup_execution_signal(void)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	ft_memset(&sa, 0, sizeof(sa));
 	sa.sa_handler = ft_sigint_execution_handler;

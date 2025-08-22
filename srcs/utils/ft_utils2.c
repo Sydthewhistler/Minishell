@@ -37,8 +37,8 @@ char	*extract_delimiter(char *s)
 
 char	*add_line_to_result(char *result, char *line)
 {
-	char *new_result;
-	char *temp;
+	char	*new_result;
+	char	*temp;
 
 	if (result && result[0] != '\0')
 	{

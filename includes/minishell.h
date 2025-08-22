@@ -43,7 +43,7 @@
 extern volatile sig_atomic_t	g_signal;
 
 // ENUM pour l'état du parseur
-typedef enum
+typedef enum e_parser_state
 {
 	EXP_CMD,
 	EXP_ARG,
@@ -82,10 +82,10 @@ typedef struct s_localvar
 // NOUVELLE STRUCTURE CENTRALE (remplace g_signal pour les codes d'erreur)
 typedef struct s_shell
 {
-	t_env *env;            // Variables d'environnement
-	t_localvar **localvar; // Variables locales
-	int exit_code;         // Code de sortie pour echo $?
-	int should_exit;       // Flag pour sortir du shell
+	t_env						*env;
+	t_localvar					**localvar;
+	int							exit_code;
+	int							should_exit;
 }								t_shell;
 
 // UTILS
@@ -101,6 +101,8 @@ void							create_and_advance(t_token **tokens, char *op,
 									int *i, int len);
 char							*extract_delimiter(char *s);
 char							*add_line_to_result(char *result, char *line);
+void							process_heredoc_content(char *delimiter,
+									t_token **tokens, char *s, int *i);
 
 // QUOTES
 char							*extract_quoted_content(char *line, int *i,

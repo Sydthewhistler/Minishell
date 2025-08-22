@@ -36,8 +36,8 @@ char	*extract_quoted_content(char *line, int *i, t_shell *shell)
 
 char	*append_quoted_content(char *result, char *line, int *i, t_shell *shell)
 {
-	char *quoted_content;
-	char *new_result;
+	char	*quoted_content;
+	char	*new_result;
 
 	quoted_content = extract_quoted_content(line, i, shell);
 	new_result = ft_strjoin(result, quoted_content);

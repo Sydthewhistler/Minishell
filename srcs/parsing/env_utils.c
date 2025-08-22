@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   env_utils.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/02 09:51:45 by cprot             #+#    #+#             */
-/*   Updated: 2025/08/22 10:11:20 by coraline         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 // * Trouve le dernier nœud de la liste d'environnement
@@ -21,7 +9,7 @@ t_env	*found_envplast(t_env *tokens)
 		return (NULL);
 	while (tokens->next) // Parcourir jusqu'au dernier
 		tokens = tokens->next;
-	return (tokens); // Retourner le dernier nœud
+	return (tokens);// Retourner le dernier nœud
 }
 
 // * Libère un nœud d'environnement en cas d'erreur d'allocation
@@ -32,7 +20,7 @@ static void	free_node_on_error(t_env *new)
 		free(new->name);
 	if (new->value) // Si la valeur a été allouée
 		free(new->value);
-	free(new); // Libérer le nœud lui-même
+	free(new);// Libérer le nœud lui-même
 }
 
 // * Crée et ajoute un nouveau nœud d'environnement à la liste
@@ -45,25 +33,25 @@ t_env	*create_node(t_env **envp, char *name, char *value)
 	t_env	*new;
 	t_env	*last;
 
-	new = (t_env *)malloc(sizeof(t_env)); // Allouer le nouveau nœud
+	new = (t_env *)malloc(sizeof(t_env));// Allouer le nouveau nœud
 	if (!new)
 		return (NULL);
-	new->name = ft_strdup(name);   // Dupliquer le nom
-	new->value = ft_strdup(value); // Dupliquer la valeur
+	new->name = ft_strdup(name);// Dupliquer le nom
+	new->value = ft_strdup(value);// Dupliquer la valeur
 	if (!new->name || !new->value) // Si échec d'allocation
 	{
-		free_node_on_error(new); // Nettoyer partiellement
+		free_node_on_error(new);// Nettoyer partiellement
 		return (NULL);
 	}
-	new->prev = NULL; // Pas de précédent pour l'instant
-	new->next = NULL; // Pas de suivant pour l'instant
+	new->prev = NULL;// Pas de précédent pour l'instant
+	new->next = NULL;// Pas de suivant pour l'instant
 	if (!(*envp)) // Si c'est le premier nœud
 		*envp = new;
-	else // Sinon l'ajouter à la fin
+	else// Sinon l'ajouter à la fin
 	{
-		last = found_envplast(*envp); // Trouver le dernier
-		last->next = new;             // Lier le dernier au nouveau
-		new->prev = last;             // Lier le nouveau au dernier
+		last = found_envplast(*envp);// Trouver le dernier
+		last->next = new;// Lier le dernier au nouveau
+		new->prev = last;// Lier le nouveau au dernier
 	}
 	return (new);
 }
@@ -86,8 +74,8 @@ void	split_envp(char *envp, char **name, char **value)
 		*value = NULL;
 		return ;
 	}
-	start = i;                              // Position du '='
-	*name = malloc((i + 1) * sizeof(char)); // Allouer pour le nom
+	start = i;// Position du '='
+	*name = malloc((i + 1) * sizeof(char));// Allouer pour le nom
 	if (!(*name))
 		return ;
 	i = 0;
@@ -96,8 +84,8 @@ void	split_envp(char *envp, char **name, char **value)
 		(*name)[i] = envp[i];
 		i++;
 	}
-	(*name)[i] = '\0'; // Terminer le nom
-	*value = ft_substr(envp, start + 1); // Extraire la valeur après '='
+	(*name)[i] = '\0';// Terminer le nom
+	*value = ft_substr(envp, start + 1);// Extraire la valeur après '='
 	return ;
 }
 
@@ -106,21 +94,20 @@ void	split_envp(char *envp, char **name, char **value)
 // * @return: liste chaînée d'environnement initialisée
 t_env	*init_env_from_envp(char **envp)
 {
-	char *name;
-	char *value;
-	t_env *env;
-	int i;
+	char	*name;
+	char	*value;
+	t_env	*env;
+	int		i;
 
 	i = 0;
-	env = NULL; // Commencer avec liste vide
-
+	env = NULL;// Commencer avec liste vide
 	while (envp[i]) // Parcourir tout le tableau
 	{
-		split_envp(envp[i], &name, &value); // Séparer nom et valeur
-		create_node(&env, name, value);     // Créer et ajouter le nœud
-		free(name);                         // Libérer le nom temporaire
-		free(value);                        // Libérer la valeur temporaire
+		split_envp(envp[i], &name, &value);// Séparer nom et valeur
+		create_node(&env, name, value);// Créer et ajouter le nœud
+		free(name);// Libérer le nom temporaire
+		free(value);// Libérer la valeur temporaire
 		i++;
 	}
-	return (env); // Retourner la liste construite
+	return (env);// Retourner la liste construite
 }

@@ -1,11 +1,5 @@
 #include "minishell.h"
 
-void	create_and_advance(t_token **tokens, char *op, int *i, int len)
-{
-	create_token(tokens, op, CONTENT_OPERATOR);
-	(*i) += len;
-}
-
 char	*append_char(char *str, char c)
 {
 	int		len;
@@ -68,25 +62,27 @@ char	*append_variable_content(char *result, char *line, int *i,
 	return (new_result);
 }
 
-static int	is_separator(char c)
+static int	is_separator_or_special(char c)
 {
 	return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>'
-		|| c == '&');
+		|| c == '&' || c == '"' || c == '\'' || c == '$');
 }
 
 char	*parse_complete_segment(char *line, int *i, t_shell *shell)
 {
-	char *result;
+	char	*result;
 
 	result = ft_strdup("");
-	while (line[*i] && !is_separator(line[*i]))
+	while (line[*i] && !is_separator_or_special(line[*i]))
+		result = append_char(result, line[(*i)++]);
+	while (line[*i] && (line[*i] == '"' || line[*i] == '\'' || line[*i] == '$'))
 	{
 		if (line[*i] == '"' || line[*i] == '\'')
 			result = append_quoted_content(result, line, i, shell);
 		else if (line[*i] == '$')
 			result = append_variable_content(result, line, i, shell);
-		else
-			result = append_char(result, line[(*i)++]);
 	}
+	while (line[*i] && !is_separator_or_special(line[*i]))
+		result = append_char(result, line[(*i)++]);
 	return (result);
 }

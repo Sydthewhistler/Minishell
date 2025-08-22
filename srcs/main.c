@@ -78,8 +78,8 @@ static int	handle_shell_iteration(t_shell *shell, t_token **tokens)
 
 int	main(int ac, char **av, char **envp)
 {
-	t_shell shell;
-	t_token *tokens;
+	t_shell	shell;
+	t_token	*tokens;
 
 	(void)ac;
 	(void)av;

@@ -1,4 +1,3 @@
-
 #include "minishell.h"
 
 // * Ajoute un caractère à la fin d'une chaîne et libère l'ancienne
@@ -38,8 +37,9 @@ char	*handle_exit_status_in_quotes(char *result, int *i, t_shell *shell)
 	char	*value;
 	char	*new_result;
 
-	(*i)++;                            // Passer le '?'
-	value = ft_itoa(shell->exit_code); // Direct, plus simple !
+	(*i)++;
+	// Passer le '?'
+	value = ft_itoa(shell->exit_code);// Direct, plus simple !
 	new_result = ft_strjoin(result, value);
 	free(result);
 	free(value);
@@ -66,7 +66,7 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 	if (*i == start) // Si aucun nom valide trouvé
 		return (result);
 	name = ft_substr_len(str, start, *i - start); // Extraire le nom
-	if (!name)                                    // Si échec allocation
+	if (!name)
 	{
 		free(result);
 		return (NULL);
@@ -76,8 +76,8 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 		value = ft_strdup("");
 	new_result = ft_strjoin(result, value);
 	free(result);
-	free(name);  // Libérer le nom
-	free(value); // Libérer la valeur
+	free(name);
+	free(value);
 	return (new_result);
 }
 
