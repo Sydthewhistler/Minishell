@@ -103,6 +103,7 @@ char							*extract_delimiter(char *s);
 char							*add_line_to_result(char *result, char *line);
 void							process_heredoc_content(char *delimiter,
 									t_token **tokens, char *s, int *i);
+t_token							*found_last(t_token *tokens);
 
 // QUOTES
 char							*extract_quoted_content(char *line, int *i,

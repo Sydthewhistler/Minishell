@@ -35,21 +35,31 @@ char	*extract_delimiter(char *s)
 	return (delimiter);
 }
 
-char	*add_line_to_result(char *result, char *line)
+char *add_line_to_result(char *result, char *line)
 {
-	char	*new_result;
-	char	*temp;
+	char *new_result;
+	char *temp;
 
-	if (result && result[0] != '\0')
+	if (!result || !line)
+		return (NULL);
+	// If result is not empty, we need to add a newline before the new line
+	if (result[0] != '\0')
 	{
 		temp = ft_strjoin(result, "\n");
-		free(result);
 		if (!temp)
+		{
+			free(result);
 			return (NULL);
-		result = temp;
-	}
-	new_result = ft_strjoin(result, line);
-	if (result)
+		}
+		new_result = ft_strjoin(temp, line);
+		free(temp);
 		free(result);
+	}
+	else
+	{
+		// If result is empty, just copy the line
+		new_result = ft_strjoin(result, line);
+		free(result);
+	}
 	return (new_result);
 }

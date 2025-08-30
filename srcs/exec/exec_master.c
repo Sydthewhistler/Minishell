@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_master.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 12:32:05 by scavalli          #+#    #+#             */
-/*   Updated: 2025/08/15 17:51:25 by coraline         ###   ########.fr       */
+/*   Updated: 2025/08/30 14:45:21 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,3 +84,4 @@ int	handle_heredoc_redirect(t_token *token)
 	}
 	return (0);
 }
+

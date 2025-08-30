@@ -52,6 +52,12 @@ static int	handle_filename_state(t_token *current, t_parser_state *state,
 		current->role = ROLE_FILENAME;
 		*state = EXP_ARG;
 	}
+	else if (current->type == CONTENT_HEREDOC)
+	{
+		current->role = ROLE_HEREDOC_CONTENT;
+			// Rôle spécial pour le contenu heredoc
+		*state = EXP_ARG;
+	}
 	else if (current->type == CONTENT_OPERATOR)
 	{
 		ft_error_syntax(current->str, shell);

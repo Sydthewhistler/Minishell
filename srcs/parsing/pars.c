@@ -7,8 +7,7 @@ void	parse_heredoc(char *s, int *i, t_token **tokens)
 	*i += 2;
 	while (s[*i] == ' ' || s[*i] == '\t')
 		(*i)++;
-	if (!s[*i] || s[*i] == '\n' || s[*i] == '!' || s[*i] == '<'
-		|| s[*i] == '>')
+	if (!s[*i] || s[*i] == '\n' || s[*i] == '!' || s[*i] == '<' || s[*i] == '>')
 		return (create_token(tokens, "<<", CONTENT_OPERATOR));
 	delimiter = extract_delimiter(s + *i);
 	if (!delimiter || !delimiter[0])
@@ -50,7 +49,7 @@ void	parse_operator(char *line, int *i, t_token **tokens, t_shell *shell)
 }
 
 void	handle_segment_parsing(char *line, int *i, t_token **tokens,
-	t_shell *shell)
+		t_shell *shell)
 {
 	char	*segment;
 
@@ -63,7 +62,7 @@ void	handle_segment_parsing(char *line, int *i, t_token **tokens,
 }
 
 void	parse_line_character(char *line, int *i, t_token **tokens,
-	t_shell *shell)
+		t_shell *shell)
 {
 	if (line[*i] == '<' && line[*i + 1] == '<')
 		parse_heredoc(line, i, tokens);

@@ -18,5 +18,5 @@ minishell: syntax error near unexpected token 'test.c'
 minishell>exit" 
 --> ok la non ??
 
-voir PIPES ET REDIRECTIONS STP :)
+voir PIPES ET REDIRECTIONS STP :) + signaux dans heredoc et si premier heredoc ne print pas 
 
