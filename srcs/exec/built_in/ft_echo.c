@@ -2,38 +2,6 @@
 #include "exec.h"
 #include <minishell.h>
 
-// void	ft_echo(t_token *lst)
-// {
-// 	int		first_word;
-// 	int		is_newline;
-// 	t_token	*current;
-
-// 	first_word = 1;
-// 	is_newline = 1;
-// 	current = lst->next;
-// 	if (!current)
-// 	{
-// 		printf("\n");
-// 		return ;
-// 	}
-// 	// BOUCLE pour traiter tous les -n consécutifs
-// 	while (current && current->str && !strcmp(current->str, "-n"))
-// 	{
-// 		is_newline = 0;
-// 		current = current->next;
-// 	}
-// 	while (current && current->role == ROLE_ARGUMENT)
-// 	{
-// 		if (!first_word)
-// 			printf(" ");
-// 		printf("%s", current->str);
-// 		first_word = 0;
-// 		current = current->next;
-// 	}
-// 	if (is_newline)
-// 		printf("\n");
-// }
-
 static int	should_ignore_n_arg(char *str)
 {
 	int	i;
@@ -67,8 +35,8 @@ static void	print_echo_args(t_token *current, int is_newline)
 			if (current->str && current->str[0] != '\0')
 			{
 				if (!first_word)
-					printf(" ");
-				printf("%s", current->str);
+					write(STDOUT_FILENO, " ", 1);
+				write(STDOUT_FILENO, current->str, ft_strlen(current->str));
 				first_word = 0;
 			}
 			current = current->next;

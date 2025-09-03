@@ -48,6 +48,22 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 		ft_localvar(localvar, token);
 }
 
+bool is_append(t_token *token) // >>
+{
+	t_token *current;
+
+	current = token;
+	while (current)
+	{
+		if (current->role == 7)
+			return (true);
+		if (current->role == ROLE_COMMAND) // stop si prochaine commande
+			return (false);
+		current = current->next;
+	}
+	return (false);
+}
+
 int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 {
 	int fd;
@@ -59,7 +75,11 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
-		printf("test: dup2 effectue\n");
+	}
+	else if(is_append(token)) // si redirection en mode append
+	{
+		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
+		dup2(fd, STDOUT_FILENO);
 	}
 	else if(is_followedpipe(token)) // si suivit d un pipe
 		dup2(p_write, STDOUT_FILENO);

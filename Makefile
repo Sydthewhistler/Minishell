@@ -71,7 +71,7 @@ LIBFT = $(LIBFT_DIR)libft.a
 HEADERS = $(INCLUDES_DIR)minishell.h $(INCLUDES_DIR)exec.h
 
 # Rules
-all: $(NAME)
+all: $(NAME) clean
 
 $(NAME): $(LIBFT) $(OBJS)
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L$(LIBFT_DIR) -lft $(LDFLAGS)

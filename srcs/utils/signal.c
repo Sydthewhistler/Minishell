@@ -24,7 +24,7 @@ void	ft_setup_interactive_signal(void)
 	sa.sa_handler = ft_sigint_interactive_handler;
 	sigemptyset(&sa.sa_mask);
 	sigaction(SIGINT, &sa, NULL);
-	sa.sa_handler = ft_sigquit_handler;
+	sa.sa_handler = SIG_IGN;
 	sigaction(SIGQUIT, &sa, NULL);
 	sa.sa_flags = SA_RESTART;
 }

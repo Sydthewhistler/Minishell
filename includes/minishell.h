@@ -155,6 +155,8 @@ char							*find_in_path(char *cmd, char *path_dirs);
 // SIGNAL
 void							ft_setup_interactive_signal(void);
 void							ft_setup_execution_signal(void);
+void							ft_setup_heredoc_signals(void);
+
 
 // ERROR
 void							ft_error_cmd_not_found(char *cmd,

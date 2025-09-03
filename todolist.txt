@@ -1,7 +1,5 @@
 
 
-echo -n coucou > test.txt a verifier ecole
-
 exit thwetherwg -> doit quitter ---> ok a voir message erreur
 exit 9 -> doit quitter avec code fermeture 9 --> ok je pense
 
@@ -20,3 +18,7 @@ minishell>exit"
 
 voir PIPES ET REDIRECTIONS STP :) + signaux dans heredoc et si premier heredoc ne print pas 
 
+CORRECTION MINISHELL : https://fr.scribd.com/document/667387208/ng-3-minishell-2
+
+
+PAS oublie enleve clean du makefile
