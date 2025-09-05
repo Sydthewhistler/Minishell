@@ -43,6 +43,7 @@ volatile sig_atomic_t	g_signal = 0;
 //             current->role < 10 ? role_types[current->role] : "UNKNOWN",
 //             current->role);
 //         printf("  envp  : %s\n", current->envp ? current->envp : "NULL");
+// 		printf("  exit_code : %d\n", current->exit_code);
 //         printf("-------------------\n");
 //         current = current->next;
 //     }

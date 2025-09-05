@@ -73,6 +73,7 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 {
 	pid_t	id;
 	char	**cmd_arg;
+	int status;
 
 	cmd_arg = create_cmd(token);
 	id = fork();
@@ -81,13 +82,15 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 	if (id == 0)
 	{
 		redirect(token, p_read, p_write);
-		token->exit_code = execve(token->envp, cmd_arg, env_arg);
-		if (token->exit_code == -1)
+		if (execve(token->envp, cmd_arg, env_arg) == -1)
 			error("execve failed");
 	}
 	else
-		waitpid(id, NULL, 0);
-	free_tab(cmd_arg);
+	{
+		waitpid(id, &status, 0);
+		token->exit_code = WEXITSTATUS(status);
+		free_tab(cmd_arg);
+	}
 }
 
 char	**create_envarg(t_env *env)
