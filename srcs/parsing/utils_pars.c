@@ -41,6 +41,7 @@ static t_token	*init_new_token(char *content, int content_type)
 	new_token->envp = NULL;
 	new_token->next = NULL;
 	new_token->prev = NULL;
+	new_token->exit_code = -2;
 	return (new_token);
 }
 

@@ -63,3 +63,13 @@ char *add_line_to_result(char *result, char *line)
 	}
 	return (new_result);
 }
+
+void	check_exit_code(t_token *tokens, t_shell *shell)
+{
+	while(tokens)
+	{
+		if(tokens->exit_code != -2)
+			shell->exit_code = tokens->exit_code;
+		tokens = tokens->next;
+	}
+}

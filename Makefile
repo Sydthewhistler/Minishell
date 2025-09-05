@@ -18,7 +18,8 @@ MAIN_FILES = main.c
 
 EXEC_FILES = exec_master.c \
 	exec.c \
-	manage_redirect.c
+	manage_redirect.c \
+	manage_redirect2.c
 
 BUILTIN_FILES = add_localvar.c \
 	builtin_master.c \

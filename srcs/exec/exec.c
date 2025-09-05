@@ -54,7 +54,12 @@ void	redirect(t_token *token, int p_read, int p_write)
 		if (fd != -1)
 			dup2(fd, STDOUT_FILENO);
 	}
-	if (is_followedpipe(token))
+	else if(is_append(token)) // si redirection en mode append
+	{
+		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
+		dup2(fd, STDOUT_FILENO);
+	}
+	else if (is_followedpipe(token))
 		dup2(p_write, STDOUT_FILENO);
 	if (fd != -1)
 		close(fd);
@@ -76,7 +81,8 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 	if (id == 0)
 	{
 		redirect(token, p_read, p_write);
-		if (execve(token->envp, cmd_arg, env_arg) == -1)
+		token->exit_code = execve(token->envp, cmd_arg, env_arg);
+		if (token->exit_code == -1)
 			error("execve failed");
 	}
 	else

@@ -57,6 +57,7 @@ typedef struct s_token
 	int							type;
 	int							role;
 	char						*envp;
+	int							exit_code;
 	struct s_token				*next;
 	struct s_token				*prev;
 }								t_token;
@@ -167,6 +168,7 @@ void							ft_error_file(char *cmd, int is_dir,
 									t_shell *shell);
 void							ft_error_syntax(char *token, t_shell *shell);
 void							putstr_error(char *str);
+void							check_exit_code(t_token *tokens, t_shell *shell);
 
 // FREE
 void							free_token(t_token **tokens);
