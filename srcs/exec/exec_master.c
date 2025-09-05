@@ -42,6 +42,8 @@ int	exec_master(t_token *token, t_env **env, t_localvar **localvar)
 		close(pipe_fd[1]);
 		prev_pipe = pipe_fd[0];
 		token = token->next;
+		if(check_error(token))
+			break ;
 	}
 	if (prev_pipe != -1)
 		close(prev_pipe);
