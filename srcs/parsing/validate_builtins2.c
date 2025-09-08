@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "exec.h"
 
 int	validate_export(t_token *token, t_shell *shell, char *cmd)
 {
@@ -96,6 +97,11 @@ static int	check_exit_args(t_token *token, t_shell *shell)
 		arg_count++;
 		current = current->next;
 	}
+	if(is_followedpipe(token))
+	{
+		shell->exit_code = 0;
+		return (0);
+	}
 	if (arg_count > 1)
 	{
 		putstr_error("minishell: exit: too many arguments\n");
@@ -116,13 +122,13 @@ int	validate_exit_args(t_token *token, t_shell *shell)
 {
 	int	arg_count;
 
-	printf("exit\n");
 	arg_count = check_exit_args(token, shell);
 	if (arg_count == 0)
 	{
-		shell->should_exit = 1;
+		shell->should_exit = 0;
 		return (1);
 	}
+	printf("exit\n");
 	if (arg_count < 0)
 		return (1);
 	shell->should_exit = 1;

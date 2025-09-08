@@ -46,7 +46,8 @@ void	redirect(t_token *token, int p_read, int p_write)
 		if (fd != -1)
 			dup2(fd, STDIN_FILENO);
 	}
-	if (!heredoc_handled && is_precededpipe(token))
+	if (!heredoc_handled && is_precededpipe(token) && token->next 
+			&& token->next->role != ROLE_ARGUMENT && token->next->role != ROLE_FILENAME) //si a un arg, pas besoin prendre result precedent pipe
 		dup2(p_read, STDIN_FILENO);
 	if (is_redirectout(token))
 	{
