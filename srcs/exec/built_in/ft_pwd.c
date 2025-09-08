@@ -15,14 +15,12 @@
 
 void	ft_pwd(t_env *env, t_token *token)
 {
-	char *pwd;
+	char	*pwd;
 
-	(void)token; // Ignorer tous les arguments comme bash
-
+	(void)token;
 	pwd = return_env_value("PWD", env);
 	if (!pwd)
 	{
-		// Fallback si PWD n'existe pas
 		pwd = getcwd(NULL, 0);
 		if (!pwd)
 		{

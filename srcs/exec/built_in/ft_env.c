@@ -13,7 +13,7 @@
 #include "minishell.h"
 #include "exec.h"
 
-t_env	*is_env(t_env *env, char *name) // regarde si une variable "name" est une variable exporte
+t_env	*is_env(t_env *env, char *name)
 {
 	if(!env)
 		return (NULL);
@@ -26,7 +26,7 @@ t_env	*is_env(t_env *env, char *name) // regarde si une variable "name" est une 
 	return (NULL);
 }
 
-void	ft_env(t_env *env) //affiche var environnement (exportées)
+void	ft_env(t_env *env)
 {
 	while (env)
 	{

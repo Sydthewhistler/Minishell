@@ -1,8 +1,0 @@
-total 44
-drwxr-xr-x 2 cprot 2025_nice    39 Jun  5 12:27 includes
-drwxr-xr-x 2 cprot 2025_nice  4096 Jun  6 18:48 libft
--rw-r--r-- 1 cprot 2025_nice  1484 Jun  6 17:01 Makefile
--rwxr-xr-x 1 cprot 2025_nice 31856 Jun  6 18:48 minishell
--rw-r--r-- 1 cprot 2025_nice     0 Jun  6 19:04 out
-drwxr-xr-x 5 cprot 2025_nice    60 Jun  5 12:27 srcs
--rw-r--r-- 1 cprot 2025_nice   157 Jun  5 12:27 todolist.txt

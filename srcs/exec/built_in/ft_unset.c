@@ -15,12 +15,11 @@
 
 void	ft_unset(t_localvar **localvar, t_env **env, t_token *token)
 {
-	t_localvar *del_localvar;
-	t_env *del_env;
+	t_localvar	*del_localvar;
+	t_env		*del_env;
 
 	if (!token->next)
-		return ; // bash ne fait rien si pas d'arguments
-
+		return ;
 	del_localvar = is_local(*localvar, token->next->str);
 	if (del_localvar)
 	{

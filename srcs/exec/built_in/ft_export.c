@@ -38,7 +38,7 @@ void	add_exportvar(t_env **env, char *name, char *value)
 	}
 }
 
-t_localvar	*is_local(t_localvar *local, char *name) // regarde si une variable "name" est une variable local
+t_localvar	*is_local(t_localvar *local, char *name)
 {
 	if(!local)
 		return (NULL);
@@ -57,7 +57,7 @@ bool	print_export(t_env *env, t_token *token)
 	{
 		while (env)
 		{
-			printf("declare -x %s=\"%s\"\n", env->name, env->value); //on print env car enfet export affiche env juste syntaxe qui change ("declare -x")
+			printf("declare -x %s=\"%s\"\n", env->name, env->value);
 			env = env->next;
 		}
 		return true;
@@ -66,9 +66,12 @@ bool	print_export(t_env *env, t_token *token)
 }
 
 
-static void	handle_export_var(t_env **env, t_localvar **localvar, char *name, t_localvar *local)
+static void	handle_export_var(t_env **env, t_localvar **localvar, char *name,
+			 t_localvar *local)
 {
-	t_env *is_inenv = is_env(*env, name);
+	t_env	*is_inenv;
+
+	is_inenv = is_env(*env, name);
 	if (is_inenv)
 		free_env(is_inenv, env);
 	if (local)
@@ -80,10 +83,10 @@ static void	handle_export_var(t_env **env, t_localvar **localvar, char *name, t_
 
 void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 {
-	char *name;
-	char *value;
-	t_localvar *local;
-	int i = 0;
+	char		*name;
+	char		*value;
+	t_localvar	*local;
+	int			i;
 
 	if (print_export(*env, token))
 		return ;

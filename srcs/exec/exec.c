@@ -18,8 +18,6 @@ char	**create_cmd(t_token *token)
 		token = token->next;
 	}
 	cmd_arg = malloc(sizeof(char *) * (arg_nb + 1));
-	if (!cmd_arg)
-		return (NULL);
 	cmd_arg[0] = ft_strdup(start->str);
 	start = start->next;
 	i = 1;
@@ -46,8 +44,7 @@ void	redirect(t_token *token, int p_read, int p_write)
 		if (fd != -1)
 			dup2(fd, STDIN_FILENO);
 	}
-	if (!heredoc_handled && is_precededpipe(token) && token->next 
-			&& token->next->role != ROLE_ARGUMENT && token->next->role != ROLE_FILENAME) //si a un arg, pas besoin prendre result precedent pipe
+	if (!heredoc_handled && is_precededpipe(token))
 		dup2(p_read, STDIN_FILENO);
 	if (is_redirectout(token))
 	{
@@ -55,7 +52,7 @@ void	redirect(t_token *token, int p_read, int p_write)
 		if (fd != -1)
 			dup2(fd, STDOUT_FILENO);
 	}
-	else if(is_append(token)) // si redirection en mode append
+	else if(is_append(token))
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
 		dup2(fd, STDOUT_FILENO);

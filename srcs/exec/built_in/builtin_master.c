@@ -11,7 +11,8 @@ bool is_follow_flag(t_token *token)
 
 bool	is_builtin(t_token *token)
 {
-	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) || (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n"))) // gere aussi option -n
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
+			|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n")))
 		return (true);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		return (true);
@@ -23,7 +24,7 @@ bool	is_builtin(t_token *token)
 		return (true);
 	else if (!ft_strcmp(token->str, "env") && !is_follow_flag(token))
 		return (true);
-	else if(ft_contains(token->str, "=")) // si declaration nouvelle localvar
+	else if(ft_contains(token->str, "="))
 		return (true);
 	else if (!ft_strcmp(token->str, "exit"))
 		return (true);
@@ -32,7 +33,8 @@ bool	is_builtin(t_token *token)
 
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
-	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) || (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n"))) // gere aussi option -n
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
+			|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n")))
 		ft_echo(token);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		ft_cd(token, *env);
@@ -50,22 +52,22 @@ void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 
 int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 {
-	int fd;
-	int stdout_backup;
+	int	fd;
+	int	stdout_backup;
 
 	fd = -1;
 	stdout_backup = dup(STDOUT_FILENO);
-	if(is_redirectout(token)) // si redirection dans un fichier
+	if(is_redirectout(token))
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
-	else if(is_append(token)) // si redirection en mode append
+	else if(is_append(token))
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
-	else if(is_followedpipe(token)) // si suivit d un pipe
+	else if(is_followedpipe(token))
 		dup2(p_write, STDOUT_FILENO);
 	which_built_in(token, env, localvar);
 	if(fd != -1)

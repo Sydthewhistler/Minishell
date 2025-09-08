@@ -2,11 +2,11 @@
 #include "minishell.h"
 #include "exec.h"
 
-char	**parse_path_parts(char *path) // découpe le chemin et traite les . et .., termine le tableau par NULL
+char	**parse_path_parts(char *path)
 {
-	char **parts;
-	char **p;
-	char *token;
+	char	**parts;
+	char	**p;
+	char	*token;
 
 	parts = malloc(sizeof(char *) * 1000);
 	p = parts;
@@ -23,10 +23,10 @@ char	**parse_path_parts(char *path) // découpe le chemin et traite les . et ..,
 	return (parts);
 }
 
-char	*build_path_from_parts(char **parts) // reconstruit le chemin à partir du tableau de parties
+char	*build_path_from_parts(char **parts)
 {
-	char *result;
-	char **ptr;
+	char	*result;
+	char	**ptr;
 
 	result = malloc(1000);
 	ft_strcpy(result, "/");
@@ -41,10 +41,10 @@ char	*build_path_from_parts(char **parts) // reconstruit le chemin à partir du 
 	return (result);
 }
 
-char	*normalize_path(char *path) // traite . et ..
+char	*normalize_path(char *path)
 {
-	char **parts;
-	char *result;
+	char	**parts;
+	char	*result;
 
 	parts = parse_path_parts(path);
 	result = build_path_from_parts(parts);
@@ -52,11 +52,11 @@ char	*normalize_path(char *path) // traite . et ..
 	return (result);
 }
 
-char	*resolve_relative_path(char *current_pwd, char *relative_path) // si chemin relatif
+char	*resolve_relative_path(char *current_pwd, char *relative_path)
 {
-	char *temp_path;
-	char *resolved;
-	int len;
+	char	*temp_path;
+	char	*resolved;
+	int		len;
 
 	len = ft_strlen(current_pwd) + ft_strlen(relative_path) + 2;
 	temp_path = malloc(len);
@@ -73,15 +73,15 @@ char	*resolve_relative_path(char *current_pwd, char *relative_path) // si chemin
 
 void	update_pwd(t_env *env, char *new_path)
 {
-	char *current_pwd;
-	char *new_pwd;
+	char	*current_pwd;
+	char	*new_pwd;
 
 	set_env_value(env, "OLDPWD", return_env_value("PWD", env));
-	if (new_path[0] == '/') // si chemin absolu juste remplacer
+	if (new_path[0] == '/')
 		new_pwd = ft_strdup(new_path);
 	else if (!strcmp(return_env_value("PWD", env), "/") && !strcmp(new_path, ".."))
 		return ;
-	else // sinon si relatif adapter chemin
+	else
 	{
 		current_pwd = return_env_value("PWD", env);
 		if (!current_pwd)
