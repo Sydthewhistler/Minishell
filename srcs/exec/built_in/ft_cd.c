@@ -2,6 +2,23 @@
 #include "exec.h"
 #include "minishell.h"
 
+bool	change_directory(char *path)
+{
+	if (!path)
+	{
+		putstr_error("cd: HOME not set\n");
+		return false;
+	}
+	if (chdir(path) != 0) // si path mauvais
+	{
+		putstr_error("cd: no such file or directory: ");
+		putstr_error(path);
+		write(2, "\n", 1);
+		return false;
+	}
+	return true;
+}
+
 void	ft_cd(t_token *token, t_env *env)
 {
 	char	*path;
@@ -23,17 +40,6 @@ void	ft_cd(t_token *token, t_env *env)
 	else
 		path = return_env_value("HOME", env);
 			// si "cd" sans path specifie renvoyer au home
-	if (!path)
-	{
-		putstr_error("cd: HOME not set\n");
-		return ;
-	}
-	if (chdir(path) != 0) // si path mauvais
-	{
-		putstr_error("cd: no such file or directory: ");
-		putstr_error(path);
-		write(2, "\n", 1);
-		return ;
-	}
-	update_pwd(env, path);
+	if (change_directory(path))
+		update_pwd(env, path);
 }

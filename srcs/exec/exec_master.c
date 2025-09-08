@@ -31,9 +31,7 @@ int	exec_master(t_token *token, t_env **env, t_localvar **localvar)
 		if (!token)
 			break ;
 		if (token && is_builtin(token)) // si c est un builtin
-		{
 			ft_builtin(token, env, localvar, pipe_fd[1]);
-		}
 		else if (token)
 			exec(token, *env, prev_pipe, pipe_fd[1]);
 		// si c est une commande autre

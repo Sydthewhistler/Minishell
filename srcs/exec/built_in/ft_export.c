@@ -51,14 +51,31 @@ t_localvar	*is_local(t_localvar *local, char *name) // regarde si une variable "
 	return (NULL);
 }
 
-void	print_export(t_env *env)
+bool	print_export(t_env *env, t_token *token)
 {
-	while (env)
+	if(!token->next)
 	{
-		printf("declare -x %s=\"%s\"\n", env->name, env->value); //on print env car enfet export affiche env juste syntaxe qui change ("declare -x")
-		env = env->next;
+		while (env)
+		{
+			printf("declare -x %s=\"%s\"\n", env->name, env->value); //on print env car enfet export affiche env juste syntaxe qui change ("declare -x")
+			env = env->next;
+		}
+		return true;
 	}
-	return ;
+	return false;
+}
+
+
+static void	handle_export_var(t_env **env, t_localvar **localvar, char *name, t_localvar *local)
+{
+	t_env *is_inenv = is_env(*env, name);
+	if (is_inenv)
+		free_env(is_inenv, env);
+	if (local)
+	{
+		add_exportvar(env, local->name, local->value);
+		free_localvar(local, localvar);
+	}
 }
 
 void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
@@ -66,37 +83,26 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	char *name;
 	char *value;
 	t_localvar *local;
-	t_env *is_inenv;
-	int i;
+	int i = 0;
 
-	if(!token->next) // si c est juste "export" uniquement afficher les variables exportées
-	{
-		print_export(*env);
+	if (print_export(*env, token))
 		return ;
-	}
-	i = 0;
-	while (token->next->str[i] && token->next->str[i] != '=') //pour separer name/value
+	while (token->next->str[i] && token->next->str[i] != '=')
 		i++;
-	name = ft_strndup(token->next->str, i); // decoupe name
+	name = ft_strndup(token->next->str, i);
 	local = is_local(*localvar, name);
-	if (!ft_contains(token->next->str , "=")) //si juste nom VAR "export VAR" aller chercher nom dans localvar
+	if (!ft_contains(token->next->str, "="))
 	{
-		is_inenv = is_env(*env, token->next->str); // si est dans env, on la modifie donc supp tout pour reconstruire
-		if(is_inenv)
-			free_env(is_inenv, env);
-		if(local) // si VAR existe dans localvar
-		{
-			add_exportvar(env, local->name, local->value);
-			free_localvar(local, localvar);
-		}
+		handle_export_var(env, localvar, token->next->str, local);
 		free(name);
-		return ; //sinon aucune info on return
+		return;
 	}
-	is_inenv = is_env(*env, name);
-	if(is_inenv)
-		free_env(is_inenv,env);
+	if (is_env(*env, name))
+		free_env(is_env(*env, name), env);
 	value = ft_substr(token->next->str, i + 1);
 	add_exportvar(env, name, value);
-	if(local) // si c est une variable local on doit la supp de t_localvar
+	if (local)
 		free_localvar(local, localvar);
+	free(name);
+	free(value);
 }
