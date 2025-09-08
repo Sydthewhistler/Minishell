@@ -31,42 +31,6 @@ char	**create_cmd(t_token *token)
 	return (cmd_arg);
 }
 
-void	redirect(t_token *token, int p_read, int p_write)
-{
-	int	fd;
-	int	heredoc_handled;
-
-	fd = -1;
-	heredoc_handled = handle_heredoc_redirect(token);
-	if (!heredoc_handled && is_redirectin(token))
-	{
-		fd = open(find_rdin_file(token), O_RDONLY);
-		if (fd != -1)
-			dup2(fd, STDIN_FILENO);
-	}
-	if (!heredoc_handled && is_precededpipe(token))
-		dup2(p_read, STDIN_FILENO);
-	if (is_redirectout(token))
-	{
-		fd = open(find_rdout_file(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd != -1)
-			dup2(fd, STDOUT_FILENO);
-	}
-	else if(is_append(token))
-	{
-		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
-		dup2(fd, STDOUT_FILENO);
-	}
-	else if (is_followedpipe(token))
-		dup2(p_write, STDOUT_FILENO);
-	if (fd != -1)
-		close(fd);
-	if (p_read != -1)
-		close(p_read);
-	if (p_write != -1)
-		close(p_write);
-}
-
 void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 {
 	pid_t	id;

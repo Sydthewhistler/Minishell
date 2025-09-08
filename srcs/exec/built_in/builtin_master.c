@@ -12,7 +12,8 @@ bool is_follow_flag(t_token *token)
 bool	is_builtin(t_token *token)
 {
 	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
-			|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n")))
+			|| (!ft_strcmp(token->str, "echo") 
+				&& !ft_strcmp(token->next->str, "-n")))
 		return (true);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		return (true);
@@ -34,7 +35,8 @@ bool	is_builtin(t_token *token)
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
 	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
-			|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str, "-n")))
+			|| (!ft_strcmp(token->str, "echo") 
+					&& !ft_strcmp(token->next->str, "-n")))
 		ft_echo(token);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		ft_cd(token, *env);

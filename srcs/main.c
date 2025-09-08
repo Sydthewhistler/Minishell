@@ -32,7 +32,6 @@ static void	process_line(char *line, t_token **tokens, t_shell *shell)
 	parsing_status = parse_line(line, tokens, shell);
 	if (*tokens && parsing_status && ft_strcmp((*tokens)->str, "exit") != 0)
 		shell->exit_code = exec_master(*tokens, &(shell->env), shell->localvar);
-	//debug_print_tokens(*tokens);
 	check_exit_code(*tokens,shell);
 	free_token(tokens);
 	*tokens = NULL;

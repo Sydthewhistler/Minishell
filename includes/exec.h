@@ -70,6 +70,7 @@ bool		is_followedpipe(t_token *token);
 char		*find_rdin_file(t_token *token);
 char		*find_rdout_file(t_token *token);
 bool		is_append(t_token *token);
+void		redirect(t_token *token, int p_read, int p_write);
 
 
 #endif

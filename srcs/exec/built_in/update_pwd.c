@@ -79,7 +79,8 @@ void	update_pwd(t_env *env, char *new_path)
 	set_env_value(env, "OLDPWD", return_env_value("PWD", env));
 	if (new_path[0] == '/')
 		new_pwd = ft_strdup(new_path);
-	else if (!strcmp(return_env_value("PWD", env), "/") && !strcmp(new_path, ".."))
+	else if (!strcmp(return_env_value("PWD", env), "/") 
+				&& !strcmp(new_path, ".."))
 		return ;
 	else
 	{

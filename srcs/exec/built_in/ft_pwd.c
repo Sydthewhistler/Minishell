@@ -31,6 +31,5 @@ void	ft_pwd(t_env *env, t_token *token)
 		free(pwd);
 		return ;
 	}
-
 	printf("%s\n", pwd);
 }

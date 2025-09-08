@@ -82,7 +82,8 @@ int handle_heredoc_redirect(t_token *token)
 	
 	while (current)
 	{
-		if (current->role == 8 && current->str && ft_strcmp(current->str, "<<") == 0)
+		if (current->role == 8 && current->str 
+				&& ft_strcmp(current->str, "<<") == 0)
 		{
 			content_token = current->next;
 			if (content_token && content_token->type == 4)
