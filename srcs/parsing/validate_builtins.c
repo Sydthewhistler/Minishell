@@ -27,14 +27,15 @@ static int	validate_exit_conditions(t_token *token, t_shell *shell, int ac)
 	{
 		putstr_error("minishell: exit: too many arguments\n");
 		shell->exit_code = 1;
-		return (0);
+		shell->should_exit = 0;
+		return (-1);
 	}
 	if (ac == 1 && !is_numeric(token->next->str))
 	{
 		putstr_error("minishell: exit: numeric argument required\n");
 		shell->exit_code = 2;
 		shell->should_exit = 1;
-		return (0);
+		return (-2);
 	}
 	return (ac);
 }
@@ -45,16 +46,21 @@ int	validate_exit_args(t_token *token, t_shell *shell)
 
 	arg_count = count_exit_args(token);
 	arg_count = validate_exit_conditions(token, shell, arg_count);
+	if (arg_count <= 0 && arg_count != -1)
+		printf("exit\n");
 	if (arg_count == 0)
 	{
-		shell->should_exit = 0;
-		return (1);
+		shell->should_exit = 1;
+		shell->exit_code = 0;
 	}
-	printf("exit\n");
-	if (arg_count < 0)
-		return (1);
-	shell->should_exit = 1;
-	shell->exit_code = ft_atol(token->next->str) % 256;
+	else if (arg_count == 1)
+	{
+		printf("exit\n");
+		shell->should_exit = 1;
+		shell->exit_code = ft_atol(token->next->str) % 256;
+	}
+	else if (arg_count == -1)
+		printf("exit\n");
 	return (1);
 }
 

@@ -63,8 +63,6 @@ int	validate_export(t_token *token, t_shell *shell, char *cmd)
 			putstr_error(current->str);
 			putstr_error("': not a valid identifier\n");
 			shell->exit_code = 1;
-			free(name);
-			return (0);
 		}
 		free(name);
 		current = current->next;

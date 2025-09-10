@@ -32,7 +32,6 @@ t_env	*find_env_var(t_env *env, const char *name)
 	return (NULL);
 }
 
-//modifie valeur de name dans env
 void	set_env_value(t_env *env, char *name, char *new_value)
 {
 	while (env)
