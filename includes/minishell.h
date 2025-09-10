@@ -94,8 +94,6 @@ void							create_token(t_token **tokens, char *content,
 									int content_type);
 void							skip_whitespace(char *line, int *i,
 									t_shell *shell);
-void							parse_word(char *line, int *i, t_token **tokens,
-									t_shell *shell);
 int								parse_line(char *line, t_token **tokens,
 									t_shell *shell);
 void							create_and_advance(t_token **tokens, char *op,
@@ -122,8 +120,6 @@ char							*parse_complete_segment(char *line, int *i,
 // HEREDOC
 char							*extract_delimiter(char *s);
 char							*handle_heredoc(char *delimiter);
-void							update_history_entry(char *line, char *content,
-									char *delimiter);
 
 // ENV
 t_env							*init_env_from_envp(char **envp);

@@ -58,19 +58,3 @@ char	*build_heredoc_history(char *line, char *content, char *delimiter)
 	free(temp);
 	return (history);
 }
-
-void	update_history_entry(char *line, char *content, char *delimiter)
-{
-	char		*history_entry;
-	HIST_ENTRY	*last_entry;
-
-	history_entry = build_heredoc_history(line, content, delimiter);
-	last_entry = remove_history(history_length - 1);
-	if (last_entry)
-	{
-		free(last_entry->line);
-		free(last_entry);
-	}
-	add_history(history_entry);
-	free(history_entry);
-}

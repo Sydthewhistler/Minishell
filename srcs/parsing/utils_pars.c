@@ -64,22 +64,3 @@ void	create_token(t_token **tokens, char *content, int content_type)
 		new_token->prev = last;
 	}
 }
-
-void	parse_word(char *line, int *i, t_token **tokens, t_shell *shell)
-{
-	char	*str;
-	int		start;
-
-	start = *i;
-	while (line[*i] != '\0' && line[*i] != ' ' && line[*i] != '\t'
-		&& line[*i] != '>' && line[*i] != '<' && line[*i] != '$'
-		&& line[*i] != '\'' && line[*i] != '"')
-		(*i)++;
-	if (*i > start)
-	{
-		str = ft_substr_len(line, start, *i - start);
-		create_token(tokens, str, CONTENT_WORD);
-		free(str);
-	}
-	skip_whitespace(line, i, shell);
-}

@@ -9,8 +9,8 @@ void	create_newlocalvar(t_localvar **localvar, char *name, char *value)
 	new_node = malloc(sizeof(t_localvar));
 	if (!new_node)
 		return ;
-	new_node->name = strdup(name);
-	new_node->value = strdup(value);
+	new_node->name = ft_strdup(name);
+	new_node->value = ft_strdup(value);
 	new_node->next = NULL;
 	new_node->prev = NULL;
 	if (!*localvar)

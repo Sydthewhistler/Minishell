@@ -1,6 +1,48 @@
 #include "exec.h"
 #include "minishell.h"
 
+int	is_valid_identifier(char *name)
+{
+	int	i;
+
+	if (!name || !name[0])
+		return (0);
+	if (!ft_isalpha(name[0]) && name[0] != '_')
+		return (0);
+	i = 0;
+	while (name[i])
+	{
+		if (!ft_isalnum(name[i]) && name[i] != '_')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	is_numeric(char *str)
+{
+	int		i;
+	long	test;
+
+	i = 0;
+	if (str[0] == '+' || str[0] == '-')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	test = ft_atol(str);
+	if (str[0] == '-' && test > 0)
+		return (0);
+	if (str[0] != '-' && test < 0)
+		return (0);
+	return (1);
+}
+
 int	validate_export(t_token *token, t_shell *shell, char *cmd)
 {
 	t_token	*current;
@@ -82,56 +124,5 @@ int	validate_cd_args(t_token *token, t_shell *shell)
 		shell->exit_code = 1;
 		return (0);
 	}
-	return (1);
-}
-
-static int	check_exit_args(t_token *token, t_shell *shell)
-{
-	t_token	*cur;
-	int		ac;
-
-	cur = token->next;
-	ac = 0;
-	while (cur && cur->role == ROLE_ARGUMENT)
-	{
-		ac++;
-		cur = cur->next;
-	}
-	if (is_followedpipe(token))
-	{
-		shell->exit_code = 0;
-		return (0);
-	}
-	if (ac > 1)
-	{
-		putstr_error("minishell: exit: too many arguments\n");
-		shell->exit_code = 1;
-		return (0);
-	}
-	if (ac == 1 && !is_numeric(token->next->str))
-	{
-		putstr_error("minishell: exit: numeric argument required\n");
-		shell->exit_code = 2;
-		shell->should_exit = 1;
-		return (0);
-	}
-	return (ac);
-}
-
-int	validate_exit_args(t_token *token, t_shell *shell)
-{
-	int	arg_count;
-
-	arg_count = check_exit_args(token, shell);
-	if (arg_count == 0)
-	{
-		shell->should_exit = 0;
-		return (1);
-	}
-	printf("exit\n");
-	if (arg_count < 0)
-		return (1);
-	shell->should_exit = 1;
-	shell->exit_code = ft_atol(token->next->str) % 256;
 	return (1);
 }
