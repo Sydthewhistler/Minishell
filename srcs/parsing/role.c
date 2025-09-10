@@ -55,7 +55,6 @@ static int	handle_filename_state(t_token *current, t_parser_state *state,
 	else if (current->type == CONTENT_HEREDOC)
 	{
 		current->role = ROLE_HEREDOC_CONTENT;
-			// Rôle spécial pour le contenu heredoc
 		*state = EXP_ARG;
 	}
 	else if (current->type == CONTENT_OPERATOR)
@@ -110,31 +109,3 @@ int	apply_role(t_token **tokens, t_shell *shell)
 	}
 	return (0);
 }
-
-// RÉSUMÉ DU FONCTIONNEMENT :
-
-// 1. assign_operator_roles() : Identifie et assigne les rôles aux opérateurs (|,
-// 	<, >, <<, >>)
-
-// 2. La fonction apply_role() utilise une machine à états avec 3 états :
-//    - EXP_CMD : attend une commande
-//    - EXP_ARG : attend un argument
-//    - EXP_FILE : attend un nom de fichier
-
-// 3. Les transitions d'états se font selon les règles :
-//    - Après une commande → EXP_ARG (arguments)
-//    - Après un pipe → EXP_CMD (nouvelle commande)
-//    - Après une redirection → EXP_FILE (nom de fichier)
-//    - Après un fichier → EXP_ARG (retour normal)
-
-// 4. Gestion d'erreurs : Si on trouve un opérateur quand on attend un fichier,
-//    c'est une erreur de syntaxe.
-
-// Exemple : "ls -l > file.txt | grep test"
-// - "ls" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
-// - "-l" → ROLE_ARGUMENT
-// - ">" → ROLE_REDIRECT_OUT (EXP_ARG → EXP_FILE)
-// - "file.txt" → ROLE_FILENAME (EXP_FILE → EXP_ARG)
-// - "|" → ROLE_PIPE (EXP_ARG → EXP_CMD)
-// - "grep" → ROLE_COMMAND (EXP_CMD → EXP_ARG)
-// - "test" → ROLE_ARGUMENT

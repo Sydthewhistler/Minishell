@@ -35,14 +35,13 @@ char	*extract_delimiter(char *s)
 	return (delimiter);
 }
 
-char *add_line_to_result(char *result, char *line)
+char	*add_line_to_result(char *result, char *line)
 {
-	char *new_result;
-	char *temp;
+	char	*new_result;
+	char	*temp;
 
 	if (!result || !line)
 		return (NULL);
-	// If result is not empty, we need to add a newline before the new line
 	if (result[0] != '\0')
 	{
 		temp = ft_strjoin(result, "\n");
@@ -57,7 +56,6 @@ char *add_line_to_result(char *result, char *line)
 	}
 	else
 	{
-		// If result is empty, just copy the line
 		new_result = ft_strjoin(result, line);
 		free(result);
 	}
@@ -66,9 +64,9 @@ char *add_line_to_result(char *result, char *line)
 
 void	check_exit_code(t_token *tokens, t_shell *shell)
 {
-	while(tokens)
+	while (tokens)
 	{
-		if(tokens->exit_code != -2)
+		if (tokens->exit_code != -2)
 			shell->exit_code = tokens->exit_code;
 		tokens = tokens->next;
 	}
@@ -76,9 +74,9 @@ void	check_exit_code(t_token *tokens, t_shell *shell)
 
 bool	check_error(t_token *tokens)
 {
-	while(tokens)
+	while (tokens)
 	{
-		if(tokens->exit_code != -2 && tokens->exit_code != 0)
+		if (tokens->exit_code != -2 && tokens->exit_code != 0)
 			return (true);
 		tokens = tokens->next;
 	}

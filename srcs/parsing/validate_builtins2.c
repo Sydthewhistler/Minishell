@@ -1,5 +1,5 @@
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 int	validate_export(t_token *token, t_shell *shell, char *cmd)
 {
@@ -87,35 +87,35 @@ int	validate_cd_args(t_token *token, t_shell *shell)
 
 static int	check_exit_args(t_token *token, t_shell *shell)
 {
-	t_token	*current;
-	int		arg_count;
+	t_token	*cur;
+	int		ac;
 
-	arg_count = 0;
-	current = token->next;
-	while (current && current->role == ROLE_ARGUMENT)
+	cur = token->next;
+	ac = 0;
+	while (cur && cur->role == ROLE_ARGUMENT)
 	{
-		arg_count++;
-		current = current->next;
+		ac++;
+		cur = cur->next;
 	}
-	if(is_followedpipe(token))
+	if (is_followedpipe(token))
 	{
 		shell->exit_code = 0;
 		return (0);
 	}
-	if (arg_count > 1)
+	if (ac > 1)
 	{
 		putstr_error("minishell: exit: too many arguments\n");
 		shell->exit_code = 1;
 		return (0);
 	}
-	if (arg_count == 1 && !is_numeric(token->next->str))
+	if (ac == 1 && !is_numeric(token->next->str))
 	{
 		putstr_error("minishell: exit: numeric argument required\n");
 		shell->exit_code = 2;
 		shell->should_exit = 1;
 		return (0);
 	}
-	return (arg_count);
+	return (ac);
 }
 
 int	validate_exit_args(t_token *token, t_shell *shell)

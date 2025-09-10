@@ -1,19 +1,18 @@
-
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
-bool is_follow_flag(t_token *token)
+bool	is_follow_flag(t_token *token)
 {
-	if(token->next && token->next->str[0] == '-')
+	if (token->next && token->next->str[0] == '-')
 		return (true);
 	return (false);
 }
 
 bool	is_builtin(t_token *token)
 {
-	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
-			|| (!ft_strcmp(token->str, "echo") 
-				&& !ft_strcmp(token->next->str, "-n")))
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token))
+		|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str,
+				"-n")))
 		return (true);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		return (true);
@@ -25,7 +24,7 @@ bool	is_builtin(t_token *token)
 		return (true);
 	else if (!ft_strcmp(token->str, "env") && !is_follow_flag(token))
 		return (true);
-	else if(ft_contains(token->str, "="))
+	else if (ft_contains(token->str, "="))
 		return (true);
 	else if (!ft_strcmp(token->str, "exit"))
 		return (true);
@@ -34,9 +33,9 @@ bool	is_builtin(t_token *token)
 
 void	which_built_in(t_token *token, t_env **env, t_localvar **localvar)
 {
-	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token)) 
-			|| (!ft_strcmp(token->str, "echo") 
-					&& !ft_strcmp(token->next->str, "-n")))
+	if ((!ft_strcmp(token->str, "echo") && !is_follow_flag(token))
+		|| (!ft_strcmp(token->str, "echo") && !ft_strcmp(token->next->str,
+				"-n")))
 		ft_echo(token);
 	if (!ft_strcmp(token->str, "cd") && !is_follow_flag(token))
 		ft_cd(token, *env);
@@ -59,22 +58,22 @@ int	ft_builtin(t_token *token, t_env **env, t_localvar **localvar, int p_write)
 
 	fd = -1;
 	stdout_backup = dup(STDOUT_FILENO);
-	if(is_redirectout(token))
+	if (is_redirectout(token))
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
-	else if(is_append(token))
+	else if (is_append(token))
 	{
 		fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
 		dup2(fd, STDOUT_FILENO);
 	}
-	else if(is_followedpipe(token))
+	else if (is_followedpipe(token))
 		dup2(p_write, STDOUT_FILENO);
 	which_built_in(token, env, localvar);
-	if(fd != -1)
+	if (fd != -1)
 		close(fd);
-	if(p_write != -1)
+	if (p_write != -1)
 		close(p_write);
 	dup2(stdout_backup, STDOUT_FILENO);
 	close(stdout_backup);

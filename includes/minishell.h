@@ -158,7 +158,6 @@ void							ft_setup_interactive_signal(void);
 void							ft_setup_execution_signal(void);
 void							ft_setup_heredoc_signals(void);
 
-
 // ERROR
 void							ft_error_cmd_not_found(char *cmd,
 									t_shell *shell);
@@ -168,9 +167,9 @@ void							ft_error_file(char *cmd, int is_dir,
 									t_shell *shell);
 void							ft_error_syntax(char *token, t_shell *shell);
 void							putstr_error(char *str);
-void							check_exit_code(t_token *tokens, t_shell *shell);
+void							check_exit_code(t_token *tokens,
+									t_shell *shell);
 bool							check_error(t_token *tokens);
-
 
 // FREE
 void							free_token(t_token **tokens);

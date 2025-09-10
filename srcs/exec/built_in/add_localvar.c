@@ -1,6 +1,5 @@
-
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 void	create_newlocalvar(t_localvar **localvar, char *name, char *value)
 {
@@ -39,7 +38,7 @@ void	ft_localvar(t_localvar **localvar, t_token *token)
 	name = ft_strndup(token->str, i);
 	value = ft_substr(token->str, i + 1);
 	is_in = is_local(*localvar, name);
-	if(is_in)
+	if (is_in)
 		free_localvar(is_in, localvar);
 	create_newlocalvar(localvar, name, value);
 }

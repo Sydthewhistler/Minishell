@@ -3,23 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: scavalli <scavalli@student.42nice.fr>      +#+  +:+       +#+        */
+/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 14:51:30 by scavalli          #+#    #+#             */
-/*   Updated: 2025/06/13 15:54:31 by scavalli         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:37:38 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 t_env	*is_env(t_env *env, char *name)
 {
-	if(!env)
+	if (!env)
 		return (NULL);
-	while(env)
+	while (env)
 	{
-		if(ft_strcmp(env->name, name) == 0)
+		if (ft_strcmp(env->name, name) == 0)
 			return (env);
 		env = env->next;
 	}

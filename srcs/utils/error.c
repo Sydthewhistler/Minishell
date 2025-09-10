@@ -17,7 +17,6 @@ void	ft_error_cmd_not_found(char *cmd, t_shell *shell)
 {
 	putstr_error(cmd);
 	putstr_error(": command not found\n");
-	// Pas de%s possible avec putstr_error
 	shell->exit_code = COMMAND_NOT_FOUND;
 }
 

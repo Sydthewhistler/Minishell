@@ -1,4 +1,3 @@
-
 #include "exec.h"
 #include "minishell.h"
 
@@ -7,16 +6,16 @@ bool	change_directory(char *path)
 	if (!path)
 	{
 		putstr_error("cd: HOME not set\n");
-		return false;
+		return (false);
 	}
 	if (chdir(path) != 0)
 	{
 		putstr_error("cd: no such file or directory: ");
 		putstr_error(path);
 		write(2, "\n", 1);
-		return false;
+		return (false);
 	}
-	return true;
+	return (true);
 }
 
 void	ft_cd(t_token *token, t_env *env)
@@ -30,7 +29,7 @@ void	ft_cd(t_token *token, t_env *env)
 		return ;
 	}
 	if (token->next && token->next->str && ft_strcmp(token->next->str,
-				"~") != 0)
+			"~") != 0)
 	{
 		path = token->next->str;
 		if (!ft_strcmp(path, "."))

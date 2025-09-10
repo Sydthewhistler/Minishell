@@ -32,7 +32,7 @@ static void	process_line(char *line, t_token **tokens, t_shell *shell)
 	parsing_status = parse_line(line, tokens, shell);
 	if (*tokens && parsing_status && ft_strcmp((*tokens)->str, "exit") != 0)
 		shell->exit_code = exec_master(*tokens, &(shell->env), shell->localvar);
-	check_exit_code(*tokens,shell);
+	check_exit_code(*tokens, shell);
 	free_token(tokens);
 	*tokens = NULL;
 	ft_setup_interactive_signal();

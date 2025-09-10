@@ -1,9 +1,5 @@
 #include "minishell.h"
 
-// * Ajoute un caractère à la fin d'une chaîne et libère l'ancienne
-// * @param str: chaîne source (sera libérée)
-// * @param c: caractère à ajouter
-// * @return: nouvelle chaîne avec le caractère ajouté
 char	*add_char_and_free(char *str, char c)
 {
 	char	*new;
@@ -27,31 +23,19 @@ char	*add_char_and_free(char *str, char c)
 	return (new);
 }
 
-// * Gère l'expansion de $? dans les guillemets doubles
-// * @param result: chaîne résultat actuelle
-// * @param i: pointeur vers l'index (modifié)
-// * @param shell: structure shell pour accéder au exit_code
-// * @return: nouvelle chaîne avec le code de sortie ajouté
 char	*handle_exit_status_in_quotes(char *result, int *i, t_shell *shell)
 {
 	char	*value;
 	char	*new_result;
 
 	(*i)++;
-	// Passer le '?'
-	value = ft_itoa(shell->exit_code);// Direct, plus simple !
+	value = ft_itoa(shell->exit_code);
 	new_result = ft_strjoin(result, value);
 	free(result);
 	free(value);
 	return (new_result);
 }
 
-// * Gère l'expansion d'une variable dans les guillemets doubles
-// * @param result: chaîne résultat actuelle
-// * @param str: chaîne source
-// * @param i: pointeur vers l'index (modifié)
-// * @param shell: structure shell pour l'expansion
-// * @return: nouvelle chaîne avec la variable expandée
 char	*handle_variable_in_quotes(char *result, char *str, int *i,
 		t_shell *shell)
 {
@@ -60,12 +44,12 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 	char	*value;
 	char	*new_result;
 
-	start = *i; // Marquer début du nom de variable
+	start = *i;
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
 		(*i)++;
-	if (*i == start) // Si aucun nom valide trouvé
+	if (*i == start)
 		return (result);
-	name = ft_substr_len(str, start, *i - start); // Extraire le nom
+	name = ft_substr_len(str, start, *i - start);
 	if (!name)
 	{
 		free(result);
@@ -81,12 +65,6 @@ char	*handle_variable_in_quotes(char *result, char *str, int *i,
 	return (new_result);
 }
 
-// * Expanse une variable simple (VAR ou $?)
-// * @param str: chaîne source
-// * @param i: pointeur vers l'index (modifié)
-// * @param shell: structure shell pour l'expansion
-// * @param result: chaîne résultat actuelle
-// * @return: nouvelle chaîne avec variable expandée
 char	*expand_variable_simple(char *str, int *i, t_shell *shell, char *result)
 {
 	(*i)++;
@@ -97,10 +75,6 @@ char	*expand_variable_simple(char *str, int *i, t_shell *shell, char *result)
 	return (result);
 }
 
-// * Gère l'expansion de variables dans les guillemets doubles
-// * @param str: chaîne entre guillemets doubles
-// * @param shell: structure shell pour l'expansion
-// * @return: chaîne avec toutes les variables expandées
 char	*handle_expand_in_quotes(char *str, t_shell *shell)
 {
 	char	*result;

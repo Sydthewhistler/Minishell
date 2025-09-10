@@ -1,4 +1,3 @@
-
 #include "exec.h"
 #include "minishell.h"
 
@@ -35,7 +34,7 @@ void	exec_cmd(t_token *token, char **env_arg, int p_read, int p_write)
 {
 	pid_t	id;
 	char	**cmd_arg;
-	int status;
+	int		status;
 
 	cmd_arg = create_cmd(token);
 	id = fork();

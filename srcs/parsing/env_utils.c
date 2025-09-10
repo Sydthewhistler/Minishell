@@ -9,7 +9,6 @@ t_env	*found_envplast(t_env *tokens)
 	return (tokens);
 }
 
-
 static void	free_node_on_error(t_env *new)
 {
 	if (new->name)

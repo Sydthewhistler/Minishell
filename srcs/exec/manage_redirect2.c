@@ -4,18 +4,18 @@
 bool	is_redirectout(t_token *token)
 {
 	token = token->next;
-	while(token)
+	while (token)
 	{
-		if(token->role == ROLE_COMMAND)
-			break;
-		if(token->role == ROLE_REDIRECT_OUT)
-			return(true);
+		if (token->role == ROLE_COMMAND)
+			break ;
+		if (token->role == ROLE_REDIRECT_OUT)
+			return (true);
 		token = token->next;
 	}
 	return (false);
 }
 
-bool is_append(t_token *token)
+bool	is_append(t_token *token)
 {
 	t_token	*current;
 
@@ -39,7 +39,7 @@ void	check_if_redirect_next(t_token *token, int *fd, int p_write)
 		if (*fd != -1)
 			dup2(*fd, STDOUT_FILENO);
 	}
-	else if(is_append(token))
+	else if (is_append(token))
 	{
 		*fd = open(ft_filename(token), O_WRONLY | O_CREAT | O_APPEND, 0644);
 		dup2(*fd, STDOUT_FILENO);
@@ -48,7 +48,7 @@ void	check_if_redirect_next(t_token *token, int *fd, int p_write)
 		dup2(p_write, STDOUT_FILENO);
 }
 
-void check_if_preceded_redirect(t_token *token, int *fd, int p_read)
+void	check_if_preceded_redirect(t_token *token, int *fd, int p_read)
 {
 	int	heredoc_handled;
 

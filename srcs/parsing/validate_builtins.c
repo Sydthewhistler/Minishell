@@ -35,9 +35,9 @@ int	is_numeric(char *str)
 		i++;
 	}
 	test = ft_atol(str);
-	if (str[0] == '-' && test > 0) // overflow négatif
+	if (str[0] == '-' && test > 0)
 		return (0);
-	if (str[0] != '-' && test < 0) // overflow positif
+	if (str[0] != '-' && test < 0)
 		return (0);
 	return (1);
 }

@@ -24,7 +24,7 @@ char	*handle_heredoc(char *delimiter)
 	while (1)
 	{
 		temp = readline("heredoc> ");
-		if (!temp) // Handle EOF (Ctrl+D)
+		if (!temp)
 		{
 			write(1, "\n", 1);
 			break ;
@@ -36,7 +36,7 @@ char	*handle_heredoc(char *delimiter)
 		}
 		result = add_line_to_result(result, temp);
 		free(temp);
-		if (!result) // Check for allocation failure
+		if (!result)
 			return (NULL);
 	}
 	return (finalize_heredoc_result(result));
@@ -61,8 +61,8 @@ char	*build_heredoc_history(char *line, char *content, char *delimiter)
 
 void	update_history_entry(char *line, char *content, char *delimiter)
 {
-	char *history_entry;
-	HIST_ENTRY *last_entry;
+	char		*history_entry;
+	HIST_ENTRY	*last_entry;
 
 	history_entry = build_heredoc_history(line, content, delimiter);
 	last_entry = remove_history(history_length - 1);

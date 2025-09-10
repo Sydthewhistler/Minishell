@@ -6,12 +6,12 @@
 /*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/08/17 16:42:55 by coraline         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:31:38 by coraline         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 #include "exec.h"
+#include "minishell.h"
 
 void	add_exportvar(t_env **env, char *name, char *value)
 {
@@ -40,11 +40,11 @@ void	add_exportvar(t_env **env, char *name, char *value)
 
 t_localvar	*is_local(t_localvar *local, char *name)
 {
-	if(!local)
+	if (!local)
 		return (NULL);
-	while(local)
+	while (local)
 	{
-		if(ft_strcmp(local->name, name) == 0)
+		if (ft_strcmp(local->name, name) == 0)
 			return (local);
 		local = local->next;
 	}
@@ -53,21 +53,20 @@ t_localvar	*is_local(t_localvar *local, char *name)
 
 bool	print_export(t_env *env, t_token *token)
 {
-	if(!token->next)
+	if (!token->next)
 	{
 		while (env)
 		{
 			printf("declare -x %s=\"%s\"\n", env->name, env->value);
 			env = env->next;
 		}
-		return true;
+		return (true);
 	}
-	return false;
+	return (false);
 }
 
-
 static void	handle_export_var(t_env **env, t_localvar **localvar, char *name,
-			 t_localvar *local)
+		t_localvar *local)
 {
 	t_env	*is_inenv;
 
@@ -98,7 +97,7 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	{
 		handle_export_var(env, localvar, token->next->str, local);
 		free(name);
-		return;
+		return ;
 	}
 	if (is_env(*env, name))
 		free_env(is_env(*env, name), env);
