@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: coraline <coraline@student.42.fr>          +#+  +:+       +#+        */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 15:01:17 by scavalli          #+#    #+#             */
-/*   Updated: 2025/09/10 11:23:49 by coraline         ###   ########.fr       */
+/*   Updated: 2025/09/13 09:12:12 by cprot            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ void	ft_export(t_env **env, t_token *token, t_localvar **localvar)
 	t_localvar	*local;
 	int			i;
 
+	i = 0;
 	if (print_export(*env, token))
 		return ;
 	while (token->next->str[i] && token->next->str[i] != '=')

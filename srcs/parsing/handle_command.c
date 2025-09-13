@@ -1,6 +1,17 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_command.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cprot <cprot@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/09/13 09:15:12 by cprot             #+#    #+#             */
+/*   Updated: 2025/09/13 09:15:26 by cprot            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-// Vérifie si un chemin est valide et exécutable
 static int	check_command_errors(char *envp, char *str, t_shell *shell)
 {
 	struct stat	info;
@@ -23,7 +34,6 @@ static int	check_command_errors(char *envp, char *str, t_shell *shell)
 	return (1);
 }
 
-// Gère les erreurs d'opérateurs de redirection
 static int	handle_redirection_error(t_token *current, t_shell *shell)
 {
 	if (!current->next || !current->next->str || current->next->str[0] == '\0')
@@ -39,7 +49,6 @@ static int	handle_redirection_error(t_token *current, t_shell *shell)
 	return (1);
 }
 
-// Traite les erreurs d'opérateurs
 static int	handle_operator_error(t_token *current, t_shell *shell)
 {
 	if (current->str && current->str[0] == '|')
@@ -67,7 +76,6 @@ static int	handle_operator_error(t_token *current, t_shell *shell)
 	return (0);
 }
 
-// Traite les commandes externes (non-builtins)
 static int	handle_external_command(t_token *current, t_shell *shell)
 {
 	current->envp = search_path(current->str, shell->env);
@@ -81,7 +89,6 @@ static int	handle_external_command(t_token *current, t_shell *shell)
 	return (1);
 }
 
-// Point d'entrée pour traiter une commande
 int	handle_command_state(t_token *current, t_parser_state *state,
 		t_shell *shell)
 {
