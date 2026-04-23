@@ -122,14 +122,6 @@ The exit code of the last command is accessible via `$?`.
 
 ---
 
-## Known Limitations
-
-- No support for `&&` and `||` operators
-- No command substitution `` `cmd` `` / `$(cmd)`
-- No wildcard expansion (`*`, `?`)
-
----
-
 ## Authors
 
-Developed by **scavalli** and **coraline**.
+Developed by **Sydney Cavallin** and **Coraline Prot**.
